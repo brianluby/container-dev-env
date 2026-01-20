@@ -1,0 +1,43 @@
+# Example: Rust Development Environment
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+ARG USERNAME=devuser
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    git \
+    vim \
+    sudo \
+    build-essential \
+    libssl-dev \
+    pkg-config \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create a non-root user
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+    && echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+USER $USERNAME
+
+# Install Rust
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+# Set Rust environment variables
+ENV PATH="/home/${USERNAME}/.cargo/bin:${PATH}"
+
+# Install common Rust tools
+RUN /home/${USERNAME}/.cargo/bin/rustup component add rustfmt clippy rust-analyzer
+
+RUN mkdir -p /workspace && sudo chown $USERNAME:$USERNAME /workspace
+
+WORKDIR /workspace
+
+CMD ["/bin/bash"]

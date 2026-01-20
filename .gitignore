@@ -1,0 +1,46 @@
+# Environment files
+.env
+
+# Docker
+.docker/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Build artifacts
+dist/
+build/
+*.o
+*.so
+*.dylib
+
+# Language-specific
+__pycache__/
+*.py[cod]
+*$py.class
+node_modules/
+*.egg-info/
+venv/
+env/
+.venv/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/

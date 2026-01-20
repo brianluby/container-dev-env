@@ -1,0 +1,62 @@
+services:
+  # Base development environment
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: container-dev-env:latest
+    container_name: dev-environment
+    volumes:
+      # Mount your project code
+      - .:/workspace:cached
+      # Persist bash history
+      - dev-bash-history:/home/devuser/.bash_history_volume
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    environment:
+      # Add any environment variables here
+      - HISTFILE=/home/devuser/.bash_history_volume/.bash_history
+    networks:
+      - dev-network
+
+  # Python-specific development environment
+  python-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.python
+    image: container-dev-env:python
+    container_name: python-dev-environment
+    volumes:
+      - .:/workspace:cached
+      - python-venv:/home/devuser/.local
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    networks:
+      - dev-network
+
+  # Node.js-specific development environment
+  node-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: container-dev-env:node
+    container_name: node-dev-environment
+    volumes:
+      - .:/workspace:cached
+      - node-modules:/workspace/node_modules
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    networks:
+      - dev-network
+
+volumes:
+  dev-bash-history:
+  python-venv:
+  node-modules:
+
+networks:
+  dev-network:
+    driver: bridge

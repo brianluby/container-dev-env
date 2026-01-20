@@ -1,0 +1,39 @@
+# Example docker-compose service entries for additional environments
+# Add these to your docker-compose.yml file
+
+  # Go development environment
+  go-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.go
+    image: container-dev-env:go
+    container_name: go-dev-environment
+    volumes:
+      - .:/workspace:cached
+      - go-modules:/home/devuser/go/pkg/mod
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    networks:
+      - dev-network
+
+  # Rust development environment
+  rust-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.rust
+    image: container-dev-env:rust
+    container_name: rust-dev-environment
+    volumes:
+      - .:/workspace:cached
+      - rust-cargo:/home/devuser/.cargo
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    networks:
+      - dev-network
+
+# Don't forget to add these volumes to the volumes section:
+# volumes:
+#   go-modules:
+#   rust-cargo:
