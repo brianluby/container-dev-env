@@ -44,3 +44,7 @@ env/
 .pytest_cache/
 .coverage
 htmlcov/
+
+# CodeQL and analysis tools
+.codeql/
+root/
