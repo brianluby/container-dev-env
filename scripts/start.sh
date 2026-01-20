@@ -15,11 +15,9 @@ SERVICE="${1:-dev}"
 echo -e "${BLUE}Starting containerized development environment...${NC}"
 echo -e "${BLUE}Service: ${SERVICE}${NC}"
 
-# Build the image if it doesn't exist
-if ! docker images | grep -q "container-dev-env:latest"; then
-    echo -e "${YELLOW}Building Docker image (this may take a few minutes)...${NC}"
-    docker compose build ${SERVICE}
-fi
+# Build the image if it doesn't exist or if it needs building
+echo -e "${YELLOW}Building Docker image (this may take a few minutes)...${NC}"
+docker compose build ${SERVICE}
 
 # Start the container
 echo -e "${GREEN}Starting container...${NC}"
