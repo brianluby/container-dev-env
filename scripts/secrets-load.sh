@@ -184,7 +184,6 @@ _secrets_validate_file() {
 
         if ! _secrets_validate_line "$line" "$line_num"; then
             log_error "$_SECRETS_VALIDATE_ERROR"
-            log_error "Invalid line: \"$line\""
             ((errors++))
         elif [[ "$line" =~ = ]] && [[ ! "$line" =~ ^[[:space:]]*# ]]; then
             ((var_count++))
