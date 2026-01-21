@@ -64,19 +64,58 @@ log_section() {
 # Linux uses stat -c '%u', macOS uses stat -f '%u'
 get_owner_uid() {
     local path="$1"
-    stat -c '%u' "$path" 2>/dev/null || stat -f '%u' "$path" 2>/dev/null
+
+    if [ ! -e "$path" ]; then
+        log_error "Path does not exist when checking owner UID: $path"
+        return 1
+    fi
+
+    case "$(uname -s)" in
+        Darwin)
+            stat -f '%u' "$path"
+            ;;
+        *)
+            stat -c '%u' "$path"
+            ;;
+    esac
 }
 
 # Get file owner GID - works on both Linux and macOS
 get_owner_gid() {
     local path="$1"
-    stat -c '%g' "$path" 2>/dev/null || stat -f '%g' "$path" 2>/dev/null
+
+    if [ ! -e "$path" ]; then
+        log_error "Path does not exist when checking owner GID: $path"
+        return 1
+    fi
+
+    case "$(uname -s)" in
+        Darwin)
+            stat -f '%g' "$path"
+            ;;
+        *)
+            stat -c '%g' "$path"
+            ;;
+    esac
 }
 
 # Get human-readable owner - works on both Linux and macOS
 get_owner_name() {
     local path="$1"
-    stat -c '%U:%G' "$path" 2>/dev/null || stat -f '%Su:%Sg' "$path" 2>/dev/null
+
+    if [ ! -e "$path" ]; then
+        log_error "Path does not exist when checking owner name: $path"
+        return 1
+    fi
+
+    case "$(uname -s)" in
+        Darwin)
+            stat -f '%Su:%Sg' "$path"
+            ;;
+        *)
+            stat -c '%U:%G' "$path"
+            ;;
+    esac
 }
 
 # =============================================================================
