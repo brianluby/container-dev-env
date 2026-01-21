@@ -9,7 +9,8 @@
       "Bash(IMAGE=\"container-dev-env:test\" echo \"=== USER TESTS ===\" echo -n \"USER-001: \")",
       "Bash(__NEW_LINE_9460aba173c6e0db__ echo \"\")",
       "Bash(git add:*)",
-      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: add container base image with user-writable npm/pip paths\n\n- Debian Bookworm-slim base with Python 3.14 and Node.js 22.x LTS\n- Non-root ''dev'' user \\(UID/GID 1000\\) with sudo access\n- Configure npm global prefix to ~/.npm-global for sudo-free installs\n- Add ~/.local/bin and ~/.npm-global/bin to PATH for user packages\n- Include health check script and acceptance test suite\n- All 25 acceptance tests passing\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: add container base image with user-writable npm/pip paths\n\n- Debian Bookworm-slim base with Python 3.14 and Node.js 22.x LTS\n- Non-root ''dev'' user \\(UID/GID 1000\\) with sudo access\n- Configure npm global prefix to ~/.npm-global for sudo-free installs\n- Add ~/.local/bin and ~/.npm-global/bin to PATH for user packages\n- Include health check script and acceptance test suite\n- All 25 acceptance tests passing\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push:*)"
     ]
   }
 }
