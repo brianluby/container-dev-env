@@ -259,7 +259,23 @@ validate_env_file() {
 
         if ! validate_env_line "$line" "$line_num"; then
             log_error "$VALIDATE_ERROR"
-            log_error "Invalid line: \"$line\""
+
+            # Avoid logging secrets: do not print the full line, only metadata and (optionally) the key name.
+            local invalid_key=""
+            if [[ "$line" =~ = ]]; then
+                # Extract the part before the first '=' as the candidate key, trimming leading/trailing whitespace.
+                invalid_key="${line%%=*}"
+                # Trim leading whitespace
+                invalid_key="${invalid_key#"${invalid_key%%[![:space:]]*}"}"
+                # Trim trailing whitespace
+                invalid_key="${invalid_key%"${invalid_key##*[![:space:]]}"}"
+            fi
+
+            if [[ -n "$invalid_key" ]]; then
+                log_error "Invalid line in $file at line $line_num (key: \"$invalid_key\")"
+            else
+                log_error "Invalid line in $file at line $line_num"
+            fi
             ((errors++))
         elif [[ "$line" =~ = ]] && [[ ! "$line" =~ ^[[:space:]]*# ]]; then
             # Count non-comment lines with = as variables
