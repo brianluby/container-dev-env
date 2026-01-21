@@ -1,0 +1,31 @@
+{
+  "name": "DevEnv",
+  "dockerComposeFile": "../docker/docker-compose.yml",
+  "service": "dev",
+  "workspaceFolder": "/workspace",
+
+  "remoteUser": "dev",
+
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "files.watcherExclude": {
+          "**/node_modules/**": true,
+          "**/target/**": true
+        }
+      },
+      "extensions": [
+        "ms-python.python",
+        "rust-lang.rust-analyzer",
+        "dbaeumer.vscode-eslint"
+      ]
+    }
+  },
+
+  "forwardPorts": [],
+
+  "postCreateCommand": "echo 'DevEnv ready!'",
+
+  "features": {}
+}

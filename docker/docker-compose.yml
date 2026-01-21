@@ -1,0 +1,203 @@
+# =============================================================================
+# Docker Compose Configuration - Volume Architecture
+# Feature: 004-volume-architecture
+# =============================================================================
+# Hybrid volume architecture for development containers:
+# - Bind mounts: Source code (host IDE access)
+# - Named volumes: Home directory, package caches (performance)
+# - tmpfs: Temporary files (ephemeral, auto-clean)
+# =============================================================================
+
+version: "3.8"
+
+services:
+  # ---------------------------------------------------------------------------
+  # Development Container Service
+  # ---------------------------------------------------------------------------
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+
+    image: devenv:latest
+    container_name: devenv
+    hostname: devenv
+
+    # Interactive shell support
+    stdin_open: true
+    tty: true
+
+    # Environment variables for UID/GID mapping and package managers (T045)
+    # Pass host user's UID/GID for permission compatibility
+    environment:
+      LOCAL_UID: ${LOCAL_UID:-1000}
+      LOCAL_GID: ${LOCAL_GID:-1000}
+      # Package manager cache locations (US3)
+      npm_config_cache: /home/dev/.npm
+      PIP_CACHE_DIR: /home/dev/.cache/pip
+      CARGO_HOME: /home/dev/.cargo
+
+    # -------------------------------------------------------------------------
+    # VOLUME MOUNTS (T015, T016)
+    # -------------------------------------------------------------------------
+    volumes:
+      # -----------------------------------------------------------------------
+      # WORKSPACE (Bind Mount) - US1: Source Code Editing from Host
+      # Type: bind
+      # Purpose: Source code with host IDE access
+      # Consistency: cached (optimized for IDE writes, container reads)
+      # Protection: Survives all Docker operations (host filesystem)
+      # -----------------------------------------------------------------------
+      - type: bind
+        source: ${WORKSPACE_PATH:-.}
+        target: /workspace
+        consistency: cached
+
+      # -----------------------------------------------------------------------
+      # HOME DIRECTORY (Named Volume) - US2: Persistent Development Environment
+      # Type: volume (T024, T025)
+      # Purpose: User config, shell history, local tools
+      # Permission: Fixed to LOCAL_UID:LOCAL_GID at startup
+      # Persistence: Survives restarts, image updates
+      # -----------------------------------------------------------------------
+      - type: volume
+        source: home-data
+        target: /home/dev
+
+      # -----------------------------------------------------------------------
+      # NPM CACHE (Named Volume) - US3: Fast Dependency Installation (T039)
+      # Type: volume
+      # Purpose: npm package cache for faster installs
+      # Performance: 10x faster than bind mount I/O
+      # -----------------------------------------------------------------------
+      - type: volume
+        source: npm-cache
+        target: /home/dev/.npm
+
+      # -----------------------------------------------------------------------
+      # PIP CACHE (Named Volume) - US3: Fast Dependency Installation (T040)
+      # Type: volume
+      # Purpose: pip package cache for faster Python installs
+      # -----------------------------------------------------------------------
+      - type: volume
+        source: pip-cache
+        target: /home/dev/.cache/pip
+
+      # -----------------------------------------------------------------------
+      # CARGO REGISTRY (Named Volume) - US3: Fast Dependency Installation (T041)
+      # Type: volume
+      # Purpose: Rust crate registry cache
+      # -----------------------------------------------------------------------
+      - type: volume
+        source: cargo-registry
+        target: /home/dev/.cargo/registry
+
+      # -----------------------------------------------------------------------
+      # NODE_MODULES (Named Volume) - US3: Fast Dependency Installation (T042)
+      # Type: volume
+      # Purpose: Project node_modules with native volume performance
+      # Note: Overlays workspace bind mount at /workspace/node_modules
+      # -----------------------------------------------------------------------
+      - type: volume
+        source: node-modules
+        target: /workspace/node_modules
+
+      # -----------------------------------------------------------------------
+      # CARGO TARGET (Named Volume) - US3: Fast Dependency Installation (T043)
+      # Type: volume
+      # Purpose: Rust build artifacts with native volume performance
+      # Note: Overlays workspace bind mount at /workspace/target
+      # -----------------------------------------------------------------------
+      - type: volume
+        source: cargo-target
+        target: /workspace/target
+
+      # -----------------------------------------------------------------------
+      # TEMPORARY FILES (tmpfs) - US4: Clean Temporary Storage (T049, T050)
+      # Type: tmpfs
+      # Purpose: Ephemeral temporary files, auto-cleaned on restart
+      # Size: 512M limit to prevent runaway temp file usage
+      # Mode: 1777 (world-writable with sticky bit, standard /tmp permissions)
+      # -----------------------------------------------------------------------
+      - type: tmpfs
+        target: /tmp
+        tmpfs:
+          size: 536870912  # 512M in bytes
+          mode: 1777
+
+    # Working directory inside container
+    working_dir: /workspace
+
+    # Restart policy - manual restart for development
+    restart: "no"
+
+# =============================================================================
+# Named Volume Definitions
+# =============================================================================
+# Named volumes with explicit names survive docker system prune
+# =============================================================================
+
+volumes:
+  # ---------------------------------------------------------------------------
+  # HOME VOLUME (T024, T026) - US2: Persistent Development Environment
+  # ---------------------------------------------------------------------------
+  # Named volume with explicit name survives docker system prune
+  # Labels provide metadata for volume management
+  # ---------------------------------------------------------------------------
+  home-data:
+    name: devenv-home
+    labels:
+      com.devenv.type: "home"
+      com.devenv.persistence: "session"
+      com.devenv.safe-to-prune: "false"
+
+  # ---------------------------------------------------------------------------
+  # NPM CACHE VOLUME (T034) - US3: Fast Dependency Installation
+  # ---------------------------------------------------------------------------
+  npm-cache:
+    name: devenv-npm-cache
+    labels:
+      com.devenv.type: "cache"
+      com.devenv.persistence: "cache"
+      com.devenv.safe-to-prune: "true"
+
+  # ---------------------------------------------------------------------------
+  # PIP CACHE VOLUME (T035) - US3: Fast Dependency Installation
+  # ---------------------------------------------------------------------------
+  pip-cache:
+    name: devenv-pip-cache
+    labels:
+      com.devenv.type: "cache"
+      com.devenv.persistence: "cache"
+      com.devenv.safe-to-prune: "true"
+
+  # ---------------------------------------------------------------------------
+  # CARGO REGISTRY VOLUME (T036) - US3: Fast Dependency Installation
+  # ---------------------------------------------------------------------------
+  cargo-registry:
+    name: devenv-cargo-registry
+    labels:
+      com.devenv.type: "cache"
+      com.devenv.persistence: "cache"
+      com.devenv.safe-to-prune: "true"
+
+  # ---------------------------------------------------------------------------
+  # NODE_MODULES VOLUME (T037) - US3: Fast Dependency Installation
+  # ---------------------------------------------------------------------------
+  node-modules:
+    name: devenv-node-modules
+    labels:
+      com.devenv.type: "build"
+      com.devenv.persistence: "project"
+      com.devenv.safe-to-prune: "true"
+
+  # ---------------------------------------------------------------------------
+  # CARGO TARGET VOLUME (T038) - US3: Fast Dependency Installation
+  # ---------------------------------------------------------------------------
+  cargo-target:
+    name: devenv-cargo-target
+    labels:
+      com.devenv.type: "build"
+      com.devenv.persistence: "project"
+      com.devenv.safe-to-prune: "true"

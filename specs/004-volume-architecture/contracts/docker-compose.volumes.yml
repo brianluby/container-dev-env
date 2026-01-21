@@ -1,0 +1,182 @@
+# Volume Architecture Contract
+# Feature: 004-volume-architecture
+# Date: 2026-01-20
+#
+# This file defines the volume configuration contract for development containers.
+# It serves as both documentation and a reusable compose fragment.
+#
+# Usage:
+#   Include in your docker-compose.yml using extends or merge:
+#   docker-compose -f docker-compose.yml -f docker-compose.volumes.yml up
+
+version: "3.8"
+
+# =============================================================================
+# NAMED VOLUME DEFINITIONS
+# =============================================================================
+# Named volumes with explicit names survive `docker system prune`.
+# Without explicit names, volumes may be removed during cleanup.
+# =============================================================================
+
+volumes:
+  # ---------------------------------------------------------------------------
+  # Home Volume: User configuration and shell history
+  # Persistence: Survives container restarts and image updates
+  # Contents: .bashrc, .zshrc, .bash_history, local tools
+  # ---------------------------------------------------------------------------
+  home-data:
+    name: devenv-home
+    labels:
+      com.devenv.type: "home"
+      com.devenv.persistence: "session"
+      com.devenv.safe-to-prune: "false"
+
+  # ---------------------------------------------------------------------------
+  # NPM Cache: npm package cache for faster installs
+  # Persistence: Survives restarts, safe to prune (re-downloads packages)
+  # Performance: 10-19x faster than bind mount
+  # ---------------------------------------------------------------------------
+  npm-cache:
+    name: devenv-npm-cache
+    labels:
+      com.devenv.type: "cache"
+      com.devenv.package-manager: "npm"
+      com.devenv.safe-to-prune: "true"
+
+  # ---------------------------------------------------------------------------
+  # Pip Cache: Python package cache
+  # Persistence: Survives restarts, safe to prune
+  # ---------------------------------------------------------------------------
+  pip-cache:
+    name: devenv-pip-cache
+    labels:
+      com.devenv.type: "cache"
+      com.devenv.package-manager: "pip"
+      com.devenv.safe-to-prune: "true"
+
+  # ---------------------------------------------------------------------------
+  # Node Modules: Project dependencies (separate from source)
+  # Persistence: Survives restarts, safe to prune (npm install recreates)
+  # Performance: Critical for npm install speed on macOS
+  # ---------------------------------------------------------------------------
+  node-modules:
+    name: devenv-node-modules
+    labels:
+      com.devenv.type: "dependencies"
+      com.devenv.package-manager: "npm"
+      com.devenv.safe-to-prune: "true"
+
+  # ---------------------------------------------------------------------------
+  # Cargo Registry: Rust crate cache
+  # Persistence: Survives restarts, safe to prune
+  # ---------------------------------------------------------------------------
+  cargo-registry:
+    name: devenv-cargo-registry
+    labels:
+      com.devenv.type: "cache"
+      com.devenv.package-manager: "cargo"
+      com.devenv.safe-to-prune: "true"
+
+  # ---------------------------------------------------------------------------
+  # Cargo Target: Rust build artifacts
+  # Persistence: Survives restarts, safe to prune (cargo build recreates)
+  # Performance: Critical for incremental compilation
+  # ---------------------------------------------------------------------------
+  cargo-target:
+    name: devenv-cargo-target
+    labels:
+      com.devenv.type: "build-cache"
+      com.devenv.package-manager: "cargo"
+      com.devenv.safe-to-prune: "true"
+
+# =============================================================================
+# SERVICE CONFIGURATION
+# =============================================================================
+
+services:
+  dev:
+    # -------------------------------------------------------------------------
+    # VOLUME MOUNTS
+    # -------------------------------------------------------------------------
+    volumes:
+      # -----------------------------------------------------------------------
+      # WORKSPACE (Bind Mount)
+      # Type: bind
+      # Purpose: Source code with host IDE access
+      # Consistency: cached (optimized for IDE writes, container reads)
+      # Protection: Survives all Docker operations (host filesystem)
+      # -----------------------------------------------------------------------
+      - type: bind
+        source: ${WORKSPACE_PATH:-.}
+        target: /workspace
+        consistency: cached
+
+      # -----------------------------------------------------------------------
+      # HOME DIRECTORY (Named Volume)
+      # Type: volume
+      # Purpose: User config, shell history, local tools
+      # Permission: Fixed to LOCAL_UID:LOCAL_GID at startup
+      # -----------------------------------------------------------------------
+      - type: volume
+        source: home-data
+        target: /home/dev
+
+      # -----------------------------------------------------------------------
+      # PACKAGE CACHES (Named Volumes)
+      # Type: volume
+      # Purpose: Performance optimization for package managers
+      # -----------------------------------------------------------------------
+      - type: volume
+        source: npm-cache
+        target: /home/dev/.npm
+
+      - type: volume
+        source: pip-cache
+        target: /home/dev/.cache/pip
+
+      - type: volume
+        source: cargo-registry
+        target: /home/dev/.cargo/registry
+
+      # -----------------------------------------------------------------------
+      # DEPENDENCY DIRECTORIES (Named Volumes)
+      # Type: volume
+      # Purpose: Project dependencies on fast storage
+      # Note: node_modules on named volume = 10-19x faster npm install
+      # -----------------------------------------------------------------------
+      - type: volume
+        source: node-modules
+        target: /workspace/node_modules
+
+      - type: volume
+        source: cargo-target
+        target: /workspace/target
+
+    # -------------------------------------------------------------------------
+    # EPHEMERAL STORAGE (tmpfs)
+    # -------------------------------------------------------------------------
+    # Purpose: Temporary files, build intermediates
+    # Behavior: Cleared on container restart
+    # Performance: Memory-speed I/O
+    # -------------------------------------------------------------------------
+    tmpfs:
+      - /tmp:size=512M,mode=1777
+
+    # -------------------------------------------------------------------------
+    # ENVIRONMENT VARIABLES
+    # -------------------------------------------------------------------------
+    environment:
+      # Host UID/GID for permission mapping
+      # macOS default: 501, Linux default: 1000
+      LOCAL_UID: ${LOCAL_UID:-1000}
+      LOCAL_GID: ${LOCAL_GID:-1000}
+
+      # Package manager cache paths (for reference)
+      npm_config_cache: /home/dev/.npm
+      PIP_CACHE_DIR: /home/dev/.cache/pip
+      CARGO_HOME: /home/dev/.cargo
+
+    # -------------------------------------------------------------------------
+    # WORKING DIRECTORY
+    # -------------------------------------------------------------------------
+    working_dir: /workspace
