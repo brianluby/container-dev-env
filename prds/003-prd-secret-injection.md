@@ -76,15 +76,15 @@ development workflows without compromising security.
 
 ## Selected Approach
 
-[Filled after spike - likely age-encrypted dotfiles with Chezmoi or SOPS]
+***age-encrypted dotfiles***
 
 ## Acceptance Criteria
 
-- [ ] Given a fresh container, when I follow the setup guide, then I can inject my first secret within 5 minutes
-- [ ] Given secrets configured, when I start the container, then secrets are available as environment variables
-- [ ] Given the container image, when I run `docker history`, then no secrets are visible in layers
-- [ ] Given a secrets file, when I commit to git, then only encrypted content is stored
-- [ ] Given a new team member, when they clone the repo, then they can configure their own secrets without seeing others' secrets
+- [x] Given a fresh container, when I follow the setup guide, then I can inject my first secret within 5 minutes
+- [x] Given secrets configured, when I start the container, then secrets are available as environment variables
+- [x] Given the container image, when I run `docker history`, then no secrets are visible in layers
+- [x] Given a secrets file, when I commit to git, then only encrypted content is stored
+- [x] Given a new team member, when they clone the repo, then they can configure their own secrets without seeing others' secrets
 - [ ] Given an API key rotation, when I update the secret, then the container picks up the new value on next start
 - [ ] Given no network access, when I start a container with previously configured secrets, then secrets are still available
 - [ ] Given the container image with dotfile support, when I add secret injection, then image size increases by less than 10MB

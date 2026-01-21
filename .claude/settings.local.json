@@ -10,7 +10,28 @@
       "Bash(__NEW_LINE_9460aba173c6e0db__ echo \"\")",
       "Bash(git add:*)",
       "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: add container base image with user-writable npm/pip paths\n\n- Debian Bookworm-slim base with Python 3.14 and Node.js 22.x LTS\n- Non-root ''dev'' user \\(UID/GID 1000\\) with sudo access\n- Configure npm global prefix to ~/.npm-global for sudo-free installs\n- Add ~/.local/bin and ~/.npm-global/bin to PATH for user packages\n- Include health check script and acceptance test suite\n- All 25 acceptance tests passing\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "mcp__filesystem__directory_tree",
+      "Bash(.specify/scripts/bash/configure-worktree.sh:*)",
+      "Bash(.specify/scripts/bash/create-new-feature.sh:*)",
+      "Bash(.specify/scripts/bash/check-prerequisites.sh:*)",
+      "Bash(.specify/scripts/bash/setup-plan.sh:*)",
+      "Bash(docker version:*)",
+      "Bash(./scripts/test-container.sh:*)",
+      "Bash(./.specify/scripts/bash/update-agent-context.sh:*)",
+      "Bash(git worktree:*)",
+      "Bash(chmod:*)",
+      "Bash(docker volume create:*)",
+      "Bash(docker volume:*)",
+      "Bash(docker exec:*)",
+      "mcp__filesystem__read_multiple_files",
+      "WebSearch",
+      "Bash(.specify/scripts/bash/update-agent-context.sh:*)",
+      "Bash(./.specify/scripts/bash/check-prerequisites.sh:*)",
+      "Bash(shellcheck:*)",
+      "Bash(./scripts/secrets-setup.sh:*)",
+      "Bash(./scripts/secrets-load.sh:*)",
+      "Bash(./scripts/secrets-edit.sh:*)"
     ]
   }
 }
