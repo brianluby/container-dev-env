@@ -224,9 +224,43 @@ docker-compose exec dev bash
 
 ## Container Integration
 
+### Shell RC File Integration (Recommended for Interactive Sessions)
+
+For secrets to be available in interactive terminal sessions (like when attaching to a container with VS Code or running `docker exec`), add this to your shell rc file:
+
+```bash
+# Add to ~/.bashrc, ~/.zshrc, or equivalent
+
+# Load secrets if available
+if [ -f /usr/local/bin/secrets-load.sh ]; then
+    source /usr/local/bin/secrets-load.sh --quiet
+fi
+```
+
+**Why shell rc file?** Environment variables set in VS Code's `postAttachCommand` or similar hooks run in a separate shell process that exits after completion. Any exported variables are lost. Loading secrets in the shell rc file ensures they're available in every interactive session.
+
+To add this automatically via Chezmoi:
+
+1. Edit your bashrc template:
+   ```bash
+   chezmoi edit ~/.bashrc
+   ```
+
+2. Add the secret loading snippet at the end of the file
+
+3. Apply changes:
+   ```bash
+   chezmoi apply
+   ```
+
+4. Restart your shell or source the rc file:
+   ```bash
+   source ~/.bashrc
+   ```
+
 ### Entrypoint Integration (T025)
 
-Add this to your container's entrypoint script:
+For non-interactive containers (batch jobs, services), add this to your container's entrypoint script:
 
 ```bash
 #!/bin/bash
@@ -270,6 +304,8 @@ docker run -it \
 ### VS Code DevContainer
 
 See `templates/devcontainer/devcontainer.json` for a complete example configuration.
+
+**Important**: The template uses `postCreateCommand` to decrypt secrets but does not use `postAttachCommand` to load them, as environment variables set in `postAttachCommand` won't persist (it runs in a separate shell process). Instead, integrate with your shell rc file as shown in the [Shell RC File Integration](#shell-rc-file-integration-recommended-for-interactive-sessions) section above.
 
 ## Offline Usage
 
