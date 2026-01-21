@@ -25,7 +25,6 @@ Dockerfile (multi-stage), Bash for shell configuration: Follow standard conventi
 
 ## Recent Changes
 - 002-dotfile-management: Added Bash for installation scripts, Go templates for Chezmoi configs (user-provided) + Chezmoi (single binary, MIT license), age (encryption, optional)
-- 002-dotfile-management: Added Bash for installation scripts, Go templates for Chezmoi configs (user-provided) + Chezmoi (single binary, MIT license), age (encryption, optional)
 
 - 001-container-base-image: Added Dockerfile (multi-stage), Bash for shell configuration + Debian Bookworm-slim base image, Python 3.14+, Node.js LTS (22.x)
 
