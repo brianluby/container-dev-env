@@ -119,7 +119,7 @@ write_encrypted_content() {
     
     # Set up trap to ensure cleanup even on unexpected exit
     # This is critical because temp_file contains unencrypted secrets
-    trap 'rm -f "$temp_file"' EXIT INT TERM ERR
+    trap "rm -f '$temp_file'" EXIT INT TERM ERR
 
     echo "$content" > "$temp_file"
 
@@ -268,7 +268,7 @@ cmd_validate() {
     
     # Set up trap to ensure cleanup even on unexpected exit
     # This is critical because temp_file contains unencrypted secrets
-    trap 'rm -f "$temp_file"' EXIT INT TERM ERR
+    trap "rm -f '$temp_file'" EXIT INT TERM ERR
     
     get_decrypted_content > "$temp_file"
 
