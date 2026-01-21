@@ -78,6 +78,23 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     rm -rf /var/lib/apt/lists/*
 
 # =============================================================================
+# Chezmoi Installation for Dotfile Management
+# Feature: 002-dotfile-management
+# Spec: specs/002-dotfile-management/spec.md
+# =============================================================================
+
+# Install Chezmoi (pinned version for reproducibility - Constitution Principle V)
+ARG CHEZMOI_VERSION=v2.47.1
+RUN sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin -t ${CHEZMOI_VERSION}
+
+# Install age for encrypted dotfile support (FR-010)
+ARG AGE_VERSION=v1.1.1
+RUN ARCH=$(dpkg --print-architecture) && \
+    curl -fsSL "https://github.com/FiloSottile/age/releases/download/${AGE_VERSION}/age-${AGE_VERSION}-linux-${ARCH}.tar.gz" | \
+    tar -xz -C /usr/local/bin --strip-components=1 age/age age/age-keygen && \
+    chmod +x /usr/local/bin/age /usr/local/bin/age-keygen
+
+# =============================================================================
 # Phase 3/US1 & Phase 7/US5: Create non-root user with sudo access
 # =============================================================================
 # UID/GID 1000 matches typical host user for volume mount compatibility

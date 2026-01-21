@@ -3,6 +3,8 @@
 Auto-generated from all feature plans. Last updated: 2026-01-20
 
 ## Active Technologies
+- Bash for installation scripts, Go templates for Chezmoi configs (user-provided) + Chezmoi (single binary, MIT license), age (encryption, optional) (002-dotfile-management)
+- File-based (~/.local/share/chezmoi for source, ~ for targets) (002-dotfile-management)
 
 - Dockerfile (multi-stage), Bash for shell configuration + Debian Bookworm-slim base image, Python 3.14+, Node.js LTS (22.x) (001-container-base-image)
 
@@ -22,6 +24,7 @@ tests/
 Dockerfile (multi-stage), Bash for shell configuration: Follow standard conventions
 
 ## Recent Changes
+- 002-dotfile-management: Added Bash for installation scripts, Go templates for Chezmoi configs (user-provided) + Chezmoi (single binary, MIT license), age (encryption, optional)
 
 - 001-container-base-image: Added Dockerfile (multi-stage), Bash for shell configuration + Debian Bookworm-slim base image, Python 3.14+, Node.js LTS (22.x)
 

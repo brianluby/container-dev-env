@@ -29,6 +29,9 @@ jq --version > /dev/null 2>&1 || { echo "FAIL: jq not available"; exit 1; }
 # Check make
 make --version > /dev/null 2>&1 || { echo "FAIL: make not available"; exit 1; }
 
+# Check chezmoi (Feature: 002-dotfile-management)
+chezmoi --version > /dev/null 2>&1 || { echo "FAIL: chezmoi not available"; exit 1; }
+
 # All checks passed
 echo "OK: All health checks passed"
 exit 0
