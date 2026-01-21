@@ -113,19 +113,16 @@ services:
         source: cargo-target
         target: /workspace/target
 
-      # -----------------------------------------------------------------------
-      # TEMPORARY FILES (tmpfs) - US4: Clean Temporary Storage (T049, T050)
-      # Type: tmpfs
-      # Purpose: Ephemeral temporary files, auto-cleaned on restart
-      # Size: 512M limit to prevent runaway temp file usage
-      # Mode: 1777 (world-writable with sticky bit, standard /tmp permissions)
-      # -----------------------------------------------------------------------
-      - type: tmpfs
-        target: /tmp
-        tmpfs:
-          size: "512M"
-          mode: 1777
 
+    # -----------------------------------------------------------------------
+    # TEMPORARY FILES (tmpfs) - US4: Clean Temporary Storage (T049, T050)
+    # Type: tmpfs
+    # Purpose: Ephemeral temporary files, auto-cleaned on restart
+    # Size: 512M limit to prevent runaway temp file usage
+    # Mode: 1777 (world-writable with sticky bit, standard /tmp permissions)
+    # -----------------------------------------------------------------------
+    tmpfs:
+      - /tmp:rw,size=536870912,mode=1777
     # Working directory inside container
     working_dir: /workspace
 
