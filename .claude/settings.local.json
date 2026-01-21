@@ -31,7 +31,8 @@
       "Bash(shellcheck:*)",
       "Bash(./scripts/secrets-setup.sh:*)",
       "Bash(./scripts/secrets-load.sh:*)",
-      "Bash(./scripts/secrets-edit.sh:*)"
+      "Bash(./scripts/secrets-edit.sh:*)",
+      "WebFetch(domain:github.com)"
     ]
   }
 }
