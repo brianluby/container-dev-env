@@ -184,9 +184,16 @@ fix_home_permissions() {
 
     # T027: Check if owned by root (UID 0) and fix if needed
     local current_uid
-    current_uid=$(get_owner_uid "$home_dir" 2>/dev/null || echo "0")
+    # Get owner UID; do not treat failures as UID 0, and avoid exiting due to set -e
+    current_uid=$(get_owner_uid "$home_dir" 2>/dev/null || true)
 
-    if [[ "$current_uid" == "0" ]]; then
+    # Handle failure to determine UID explicitly
+    if [[ -z "$current_uid" ]]; then
+        log_warning "Could not determine owner UID for $home_dir; assuming root (0) for permission fix"
+        current_uid=0
+    fi
+
+    if [[ "$current_uid" -eq 0 ]]; then
         log "  Fixing ownership: $home_dir (root -> $EXPECTED_UID:$EXPECTED_GID)"
         sudo chown -R "$EXPECTED_UID:$EXPECTED_GID" "$home_dir"
     else
