@@ -1,0 +1,39 @@
+# Container Dev Env .gitignore
+
+# OS files
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+
+# IDE/Editor
+.vscode/
+.idea/
+*.sublime-*
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Docker
+*.log
+
+# Build artifacts
+dist/
+build/
+*.tar
+*.gz
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Dependencies (language-specific)
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+target/

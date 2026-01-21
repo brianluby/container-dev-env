@@ -266,8 +266,8 @@ Start simple, add complexity only when justified:
 
 | Language | Version | Package Manager | Notes |
 |----------|---------|-----------------|-------|
-| **Python** | 3.11+ | pip, uv | System python in container |
-| **Node.js** | LTS (20.x) | npm, bun | Via official apt repo or nvm |
+| **Python** | 3.11+ | pip, uv | System python in container (features may require newer) |
+| **Node.js** | LTS (22.x) | npm, bun | Via NodeSource apt repo or official images |
 | **Go** | 1.21+ | go mod | Official binary distribution |
 | **Rust** | 1.75+ | cargo | Via rustup |
 

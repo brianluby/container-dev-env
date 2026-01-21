@@ -1,0 +1,59 @@
+# Docker build context exclusions
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+*.md
+docs/
+specs/
+prds/
+
+# IDE/Editor
+.vscode/
+.idea/
+*.sublime-*
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# CI/CD
+.github/
+
+# Node.js
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Rust
+target/
+
+# Build artifacts
+dist/
+build/
+coverage/
+*.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+
+# Test files
+tests/
+test/
+*.test.*
+*.spec.*
+
+# Specify workflow
+.specify/
+.opencode/
