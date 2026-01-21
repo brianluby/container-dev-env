@@ -224,6 +224,109 @@ else
     log_fail "NODE-003: Cannot install typescript"
 fi
 
+# =============================================================================
+# Chezmoi Tests (Feature: 002-dotfile-management)
+# =============================================================================
+
+log_section "Chezmoi Tests"
+
+# INST-001/002: Chezmoi binary exists and returns version
+if docker run --rm $IMAGE chezmoi --version 2>&1 | grep -q "chezmoi version"; then
+    log_pass "INST-001/002: Chezmoi is installed and executable"
+else
+    log_fail "INST-001/002: Chezmoi not available"
+fi
+
+# INST-003/004: age binary exists and returns version
+if docker run --rm $IMAGE age --version 2>&1 | grep -q "v1"; then
+    log_pass "INST-003/004: age is installed and executable"
+else
+    log_fail "INST-003/004: age not available"
+fi
+
+# INST-005/006: age-keygen binary exists and returns version
+if docker run --rm $IMAGE age-keygen --version 2>&1 | grep -q "v1"; then
+    log_pass "INST-005/006: age-keygen is installed and executable"
+else
+    log_fail "INST-005/006: age-keygen not available"
+fi
+
+# FUNC-004: chezmoi doctor passes
+if docker run --rm $IMAGE chezmoi doctor 2>&1 | grep -q "ok"; then
+    log_pass "FUNC-004: chezmoi doctor passes"
+else
+    log_fail "FUNC-004: chezmoi doctor reports issues"
+fi
+
+# PERM-001: Non-root user can run chezmoi
+if [ "$(docker run --rm $IMAGE whoami)" = "dev" ] && docker run --rm $IMAGE chezmoi --version > /dev/null 2>&1; then
+    log_pass "PERM-001: Non-root user can run chezmoi"
+else
+    log_fail "PERM-001: Permission issues with chezmoi"
+fi
+
+log_section "Chezmoi Template Tests"
+
+# TMPL-001: Hostname template variable
+if docker run --rm $IMAGE chezmoi execute-template '{{ .chezmoi.hostname }}' 2>&1 | grep -qE ".+"; then
+    log_pass "TMPL-001: Hostname template variable works"
+else
+    log_fail "TMPL-001: Hostname template variable not working"
+fi
+
+# TMPL-002: OS template variable returns 'linux'
+if docker run --rm $IMAGE chezmoi execute-template '{{ .chezmoi.os }}' 2>&1 | grep -q "linux"; then
+    log_pass "TMPL-002: OS template variable returns 'linux'"
+else
+    log_fail "TMPL-002: OS template variable not working"
+fi
+
+# TMPL-003: Arch template variable (amd64 or arm64)
+if docker run --rm $IMAGE chezmoi execute-template '{{ .chezmoi.arch }}' 2>&1 | grep -qE "(amd64|arm64)"; then
+    log_pass "TMPL-003: Arch template variable works"
+else
+    log_fail "TMPL-003: Arch template variable not working"
+fi
+
+# TMPL-004: Username template variable returns 'dev'
+if docker run --rm $IMAGE chezmoi execute-template '{{ .chezmoi.username }}' 2>&1 | grep -q "dev"; then
+    log_pass "TMPL-004: Username template variable returns 'dev'"
+else
+    log_fail "TMPL-004: Username template variable not working"
+fi
+
+# TMPL-005: homeDir template variable returns '/home/dev'
+if docker run --rm $IMAGE chezmoi execute-template '{{ .chezmoi.homeDir }}' 2>&1 | grep -q "/home/dev"; then
+    log_pass "TMPL-005: homeDir template variable returns '/home/dev'"
+else
+    log_fail "TMPL-005: homeDir template variable not working"
+fi
+
+log_section "Chezmoi Permission Tests"
+
+# PERM-002: Source directory is writable
+if docker run --rm $IMAGE bash -c 'mkdir -p ~/.local/share/chezmoi && touch ~/.local/share/chezmoi/.test && rm ~/.local/share/chezmoi/.test' 2>&1; then
+    log_pass "PERM-002: Source directory (~/.local/share/chezmoi) is writable"
+else
+    log_fail "PERM-002: Source directory is not writable"
+fi
+
+# PERM-003: Config directory is writable
+if docker run --rm $IMAGE bash -c 'mkdir -p ~/.config/chezmoi && touch ~/.config/chezmoi/.test && rm ~/.config/chezmoi/.test' 2>&1; then
+    log_pass "PERM-003: Config directory (~/.config/chezmoi) is writable"
+else
+    log_fail "PERM-003: Config directory is not writable"
+fi
+
+log_section "Chezmoi Encryption Tests"
+
+# ENC-001: age-keygen generates key pair
+if docker run --rm $IMAGE bash -c 'age-keygen 2>&1' | grep -q "public key"; then
+    log_pass "ENC-001: age-keygen generates key pair"
+else
+    log_fail "ENC-001: age-keygen not working"
+fi
+
 # Summary
 log_section "Summary"
 TOTAL=$((PASSED + FAILED))
