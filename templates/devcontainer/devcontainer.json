@@ -1,0 +1,45 @@
+{
+    "name": "Dev Container with Secret Injection",
+    "dockerComposeFile": ["../../docker-compose.yml"],
+    "service": "dev",
+    "workspaceFolder": "/workspace",
+
+    // Mount chezmoi source and config for secret decryption
+    "mounts": [
+        "source=${localEnv:HOME}/.local/share/chezmoi,target=/home/dev/.local/share/chezmoi,type=bind,readonly",
+        "source=${localEnv:HOME}/.config/chezmoi,target=/home/dev/.config/chezmoi,type=bind,readonly"
+    ],
+
+    // Post-create command to apply chezmoi (decrypt secrets)
+    "postCreateCommand": "chezmoi apply --force",
+
+    // Ensure secrets are loaded on attach
+    "postAttachCommand": "source /usr/local/bin/secrets-load.sh 2>/dev/null || true",
+
+    // VS Code settings
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash"
+            },
+            "extensions": [
+                // Add your preferred extensions here
+            ]
+        }
+    },
+
+    // Features (optional)
+    "features": {
+        // Chezmoi and age should be in the base image
+        // Add other features as needed
+    },
+
+    // Environment variables (non-secret only!)
+    // Secrets are loaded via secrets-load.sh
+    "containerEnv": {
+        "EDITOR": "code --wait"
+    },
+
+    // User
+    "remoteUser": "dev"
+}

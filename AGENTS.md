@@ -106,3 +106,10 @@ This file keeps human and AI contributors aligned inside `container-dev-env`. Re
 5. Keep this file authoritative—link to it when creating new agent configs so future tools inherit the same rules.
 
 (149 lines)
+
+## Active Technologies
+- Bash (shell scripts), Go templates (Chezmoi) + Chezmoi (dotfile manager), age (encryption), existing base container image (003-secret-injection)
+- Encrypted files on host filesystem, decrypted to environment variables at runtime (003-secret-injection)
+
+## Recent Changes
+- 003-secret-injection: Added Bash (shell scripts), Go templates (Chezmoi) + Chezmoi (dotfile manager), age (encryption), existing base container image
