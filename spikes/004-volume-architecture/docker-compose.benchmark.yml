@@ -1,0 +1,68 @@
+# Docker Compose for Volume Benchmarking
+# Tests bind mounts vs named volumes
+
+services:
+  # Test 1: Default bind mount (baseline)
+  benchmark-bind:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    volumes:
+      - ./workspace:/workspace
+    working_dir: /workspace
+    command: /bin/bash -c "/workspace/benchmark.sh"
+    environment:
+      - TEST_SIZE=50
+
+  # Test 2: Bind mount with consistency=cached (macOS optimization)
+  benchmark-cached:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    volumes:
+      - ./workspace:/workspace:cached
+    working_dir: /workspace
+    command: /bin/bash -c "/workspace/benchmark.sh"
+    environment:
+      - TEST_SIZE=50
+
+  # Test 3: Bind mount with consistency=delegated (macOS optimization)
+  benchmark-delegated:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    volumes:
+      - ./workspace:/workspace:delegated
+    working_dir: /workspace
+    command: /bin/bash -c "/workspace/benchmark.sh"
+    environment:
+      - TEST_SIZE=50
+
+  # Test 4: Named volume only
+  benchmark-named:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    volumes:
+      - named-vol:/named-vol
+    command: /bin/bash -c "cp /workspace/benchmark.sh /tmp/ 2>/dev/null || echo 'No benchmark script'; /tmp/benchmark.sh || echo 'Run manually'"
+    environment:
+      - TEST_SIZE=50
+
+  # Test 5: Hybrid - bind workspace + named cache
+  benchmark-hybrid:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    volumes:
+      - ./workspace:/workspace
+      - cache-vol:/home/dev/.cache
+      - named-vol:/named-vol
+    working_dir: /workspace
+    command: /bin/bash -c "/workspace/benchmark.sh"
+    environment:
+      - TEST_SIZE=50
+
+volumes:
+  named-vol:
+  cache-vol:

@@ -1,0 +1,44 @@
+# Hybrid Volume Architecture Prototype
+# Pattern: Bind mount workspace, named volumes for caches
+
+services:
+  dev:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    volumes:
+      # Workspace: Bind mount for source code (host access required)
+      - ./workspace:/workspace:cached
+
+      # Home directory persistence (named volume)
+      - home-data:/home/dev
+
+      # Separate caches (can be pruned without losing config)
+      - npm-cache:/home/dev/.npm
+      - pip-cache:/home/dev/.cache/pip
+      - node-modules:/workspace/node_modules
+
+      # Entrypoint script (fixes volume permissions)
+      - ./entrypoint.sh:/usr/local/bin/entrypoint.sh:ro
+
+    # tmpfs for truly ephemeral data
+    tmpfs:
+      - /tmp:size=512M
+
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+
+    # Entrypoint fixes volume permissions, then runs command
+    entrypoint: ["/usr/local/bin/entrypoint.sh"]
+    command: ["/bin/bash"]
+
+volumes:
+  home-data:
+    name: devenv-home
+  npm-cache:
+    name: devenv-npm-cache
+  pip-cache:
+    name: devenv-pip-cache
+  node-modules:
+    name: devenv-node-modules
