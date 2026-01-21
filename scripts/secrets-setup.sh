@@ -214,9 +214,10 @@ step_configure_chezmoi() {
             # Update the identity and recipient if needed
             if ! grep -q "identity = \"$KEY_PATH\"" "$chezmoi_config"; then
                 log_warn "Updating age identity path in config"
-                # Use sed to update the identity line under [age] section
-                sed -i.bak "/^\[age\]/,/^\[/ s|identity = .*|identity = \"$KEY_PATH\"|" "$chezmoi_config"
-                rm -f "${chezmoi_config}.bak"
+                # Use sed to update the identity line under [age] section in a portable way
+                tmp_chezmoi_config="$(mktemp "${chezmoi_config}.XXXXXX")"
+                sed "/^\[age\]/,/^\[/ s|identity = .*|identity = \"$KEY_PATH\"|" "$chezmoi_config" > "$tmp_chezmoi_config"
+                mv "$tmp_chezmoi_config" "$chezmoi_config"
             fi
         else
             # Append age configuration
