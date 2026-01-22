@@ -51,7 +51,9 @@
       "Bash(npm view:*)",
       "Bash(claude mcp list:*)",
       "WebFetch(domain:docs.ntfy.sh)",
-      "Bash(/Users/bluby/personal-repos/container-dev-env/spikes/015-mobile-access/scripts/notify.sh:*)"
+      "Bash(/Users/bluby/personal-repos/container-dev-env/spikes/015-mobile-access/scripts/notify.sh:*)",
+      "Bash(git rm:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

@@ -72,13 +72,25 @@ check_feature_branch() {
         return 0
     fi
 
-    if [[ ! "$branch" =~ ^[0-9]{3}- ]]; then
-        echo "ERROR: Not on a feature branch. Current branch: $branch" >&2
-        echo "Feature branches should be named like: 001-feature-name" >&2
-        return 1
+    # Check if branch follows feature naming pattern
+    if [[ "$branch" =~ ^[0-9]{3}- ]]; then
+        return 0
     fi
 
-    return 0
+    # If not on a feature branch, check if we're in worktree mode and there are active worktrees
+    local git_mode=$(read_config_value "git_mode" "branch")
+    if [[ "$git_mode" == "worktree" ]]; then
+        # Check if there are any worktrees with feature branches
+        if git worktree list --porcelain 2>/dev/null | grep -q "^branch refs/heads/[0-9]\{3\}-"; then
+            echo "[specify] Note: In worktree mode. Switch to a feature worktree to work on features." >&2
+            echo "[specify] Hint: Run 'git worktree list' to see available worktrees." >&2
+            return 0  # Don't fail, just inform
+        fi
+    fi
+
+    echo "ERROR: Not on a feature branch. Current branch: $branch" >&2
+    echo "Feature branches should be named like: 001-feature-name" >&2
+    return 1
 }
 
 get_feature_dir() { echo "$1/specs/$2"; }
