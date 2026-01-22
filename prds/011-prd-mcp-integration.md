@@ -64,14 +64,14 @@ host-side setup.
 
 | Server | Category | Pros | Cons | Priority | Spike Result |
 |--------|----------|------|------|----------|--------------|
-| Filesystem | Core | Essential file operations, official | Basic functionality | Must | Pending |
-| Context7 | Documentation | Up-to-date library docs, widely used | External dependency | Must | Pending |
-| Git | Version Control | Git operations, history, diffs | Overlap with native Git | Should | Pending |
-| Playwright | Browser | Web automation, testing, scraping | Heavier dependency | Should | Pending |
-| PostgreSQL/SQLite | Database | Query execution, schema inspection | Security considerations | Should | Pending |
-| Sentry | Observability | Error tracking, debugging context | Requires Sentry account | Could | Pending |
-| GitHub | Platform | Issues, PRs, repo management | Requires GitHub token | Should | Pending |
-| Memory (Knowledge Graph) | Memory | Persistent context, relationships | Complexity, storage | Could | Pending |
+| Filesystem | Core | Essential file operations, official | Basic functionality | Must | **PASS** - v2026.1.14 |
+| Context7 | Documentation | Up-to-date library docs, widely used | External dependency | Must | **PASS** - v2.1.0 |
+| Git | Version Control | Git operations, history, diffs | Overlap with native Git | Should | Not tested |
+| Playwright | Browser | Web automation, testing, scraping | Heavier dependency | Should | **PASS** - works via npx |
+| PostgreSQL/SQLite | Database | Query execution, schema inspection | Security considerations | Should | Not tested |
+| Sentry | Observability | Error tracking, debugging context | Requires Sentry account | Could | Not tested |
+| GitHub | Platform | Issues, PRs, repo management | Requires GitHub token | Should | **PASS** - deprecated pkg |
+| Memory (Knowledge Graph) | Memory | Persistent context, relationships | Complexity, storage | Could | **PASS** - works via npx |
 
 ## Detailed Server Analysis
 
@@ -148,7 +148,27 @@ Container compatibility: Requires persistent storage volume.
 
 ## Selected Approach
 
-[Filled after spike]
+**Spike completed 2026-01-21** - See `spikes/011-mcp-integration/RESULTS.md`
+
+### Recommended Implementation
+
+1. **Pre-install core MCP servers** in the Dockerfile via `npm install -g`:
+   - @modelcontextprotocol/server-filesystem (essential)
+   - @upstash/context7-mcp (documentation)
+   - @modelcontextprotocol/server-memory (persistent context)
+
+2. **Use npx for optional servers** (GitHub, Playwright) to avoid bloating the image
+
+3. **Configuration via environment variables** for credentials (CONTEXT7_API_KEY, GITHUB_PERSONAL_ACCESS_TOKEN)
+
+4. **Provide sample .mcp.json** configuration template for customization
+
+### Key Findings
+
+- MCP servers are npm packages using stdio transport - fully container compatible
+- Installation via `npm install -g` or `npx` works identically inside containers
+- Claude Code, Cline, and Continue all use the same configuration format
+- Filesystem MCP server supports directory allowlisting for security
 
 ## Configuration Architecture
 

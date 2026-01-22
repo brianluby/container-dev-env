@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Claude Code settings with mobile notification hooks",
+
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [
+          ["bash", "-c", "echo '{\"tool_name\": \"AskUserQuestion\"}' | /path/to/claude-code-hooks.sh post_tool"]
+        ]
+      }
+    ],
+
+    "Stop": [
+      ["bash", "-c", "/path/to/claude-code-hooks.sh stop"]
+    ]
+  },
+
+  "env": {
+    "MOBILE_NOTIFY_ENABLED": "true",
+    "MOBILE_NOTIFY_PLATFORM": "ntfy",
+    "NTFY_TOPIC": "my-dev-alerts",
+    "NTFY_SERVER": "https://ntfy.sh"
+  }
+}

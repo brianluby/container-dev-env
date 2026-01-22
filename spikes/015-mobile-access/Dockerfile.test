@@ -1,0 +1,16 @@
+# Test container for mobile notification spike
+FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    jq \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN useradd -m -s /bin/bash dev
+USER dev
+WORKDIR /home/dev
+
+# Scripts will be mounted as volume
+CMD ["/bin/bash"]

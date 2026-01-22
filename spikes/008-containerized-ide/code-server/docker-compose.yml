@@ -1,0 +1,14 @@
+services:
+  code-server:
+    image: codercom/code-server:latest
+    container_name: spike-code-server
+    environment:
+      - PASSWORD=spikepwd123
+    ports:
+      - "8443:8080"
+    volumes:
+      - ../workspace:/home/coder/project
+    restart: unless-stopped
+
+# Note: Removed user mapping and named volumes for spike testing
+# Production deployment should configure proper volume permissions

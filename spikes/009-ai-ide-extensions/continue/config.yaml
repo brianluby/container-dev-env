@@ -1,0 +1,145 @@
+# Continue AI Assistant Configuration
+# https://docs.continue.dev/reference/config
+#
+# This config demonstrates multi-provider setup for containerized environments.
+# API keys can use environment variables via ${{ secrets.VAR_NAME }} syntax.
+
+name: container-dev-env
+version: 1.0.0
+schema: v1
+
+# Primary models for different tasks
+models:
+  # Chat & Edit - Claude (recommended for code understanding)
+  - name: Claude Sonnet
+    provider: anthropic
+    model: claude-sonnet-4-20250514
+    apiKey: ${{ secrets.ANTHROPIC_API_KEY }}
+    roles:
+      - chat
+      - edit
+      - apply
+    defaultCompletionOptions:
+      temperature: 0.7
+      maxTokens: 4096
+
+  # Alternative: OpenAI GPT-4
+  - name: GPT-4o
+    provider: openai
+    model: gpt-4o
+    apiKey: ${{ secrets.OPENAI_API_KEY }}
+    roles:
+      - chat
+      - edit
+    defaultCompletionOptions:
+      temperature: 0.7
+      maxTokens: 4096
+
+  # Autocomplete - Fast model for inline suggestions
+  - name: Claude Haiku (Fast)
+    provider: anthropic
+    model: claude-3-5-haiku-20241022
+    apiKey: ${{ secrets.ANTHROPIC_API_KEY }}
+    roles:
+      - autocomplete
+    autocompleteOptions:
+      debounceDelay: 200
+      maxPromptTokens: 2048
+      onlyMyCode: true
+    defaultCompletionOptions:
+      temperature: 0.2
+      maxTokens: 256
+
+  # Local model option (if Ollama is available)
+  # - name: CodeLlama Local
+  #   provider: ollama
+  #   model: codellama:13b
+  #   apiBase: http://host.docker.internal:11434
+  #   roles:
+  #     - autocomplete
+  #   autocompleteOptions:
+  #     debounceDelay: 300
+  #     maxPromptTokens: 1024
+
+# Context providers for enhanced awareness
+context:
+  - provider: file       # Current file
+  - provider: code       # Selected code
+  - provider: codebase   # Project-wide search
+  - provider: diff       # Git changes
+  - provider: terminal   # Terminal output
+  - provider: problems   # IDE diagnostics
+
+# Custom rules for code style
+rules:
+  - Use explicit types over implicit (especially in TypeScript and Python)
+  - Prefer async/await over raw promises
+  - Use Result types for error handling in Rust
+  - Follow conventional commits format
+  - Keep functions focused and small
+
+# Custom prompts for common tasks
+prompts:
+  - name: explain
+    description: Explain the selected code
+    prompt: |
+      Please explain what this code does in clear, concise terms.
+      Include any important implementation details or patterns used.
+
+  - name: review
+    description: Review code for issues
+    prompt: |
+      Review this code for:
+      1. Potential bugs or edge cases
+      2. Security vulnerabilities
+      3. Performance issues
+      4. Code style and readability
+      Provide specific suggestions for improvements.
+
+  - name: test
+    description: Generate unit tests
+    prompt: |
+      Generate comprehensive unit tests for this code.
+      Use the appropriate testing framework for the language:
+      - Python: pytest
+      - TypeScript/JavaScript: vitest or jest
+      - Rust: built-in test framework
+      - Go: built-in testing package
+      Cover edge cases and error conditions.
+
+  - name: refactor
+    description: Suggest refactoring improvements
+    prompt: |
+      Analyze this code and suggest refactoring improvements.
+      Focus on:
+      - Reducing complexity
+      - Improving maintainability
+      - Following SOLID principles where applicable
+      Provide the refactored code with explanations.
+
+# MCP Servers (Model Context Protocol)
+# Add custom tools and context via MCP
+mcpServers: []
+  # Example: Add a custom MCP server
+  # - name: custom-tools
+  #   command: npx
+  #   args:
+  #     - -y
+  #     - "@modelcontextprotocol/server-filesystem"
+  #     - /home/coder/project
+
+# Tab autocomplete settings
+tabAutocompleteModel:
+  provider: anthropic
+  model: claude-3-5-haiku-20241022
+  apiKey: ${{ secrets.ANTHROPIC_API_KEY }}
+
+tabAutocompleteOptions:
+  debounceDelay: 200
+  maxPromptTokens: 2048
+  prefixPercentage: 0.85
+
+# Experimental features
+experimental:
+  contextMenuActions: true
+  quickActions: true

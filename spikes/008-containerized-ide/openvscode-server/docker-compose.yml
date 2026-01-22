@@ -1,0 +1,11 @@
+services:
+  openvscode-server:
+    image: gitpod/openvscode-server:latest
+    container_name: spike-openvscode-server
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../workspace:/home/openvscode-server/project
+    restart: unless-stopped
+
+# Note: Running without token auth for spike (use --connection-token for production)

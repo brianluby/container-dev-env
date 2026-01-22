@@ -68,11 +68,11 @@ desktop-only features are excluded.
 
 | Tool | License | Pros | Cons | code-server | Spike Result |
 |------|---------|------|------|-------------|--------------|
-| Continue | Apache 2.0 | Open source, multi-provider, MCP support, excellent docs, active development | Newer than Copilot, some features still maturing | Available | Pending |
-| Cline | Apache 2.0 | Open source, agentic features, human-in-the-loop, MCP support, 4M+ users | More agentic than pure completion, can be verbose | Available | Pending |
-| Roo-Code | Apache 2.0 | Open source, reliable multi-file edits, role-based agents | VS Code focused, less pure-completion focus | Available | Pending |
-| GitHub Copilot | Proprietary | Industry standard, excellent completions, large training data, GitHub integration | Subscription required, not on Open VSX, may need workarounds | Workaround needed | Pending |
-| Codeium | Freemium | Free tier, fast completions, good accuracy | Proprietary, limited customization | Check availability | Pending |
+| Continue | Apache 2.0 | Open source, multi-provider, MCP support, excellent docs, active development | Newer than Copilot, some features still maturing | Available | ✅ **Primary** |
+| Cline | Apache 2.0 | Open source, agentic features, human-in-the-loop, MCP support, 4M+ users | More agentic than pure completion, can be verbose | Available | ✅ Secondary |
+| Roo-Code | Apache 2.0 | Open source, reliable multi-file edits, role-based agents | VS Code focused, less pure-completion focus | Available | ⚡ Alternative |
+| GitHub Copilot | Proprietary | Industry standard, excellent completions, large training data, GitHub integration | Subscription required, not on Open VSX, may need workarounds | Workaround needed | ❌ Not recommended |
+| Codeium | Freemium | Free tier, fast completions, good accuracy | Proprietary, limited customization | Available | ⚡ Budget option |
 
 ## Detailed Tool Analysis
 
@@ -145,7 +145,43 @@ Container compatibility: Check Open VSX availability.
 
 ## Selected Approach
 
-[Filled after spike]
+Based on spike results from `spikes/009-ai-ide-extensions/`, the recommended approach is:
+
+### Primary: Continue
+
+**Installation**: `code-server --install-extension Continue.continue`
+
+**Rationale**:
+- Full Open VSX availability - native code-server support
+- Multi-provider support: Anthropic, OpenAI, Ollama, Azure, and more
+- Comprehensive MCP support for extensibility
+- Excellent documentation and active development
+- Flexible `config.yaml` with secrets syntax `${{ secrets.API_KEY }}`
+- Tab autocomplete + chat + inline edit capabilities
+
+**Configuration**: See `spikes/009-ai-ide-extensions/continue/config.yaml`
+
+### Secondary: Cline (for complex agentic tasks)
+
+**Installation**: `code-server --install-extension saoudrizwan.claude-dev`
+
+**Rationale**:
+- Excellent for multi-step, complex tasks
+- Human-in-the-loop approval system for safety
+- MCP integration for extended capabilities
+- Plan/Act modes for structured problem-solving
+
+**Configuration**: See `spikes/009-ai-ide-extensions/cline/`
+
+### Not Recommended: GitHub Copilot
+
+- Not available on Open VSX
+- Complex OAuth authentication in containers
+- Requires manual VSIX installation and workarounds
+
+### Detailed findings available in:
+- `spikes/009-ai-ide-extensions/FINDINGS.md` - Full comparison and recommendations
+- `spikes/009-ai-ide-extensions/docker-compose.yml` - Test environment
 
 ## Acceptance Criteria
 

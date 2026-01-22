@@ -208,32 +208,52 @@ Adopt a **structured markdown documentation system** with:
 
 ### Template Creation
 
-- [ ] Create ADR template with examples
-- [ ] Create architecture overview template
-- [ ] Create domain model documentation template
-- [ ] Create API documentation template
-- [ ] Create docs/AGENTS.md navigation template
+- [x] Create ADR template with examples
+- [x] Create architecture overview template
+- [x] Create domain model documentation template
+- [x] Create API documentation template
+- [x] Create docs/AGENTS.md navigation template
 
 ### Tooling
 
-- [ ] Set up Mermaid rendering in code-server
-- [ ] Create VS Code snippets for documentation
-- [ ] Create ADR creation script/command
-- [ ] Set up documentation linting (markdownlint)
+- [x] Set up Mermaid rendering in code-server (supported natively)
+- [x] Create VS Code snippets for documentation
+- [x] Create ADR creation script/command
+- [x] Set up documentation linting (markdownlint)
 
 ### Migration
 
-- [ ] Document existing architecture decisions as ADRs
-- [ ] Create system diagrams for container-dev-env
-- [ ] Write domain glossary for project
-- [ ] Set up docs/ structure in repository
+- [x] Document existing architecture decisions as ADRs (sample ADRs created)
+- [x] Create system diagrams for container-dev-env
+- [x] Write domain glossary for project
+- [ ] Set up docs/ structure in repository (templates ready for copying)
 
 ### Integration
 
 - [ ] Configure AI tools to read docs/ directory
 - [ ] Test ADR consultation during AI sessions
-- [ ] Document workflow for keeping docs current
-- [ ] Create onboarding guide for documentation system
+- [x] Document workflow for keeping docs current (in FINDINGS.md)
+- [x] Create onboarding guide for documentation system (in FINDINGS.md)
+
+## Spike Results
+
+**Location**: `spikes/013-project-knowledge/`
+
+**Key Deliverables**:
+
+| Category | Files |
+|----------|-------|
+| **Templates** | `templates/architecture/`, `templates/domain/`, `templates/api/`, `templates/AGENTS-template.md` |
+| **Tooling** | `scripts/new-adr.sh`, `vscode-snippets/docs.code-snippets`, `templates/.markdownlint.jsonc` |
+| **Sample Docs** | `sample-docs/architecture/decisions/`, `sample-docs/diagrams/`, `sample-docs/domain/glossary.md` |
+| **Findings** | `FINDINGS.md` - implementation guide and recommendations |
+
+**Next Steps**:
+1. Copy templates to `docs/` directory
+2. Create initial ADRs for existing decisions
+3. Configure AI extensions to include docs/ in context
+
+See `spikes/013-project-knowledge/FINDINGS.md` for full implementation guide
 
 ## References
 

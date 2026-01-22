@@ -1,0 +1,249 @@
+{
+  "ADR Template": {
+    "prefix": "adr",
+    "scope": "markdown",
+    "description": "Architecture Decision Record template",
+    "body": [
+      "# ADR-${1:NNN}: ${2:Title}",
+      "",
+      "## Metadata",
+      "",
+      "| Field | Value |",
+      "|-------|-------|",
+      "| Status | ${3|Proposed,Accepted,Deprecated,Superseded|} |",
+      "| Date | ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE} |",
+      "| Decision Makers | @${4:username} |",
+      "| Tags | ${5:architecture} |",
+      "",
+      "## Context",
+      "",
+      "${6:Describe the issue, background, and forces at play.}",
+      "",
+      "## Decision",
+      "",
+      "We will ${7:decision statement}.",
+      "",
+      "## Consequences",
+      "",
+      "### Positive",
+      "",
+      "- ${8:Benefit}",
+      "",
+      "### Negative",
+      "",
+      "- ${9:Drawback}",
+      "",
+      "## Alternatives Considered",
+      "",
+      "### ${10:Alternative Name}",
+      "",
+      "**Why Rejected**: ${11:Reason}",
+      "",
+      "## References",
+      "",
+      "- ${12:Link}",
+      ""
+    ]
+  },
+  "Mermaid Flowchart": {
+    "prefix": "mermaid-flow",
+    "scope": "markdown",
+    "description": "Mermaid flowchart diagram",
+    "body": [
+      "```mermaid",
+      "flowchart ${1|TB,LR,BT,RL|}",
+      "    ${2:A}[${3:Start}] --> ${4:B}[${5:End}]",
+      "```"
+    ]
+  },
+  "Mermaid Sequence Diagram": {
+    "prefix": "mermaid-seq",
+    "scope": "markdown",
+    "description": "Mermaid sequence diagram",
+    "body": [
+      "```mermaid",
+      "sequenceDiagram",
+      "    participant ${1:User}",
+      "    participant ${2:System}",
+      "    ",
+      "    ${1:User}->>+${2:System}: ${3:Request}",
+      "    ${2:System}-->>-${1:User}: ${4:Response}",
+      "```"
+    ]
+  },
+  "Mermaid State Diagram": {
+    "prefix": "mermaid-state",
+    "scope": "markdown",
+    "description": "Mermaid state diagram",
+    "body": [
+      "```mermaid",
+      "stateDiagram-v2",
+      "    [*] --> ${1:Initial}",
+      "    ${1:Initial} --> ${2:Processing}: ${3:event}",
+      "    ${2:Processing} --> ${4:Complete}: ${5:event}",
+      "    ${4:Complete} --> [*]",
+      "```"
+    ]
+  },
+  "Mermaid ER Diagram": {
+    "prefix": "mermaid-er",
+    "scope": "markdown",
+    "description": "Mermaid entity relationship diagram",
+    "body": [
+      "```mermaid",
+      "erDiagram",
+      "    ${1:ENTITY1} ||--o{ ${2:ENTITY2} : \"${3:relationship}\"",
+      "    ${1:ENTITY1} {",
+      "        string id PK",
+      "        string name",
+      "    }",
+      "    ${2:ENTITY2} {",
+      "        string id PK",
+      "        string entity1_id FK",
+      "    }",
+      "```"
+    ]
+  },
+  "Mermaid Class Diagram": {
+    "prefix": "mermaid-class",
+    "scope": "markdown",
+    "description": "Mermaid class diagram",
+    "body": [
+      "```mermaid",
+      "classDiagram",
+      "    class ${1:ClassName} {",
+      "        +${2:Type} ${3:attribute}",
+      "        +${4:method}(${5:params}) ${6:ReturnType}",
+      "    }",
+      "```"
+    ]
+  },
+  "API Endpoint Documentation": {
+    "prefix": "api-endpoint",
+    "scope": "markdown",
+    "description": "API endpoint documentation template",
+    "body": [
+      "### ${1:Endpoint Name}",
+      "",
+      "**Endpoint**: `${2|GET,POST,PUT,PATCH,DELETE|} ${3:/path}`",
+      "",
+      "**Description**: ${4:Description}",
+      "",
+      "**Authentication**: ${5|Required,Optional,None|}",
+      "",
+      "**${6|Query Parameters,Path Parameters,Request Body|}**:",
+      "",
+      "| ${7|Parameter,Field|} | Type | Required | Description |",
+      "|-----------|------|----------|-------------|",
+      "| `${8:name}` | ${9:string} | ${10|Yes,No|} | ${11:Description} |",
+      "",
+      "**Request Example**:",
+      "",
+      "```bash",
+      "curl -X ${2} \"https://api.example.com${3}\" \\\\",
+      "  -H \"Authorization: Bearer <token>\"",
+      "```",
+      "",
+      "**Response** (${12:200} OK):",
+      "",
+      "```json",
+      "{",
+      "  \"data\": {",
+      "    ${13:\"id\": \"123\"}",
+      "  }",
+      "}",
+      "```",
+      "",
+      "**Error Responses**:",
+      "",
+      "| Status | Code | Description |",
+      "|--------|------|-------------|",
+      "| ${14:400} | `${15:VALIDATION_ERROR}` | ${16:Invalid input} |",
+      ""
+    ]
+  },
+  "Domain Entity Documentation": {
+    "prefix": "domain-entity",
+    "scope": "markdown",
+    "description": "Domain entity documentation template",
+    "body": [
+      "### ${1:Entity Name}",
+      "",
+      "**Definition**: ${2:What this entity represents}",
+      "",
+      "**Attributes**:",
+      "",
+      "| Attribute | Type | Description | Constraints |",
+      "|-----------|------|-------------|-------------|",
+      "| `${3:id}` | ${4:UUID} | ${5:Unique identifier} | ${6:Required, immutable} |",
+      "| `${7:name}` | ${8:String} | ${9:Display name} | ${10:Required} |",
+      "",
+      "**Relationships**:",
+      "",
+      "| Related Entity | Relationship | Cardinality |",
+      "|----------------|--------------|-------------|",
+      "| ${11:OtherEntity} | ${12:has many} | ${13:1:N} |",
+      "",
+      "**Business Rules**:",
+      "",
+      "1. ${14:Rule description}",
+      "",
+      "**Code Location**: `src/domain/${1/(.*)/\\L$1/}.ts`",
+      ""
+    ]
+  },
+  "Glossary Term": {
+    "prefix": "glossary-term",
+    "scope": "markdown",
+    "description": "Glossary term entry",
+    "body": [
+      "### ${1:Term}",
+      "",
+      "**Definition**: ${2:Clear, precise definition}",
+      "",
+      "**Context**: ${3:When/where this term is used}",
+      "",
+      "**Examples**:",
+      "- ${4:Example usage}",
+      "",
+      "**Code Reference**: `${5:TermName}` in `src/`",
+      ""
+    ]
+  },
+  "AI Agent Comment": {
+    "prefix": "ai-comment",
+    "scope": "markdown",
+    "description": "Comment block for AI agents",
+    "body": [
+      "<!--",
+      "AI Agent Instructions:",
+      "- ${1:Instruction 1}",
+      "- ${2:Instruction 2}",
+      "-->"
+    ]
+  },
+  "Documentation Frontmatter": {
+    "prefix": "doc-frontmatter",
+    "scope": "markdown",
+    "description": "Documentation YAML frontmatter",
+    "body": [
+      "---",
+      "title: ${1:Document Title}",
+      "last_updated: ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}",
+      "status: ${2|current,draft,deprecated|}",
+      "tags: [${3:tag1, tag2}]",
+      "---",
+      ""
+    ]
+  },
+  "Table Template": {
+    "prefix": "doc-table",
+    "scope": "markdown",
+    "description": "Basic markdown table",
+    "body": [
+      "| ${1:Column 1} | ${2:Column 2} | ${3:Column 3} |",
+      "|${1/./–/g}|${2/./–/g}|${3/./–/g}|",
+      "| ${4:value} | ${5:value} | ${6:value} |"
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "MCP Server Configuration for Container Dev Env",
+  "mcpServers": {
+    "filesystem": {
+      "command": "mcp-server-filesystem",
+      "args": ["/workspace", "/home/dev"],
+      "enabled": true,
+      "description": "Secure file operations within allowed directories"
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "env": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+      },
+      "enabled": true,
+      "description": "Up-to-date library documentation and code examples"
+    },
+    "memory": {
+      "command": "mcp-server-memory",
+      "enabled": true,
+      "description": "Knowledge graph-based persistent memory"
+    },
+    "sequential-thinking": {
+      "command": "mcp-server-sequential-thinking",
+      "enabled": true,
+      "description": "Dynamic and reflective problem-solving"
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      },
+      "enabled": false,
+      "description": "GitHub API integration (requires token)"
+    }
+  }
+}

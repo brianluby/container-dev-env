@@ -1,0 +1,76 @@
+# Spike 015: Mobile Access - Self-Hosted ntfy Server
+#
+# This docker-compose file sets up a self-hosted ntfy server for
+# private push notifications.
+#
+# Usage:
+#   docker compose up -d
+#   # Subscribe on mobile app to: http://localhost:8080/my-topic
+#
+# For iOS instant notifications, set NTFY_UPSTREAM_BASE_URL=https://ntfy.sh
+# This forwards to ntfy.sh's APNS infrastructure.
+
+services:
+  # Self-hosted ntfy server
+  ntfy:
+    image: binwiederhier/ntfy:latest
+    container_name: ntfy-server
+    command:
+      - serve
+    environment:
+      # Timezone
+      - TZ=UTC
+      # For iOS instant push notifications (forwards to ntfy.sh APNS)
+      - NTFY_UPSTREAM_BASE_URL=https://ntfy.sh
+      # Base URL for self-hosted (update for production)
+      - NTFY_BASE_URL=http://localhost:8080
+      # Cache settings
+      - NTFY_CACHE_FILE=/var/cache/ntfy/cache.db
+      - NTFY_CACHE_DURATION=48h
+      # Attachment settings (optional)
+      - NTFY_ATTACHMENT_CACHE_DIR=/var/cache/ntfy/attachments
+      # Rate limiting
+      - NTFY_VISITOR_REQUEST_LIMIT_BURST=60
+      - NTFY_VISITOR_REQUEST_LIMIT_REPLENISH=10s
+    volumes:
+      - ntfy-cache:/var/cache/ntfy
+      - ./config/ntfy-server.yml:/etc/ntfy/server.yml:ro
+    ports:
+      - "8080:80"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:80/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - mobile-access
+
+  # Test container with notification scripts
+  notification-test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    container_name: notification-test
+    environment:
+      - NTFY_SERVER=http://ntfy:80
+      - NTFY_TOPIC=dev-alerts
+      - MOBILE_NOTIFY_ENABLED=true
+      - MOBILE_NOTIFY_PLATFORM=ntfy
+    volumes:
+      - ./scripts:/home/dev/scripts:ro
+      - ./config:/home/dev/config:ro
+    depends_on:
+      ntfy:
+        condition: service_healthy
+    networks:
+      - mobile-access
+    stdin_open: true
+    tty: true
+
+volumes:
+  ntfy-cache:
+
+networks:
+  mobile-access:
+    driver: bridge

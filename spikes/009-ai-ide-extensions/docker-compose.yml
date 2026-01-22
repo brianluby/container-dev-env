@@ -1,0 +1,71 @@
+# Spike 009: AI IDE Extensions Testing Environment
+# Tests AI coding assistants in code-server
+
+services:
+  code-server:
+    image: codercom/code-server:latest
+    container_name: ai-ide-spike
+    environment:
+      # code-server settings
+      - PASSWORD=${CODE_SERVER_PASSWORD:-password}
+      - SUDO_PASSWORD=${SUDO_PASSWORD:-password}
+
+      # AI Extension API Keys (mount from host or set directly)
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+
+      # Continue-specific
+      - CONTINUE_GLOBAL_DIR=/home/coder/.continue
+
+    ports:
+      - "8443:8443"
+    volumes:
+      # Workspace with sample code
+      - ./workspace:/home/coder/project
+
+      # Extension configs (mounted read-only as templates)
+      - ./continue/config.yaml:/home/coder/.continue/config.yaml:ro
+      - ./cline/cline_mcp_settings.json:/home/coder/.config/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json:ro
+
+      # Persist extensions and user data
+      - code-server-extensions:/home/coder/.local/share/code-server/extensions
+      - code-server-user-data:/home/coder/.local/share/code-server/User
+
+    # Install extensions on startup
+    entrypoint: >
+      /bin/bash -c "
+        echo '=== Installing AI Extensions ===' &&
+
+        # Continue (primary recommendation)
+        code-server --install-extension Continue.continue &&
+
+        # Cline (secondary recommendation for agentic tasks)
+        code-server --install-extension saoudrizwan.claude-dev &&
+
+        # Roo-Code (alternative)
+        code-server --install-extension RooVeterinaryInc.roo-cline &&
+
+        # Codeium (free tier option)
+        code-server --install-extension Codeium.codeium &&
+
+        echo '=== Extensions Installed ===' &&
+        echo 'Starting code-server...' &&
+
+        exec /usr/bin/entrypoint.sh --bind-addr 0.0.0.0:8443 /home/coder/project
+      "
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8443/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  code-server-extensions:
+  code-server-user-data:
+
+# Usage:
+# 1. Copy .env.example to .env and add your API keys
+# 2. docker compose up -d
+# 3. Open http://localhost:8443 (password: "password" or your CODE_SERVER_PASSWORD)
+# 4. Extensions will be pre-installed, configure them via their settings

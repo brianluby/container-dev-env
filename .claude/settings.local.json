@@ -32,7 +32,26 @@
       "Bash(./scripts/secrets-setup.sh:*)",
       "Bash(./scripts/secrets-load.sh:*)",
       "Bash(./scripts/secrets-edit.sh:*)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(aider:*)",
+      "Bash(script -q /dev/null aider:*)",
+      "Bash(script -q /dev/null bash -c 'aider --show-repo-map --exit 2>&1')",
+      "Bash(python3:*)",
+      "Bash(/usr/local/Cellar/aider/0.86.1_2/libexec/bin/python:*)",
+      "Bash(docker pull:*)",
+      "Bash(docker info:*)",
+      "WebFetch(domain:open-vsx.org)",
+      "WebFetch(domain:agents.md)",
+      "WebFetch(domain:docs.cline.bot)",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(docker context:*)",
+      "WebFetch(domain:docs.continue.dev)",
+      "WebFetch(domain:docs.cursor.com)",
+      "Bash(/Users/bluby/personal-repos/container-dev-env/spikes/011-mcp-integration/scripts/test-mcp-local.sh:*)",
+      "Bash(npm view:*)",
+      "Bash(claude mcp list:*)",
+      "WebFetch(domain:docs.ntfy.sh)",
+      "Bash(/Users/bluby/personal-repos/container-dev-env/spikes/015-mobile-access/scripts/notify.sh:*)"
     ]
   }
 }

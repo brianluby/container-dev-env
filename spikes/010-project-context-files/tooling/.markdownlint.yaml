@@ -1,0 +1,168 @@
+# Markdownlint configuration for AGENTS.md files
+# Place this file in your project root or .markdownlint directory
+#
+# Documentation: https://github.com/DavidAnson/markdownlint
+# Rule reference: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+
+# Default: enable all rules
+default: true
+
+# MD001: Heading levels should only increment by one level at a time
+# Enabled to maintain clear document structure
+MD001: true
+
+# MD003: Heading style
+# Use ATX style (# Heading) consistently
+MD003:
+  style: "atx"
+
+# MD004: Unordered list style
+# Use dashes for consistency
+MD004:
+  style: "dash"
+
+# MD007: Unordered list indentation
+# Use 2 spaces for nested lists
+MD007:
+  indent: 2
+
+# MD009: Trailing spaces
+# Allow trailing spaces (some editors add them)
+MD009: false
+
+# MD010: Hard tabs
+# Disallow hard tabs in content
+MD010: true
+
+# MD012: Multiple consecutive blank lines
+# Allow maximum 2 blank lines
+MD012:
+  maximum: 2
+
+# MD013: Line length
+# Disable line length limit for AGENTS.md (long examples, URLs)
+MD013: false
+
+# MD022: Headings should be surrounded by blank lines
+MD022: true
+
+# MD023: Headings must start at the beginning of the line
+MD023: true
+
+# MD024: Multiple headings with the same content
+# Allow - common in templates ("### Pattern:", "### Example:")
+MD024: false
+
+# MD025: Multiple top-level headings
+# Allow multiple H1 - useful for multi-section context files
+MD025: false
+
+# MD026: Trailing punctuation in heading
+# Disable - sometimes useful for AGENTS.md style
+MD026: false
+
+# MD028: Blank line inside blockquote
+MD028: false
+
+# MD029: Ordered list item prefix
+# Use ordered numbers (1. 2. 3.) for clarity
+MD029:
+  style: "ordered"
+
+# MD031: Fenced code blocks should be surrounded by blank lines
+MD031: true
+
+# MD032: Lists should be surrounded by blank lines
+MD032: true
+
+# MD033: Inline HTML
+# Allow - useful for comments and advanced formatting
+MD033: false
+
+# MD034: Bare URL used
+# Disable - URLs in tech context are often bare
+MD034: false
+
+# MD035: Horizontal rule style
+# Use consistent style
+MD035:
+  style: "---"
+
+# MD036: Emphasis used instead of a heading
+# Disable - **bold text** patterns are common in AGENTS.md
+MD036: false
+
+# MD040: Fenced code blocks should have a language specified
+# Enable - helps AI tools understand code context
+MD040: true
+
+# MD041: First line in a file should be a top-level heading
+# Enable - AGENTS.md should start with project name
+MD041: true
+
+# MD042: No empty links
+MD042: true
+
+# MD043: Required heading structure
+# Define expected structure for AGENTS.md files
+# Uncomment and customize for stricter validation
+# MD043:
+#   headings:
+#     - "# *"                    # Project name (any title)
+#     - "## Overview"            # Required
+#     - "## Technology Stack"    # Required
+#     - "## *"                   # Any other sections
+
+# MD044: Proper names should have correct capitalization
+# Common terms in context files
+MD044:
+  names:
+    - "JavaScript"
+    - "TypeScript"
+    - "Python"
+    - "Node.js"
+    - "PostgreSQL"
+    - "MongoDB"
+    - "Redis"
+    - "Docker"
+    - "Kubernetes"
+    - "GitHub"
+    - "GitLab"
+    - "VS Code"
+  code_blocks: false
+  html_elements: false
+
+# MD045: Images should have alternate text
+MD045: true
+
+# MD046: Code block style
+# Use fenced (```) style
+MD046:
+  style: "fenced"
+
+# MD047: Files should end with a single newline character
+MD047: true
+
+# MD048: Code fence style
+# Use backticks consistently
+MD048:
+  style: "backtick"
+
+# MD049: Emphasis style should be consistent
+# Use asterisks for bold/italic
+MD049:
+  style: "asterisk"
+
+# MD050: Strong style should be consistent
+# Use asterisks for bold
+MD050:
+  style: "asterisk"
+
+# MD051: Link fragments should be valid
+MD051: true
+
+# MD052: Reference links and images should use a label that is defined
+MD052: true
+
+# MD053: Link and image reference definitions should be needed
+MD053: true

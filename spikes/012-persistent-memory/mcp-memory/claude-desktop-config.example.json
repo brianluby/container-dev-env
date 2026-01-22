@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "memory": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-v", "mcp-memory-data:/data",
+        "-e", "MCP_MEMORY_DB_PATH=/data/memory.db",
+        "mcp/memory:latest"
+      ]
+    }
+  }
+}

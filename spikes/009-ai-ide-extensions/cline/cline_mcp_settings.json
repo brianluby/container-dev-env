@@ -1,0 +1,22 @@
+{
+  "$schema": "https://raw.githubusercontent.com/cline/cline/main/schemas/mcp-settings.json",
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/home/coder/project"
+      ],
+      "disabled": false
+    },
+    "memory": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ],
+      "disabled": true
+    }
+  }
+}

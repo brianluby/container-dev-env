@@ -63,13 +63,13 @@ monitoring should work without constant polling.
 
 | Approach | Type | Pros | Cons | Mobile Support | Spike Result |
 |----------|------|------|------|----------------|--------------|
-| Slack Integration | Chat Platform | Trigger agents via @mention, notifications, widely used, PWA mobile app | Requires Slack workspace, team tool | iOS, Android | Pending |
-| Discord Webhooks | Chat Platform | Free, real-time notifications, mobile app | Less enterprise-friendly | iOS, Android | Pending |
-| Ntfy.sh | Push Notifications | Simple, self-hostable, open source, topic-based | Basic functionality | iOS, Android | Pending |
-| GitHub Mobile | Platform | Native PR/issue notifications, integrates with CI | Limited to GitHub actions | iOS, Android | Pending |
-| Pushover | Push Service | Reliable push, priority levels, quiet hours | Paid service ($5 one-time) | iOS, Android | Pending |
-| Custom Webhook + PWA | Self-built | Full control, tailored to needs | Development effort | iOS, Android | Pending |
-| SSH App (Termius/Blink) | Terminal | Full terminal access, secure | Small screen, not optimized for monitoring | iOS, Android | Pending |
+| Slack Integration | Chat Platform | Trigger agents via @mention, notifications, widely used, PWA mobile app | Requires Slack workspace, team tool | iOS, Android | **PASS** - Webhook tested |
+| Discord Webhooks | Chat Platform | Free, real-time notifications, mobile app | Less enterprise-friendly | iOS, Android | **PASS** - Documented |
+| Ntfy.sh | Push Notifications | Simple, self-hostable, open source, topic-based | Basic functionality | iOS, Android | **RECOMMENDED** - Best option |
+| GitHub Mobile | Platform | Native PR/issue notifications, integrates with CI | Limited to GitHub actions | iOS, Android | Not tested |
+| Pushover | Push Service | Reliable push, priority levels, quiet hours | Paid service ($5 one-time) | iOS, Android | **PASS** - Documented |
+| Custom Webhook + PWA | Self-built | Full control, tailored to needs | Development effort | iOS, Android | Not needed |
+| SSH App (Termius/Blink) | Terminal | Full terminal access, secure | Small screen, not optimized for monitoring | iOS, Android | Out of scope |
 
 ## Detailed Analysis
 
@@ -181,7 +181,31 @@ Full terminal access from mobile:
 
 ## Selected Approach
 
-[Filled after spike]
+**Spike completed 2026-01-21** - See `spikes/015-mobile-access/RESULTS.md`
+
+### Recommended Implementation
+
+1. **Primary: ntfy.sh** - Simple HTTP-based push notifications
+   - No account required, topic-based pub/sub
+   - Self-hostable (MIT license) for privacy
+   - iOS and Android apps available
+   - 5 priority levels with distinct sounds
+
+2. **Secondary: Slack Integration** - For teams already using Slack
+   - Rich messages with threading
+   - Potential for bi-directional triggers (bot)
+
+3. **Integration via notify.sh wrapper script** supporting:
+   - ntfy.sh, Discord, Slack, Pushover
+   - Priority mapping across platforms
+   - Environment-based configuration
+
+### Key Findings
+
+- Push notifications require only outbound HTTP - no container exposure needed
+- ntfy.sh delivers within 5 seconds on tested devices
+- Claude Code hooks can trigger notifications on task completion/approval needed
+- Self-hosted ntfy supports iOS instant push via upstream forwarding
 
 ## Acceptance Criteria
 

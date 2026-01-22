@@ -1,0 +1,39 @@
+# ntfy Server Configuration
+# Documentation: https://docs.ntfy.sh/config/
+
+# Base URL for self-hosted server
+# Update this for production deployment
+base-url: "http://localhost:8080"
+
+# Upstream base URL for iOS instant notifications
+# This forwards poll requests to ntfy.sh for APNS delivery
+upstream-base-url: "https://ntfy.sh"
+
+# Cache settings
+cache-file: "/var/cache/ntfy/cache.db"
+cache-duration: "48h"
+
+# Attachment settings
+attachment-cache-dir: "/var/cache/ntfy/attachments"
+attachment-total-size-limit: "1G"
+attachment-file-size-limit: "15M"
+attachment-expiry-duration: "3h"
+
+# Rate limiting (per visitor/IP)
+visitor-request-limit-burst: 60
+visitor-request-limit-replenish: "10s"
+
+# Subscription limits
+visitor-subscription-limit: 30
+
+# Web UI
+web-root: "/"
+enable-metrics: false
+
+# Logging
+log-level: "info"
+log-format: "text"
+
+# Security (uncomment for production)
+# auth-file: "/var/lib/ntfy/auth.db"
+# auth-default-access: "deny-all"

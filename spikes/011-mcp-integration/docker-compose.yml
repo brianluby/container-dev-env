@@ -1,0 +1,53 @@
+# Spike 011: MCP Integration Test Compose
+#
+# Usage:
+#   docker compose build
+#   docker compose run --rm mcp-test
+#
+# With environment variables:
+#   CONTEXT7_API_KEY=ctx7sk-... docker compose run --rm mcp-test
+
+services:
+  mcp-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mcp-integration-spike:latest
+    container_name: mcp-integration-test
+
+    # Mount workspace for file operations testing
+    volumes:
+      - ./workspace:/workspace
+      - ./config:/home/dev/.mcp:ro
+
+    # Environment variables for MCP servers
+    environment:
+      # Context7 API key (optional - provides higher rate limits)
+      - CONTEXT7_API_KEY=${CONTEXT7_API_KEY:-}
+      # GitHub token for GitHub MCP server (optional)
+      - GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_PERSONAL_ACCESS_TOKEN:-}
+      # Filesystem MCP allowed directories
+      - MCP_FILESYSTEM_ALLOWED_DIRS=/workspace,/home/dev
+
+    # Keep container running for interactive testing
+    stdin_open: true
+    tty: true
+
+    # Networking
+    networks:
+      - mcp-network
+
+  # Optional: SQLite database for database MCP server testing
+  # Uncomment to test database MCP servers
+  # db-test:
+  #   image: alpine:3.19
+  #   container_name: mcp-db-test
+  #   volumes:
+  #     - ./workspace/data:/data
+  #   command: ["sh", "-c", "apk add sqlite && tail -f /dev/null"]
+  #   networks:
+  #     - mcp-network
+
+networks:
+  mcp-network:
+    driver: bridge
