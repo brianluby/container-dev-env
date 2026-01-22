@@ -54,7 +54,8 @@ Tools requiring native desktop applications or host-side IDE installations are e
 
 ### Won't Have (W)
 
-- [ ] GUI-only interfaces (must have headless/CLI mode)
+- [ ] Native desktop applications (must run in container)
+- [ ] Tools requiring host-side IDE installation
 - [ ] Self-hosted LLM inference (users provide API keys or use external services)
 - [ ] Real-time pair programming (different use case than autonomous agents)
 - [ ] Voice input (covered in PRD 014)
@@ -64,7 +65,7 @@ Tools requiring native desktop applications or host-side IDE installations are e
 | Criterion | Weight | Notes |
 |-----------|--------|-------|
 | Autonomous operation | Must | Can run for hours without user input |
-| Container compatibility | Must | Works headless in Docker, no X11/GUI needed |
+| Container compatibility | Must | Runs in Docker via CLI/TUI, web UI, or code-server |
 | Checkpoint/rollback | Must | Safe to let agent explore without data loss |
 | Multi-file coherence | Must | Changes across files are consistent and atomic |
 | License compatibility | Must | MIT/Apache for open source use |
@@ -79,12 +80,13 @@ Tools requiring native desktop applications or host-side IDE installations are e
 
 ## Tool Candidates
 
-| Tool | License | Pros | Cons | Spike Result |
-|------|---------|------|------|--------------|
-| Claude Code | Proprietary (subscription) | Native checkpoints, sub-agents, background tasks, Anthropic-optimized, active development, CLI-native | Anthropic-only, requires subscription (Pro/Max/Teams), proprietary | Pending |
-| Cline | Apache 2.0 | Open source, multi-provider (OpenRouter, Anthropic, OpenAI, local), MCP support, human-in-the-loop safety, 4M+ users, enterprise tier available | Primarily VS Code extension, requires IDE runtime for full features, CLI is newer | Pending |
-| Roo-Code | Apache 2.0 | Open source, multi-agent role-driven execution, reliable on large multi-file changes, hybrid approval modes, trusted for complex refactors | VS Code-centric, smaller community than Cline, may be slower on some tasks | Pending |
-| Continue | Apache 2.0 | Open source, dedicated headless/CLI mode, background agents, Mission Control, CI/CD integration, air-gapped deployment option | Agent mode newer, less mature than competitors for autonomous coding | Pending |
+| Tool | License | Pros | Cons | Container Mode | Spike Result |
+|------|---------|------|------|----------------|--------------|
+| Claude Code | Proprietary (subscription) | Native checkpoints, sub-agents, background tasks, Anthropic-optimized, active development, CLI-native | Anthropic-only, requires subscription (Pro/Max/Teams), proprietary | CLI/TUI ✓ | Pending |
+| Cline | Apache 2.0 | Open source, multi-provider (OpenRouter, Anthropic, OpenAI, local), MCP support, human-in-the-loop safety, 4M+ users, enterprise tier available | Primarily VS Code extension, CLI is newer | code-server ✓, CLI ✓ | Pending |
+| Roo-Code | Apache 2.0 | Open source, multi-agent role-driven execution, reliable on large multi-file changes, hybrid approval modes, trusted for complex refactors | VS Code-centric, smaller community than Cline | code-server ✓ | Pending |
+| Continue | Apache 2.0 | Open source, dedicated headless/CLI mode, background agents, Mission Control, CI/CD integration, air-gapped deployment option | Agent mode newer, less mature than competitors for autonomous coding | CLI/TUI ✓, Headless ✓ | Pending |
+| OpenCode | MIT | Open source, 70k+ GitHub stars, CLI/TUI native, multi-provider, built-in plan/build agents, vim-like editor, free models included | Newer project, checkpoint system less mature | CLI/TUI ✓ | Pending |
 
 ## Detailed Tool Analysis
 
@@ -143,6 +145,22 @@ Continue offers both IDE and headless modes:
 
 Container compatibility: Excellent—headless/CLI modes designed for containerized and CI/CD environments.
 
+### OpenCode
+
+**Source**: [GitHub - opencode-ai/opencode](https://github.com/opencode-ai/opencode) | [Website](https://opencode.ai/)
+
+OpenCode is a Go-based open-source CLI/TUI agent with strong community adoption:
+
+- **Built-in agents**: `build` (full access for development) and `plan` (read-only for analysis), switchable with Tab
+- **Multi-provider**: OpenAI, Anthropic Claude, Google Gemini, AWS Bedrock, Groq, Azure OpenAI, OpenRouter
+- **TUI interface**: Interactive terminal UI built with Bubble Tea framework
+- **Vim-like editor**: Familiar keybindings for terminal users
+- **Tool integration**: AI can execute commands, search files, modify code
+- **Session management**: Persist and resume conversations
+- **Free models included**: Can start without API keys using included free tier
+
+Container compatibility: Excellent—CLI/TUI native with no GUI dependencies. Installs via curl, npm, or package managers. Written in Go (single binary).
+
 ## Selected Approach
 
 [Filled after spike]
@@ -167,13 +185,16 @@ Container compatibility: Excellent—headless/CLI modes designed for containeriz
 
 ## Spike Tasks
 
-### Environment Setup
+### Environment Setup (Container-First Validation)
 
-- [ ] Test Claude Code installation in container (verify CLI-only operation)
+- [ ] Test Claude Code CLI installation in container (verify headless operation)
 - [ ] Test Cline CLI installation in container (without VS Code)
+- [ ] Test Cline VS Code extension in code-server container
 - [ ] Test Roo-Code with code-server in container
 - [ ] Test Continue headless mode in container
-- [ ] Document API key configuration for each tool
+- [ ] Test OpenCode CLI/TUI installation in container (Go binary)
+- [ ] Document API key configuration for each tool via environment variables
+- [ ] Verify each tool starts and operates without X11/display dependencies
 
 ### Autonomous Operation
 
@@ -211,3 +232,6 @@ Container compatibility: Excellent—headless/CLI modes designed for containeriz
 - [Roo Code vs Cline Comparison (2026)](https://www.qodo.ai/blog/roo-code-vs-cline/)
 - [Best AI Coding Agents 2026](https://www.faros.ai/blog/best-ai-coding-agents-2026)
 - [Agentic CLI Tools Compared](https://research.aimultiple.com/agentic-cli/)
+- [OpenCode Documentation](https://opencode.ai/docs/)
+- [OpenCode Agents](https://opencode.ai/docs/agents/)
+- [Top 5 CLI Coding Agents 2026](https://dev.to/lightningdev123/top-5-cli-coding-agents-in-2026-3pia)
