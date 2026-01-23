@@ -237,14 +237,29 @@ validate_worktree() {
     log "  This path is not accessible inside the container."
 
     # Infer the main repository root from the gitdir path
-    # Pattern: /path/to/main-repo/.git/worktrees/<name>
-    local main_repo_git="${gitdir_path%/worktrees/*}"
-    local main_repo_root="${main_repo_git%/.git}"
-    if [[ "$main_repo_root" != "$gitdir_path" ]]; then
-        log "  Fix: Mount the main repository root instead:"
-        log "    docker run -v $main_repo_root:/workspace ..."
-        log "  Or mount both the worktree and the main .git directory:"
-        log "    docker run -v $ws_dir:/workspace -v $main_repo_git:$main_repo_git:ro ..."
+    # Expected pattern: /path/to/main-repo/.git/worktrees/<name>
+    if [[ "$gitdir_path" == *"/.git/worktrees/"* ]]; then
+        local main_repo_git="${gitdir_path%/worktrees/*}"
+        local main_repo_root="${main_repo_git%/.git}"
+
+        # Ensure the inferred paths are sane before suggesting fixes
+        if [[ -n "$main_repo_root" ]] && \
+           [[ "$main_repo_git" != "$gitdir_path" ]] && \
+           [[ "$main_repo_root" != "$main_repo_git" ]] && \
+           [[ "$main_repo_git" == */.git ]]; then
+            log "  Fix: Mount the main repository root instead:"
+            log "    docker run -v $main_repo_root:/workspace ..."
+            log "  Or mount both the worktree and the main .git directory:"
+            log "    docker run -v $ws_dir:/workspace -v $main_repo_git:$main_repo_git:ro ..."
+        else
+            log "  Note: Git worktree path is non-standard; could not safely infer main repository root."
+            log "        Please mount the appropriate repository paths manually based on:"
+            log "          gitdir: $gitdir_path"
+        fi
+    else
+        log "  Note: Gitdir path does not match expected worktree pattern (/path/to/main-repo/.git/worktrees/<name>)."
+        log "        Please mount the appropriate repository paths manually based on:"
+        log "          gitdir: $gitdir_path"
     fi
 
     return 0
