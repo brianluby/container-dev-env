@@ -212,7 +212,7 @@ validate_worktree() {
     fi
 
     # Parse gitdir: pointer (FR-002)
-    if [[ ! "$git_content" =~ ^gitdir:\ (.+)$ ]]; then
+    if [[ ! "$git_content" =~ ^gitdir:[[:space:]]+(.+)$ ]]; then
         log_warning "Git .git file is corrupt (no 'gitdir:' prefix) at $git_path"
         return 0
     fi
