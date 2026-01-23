@@ -116,6 +116,10 @@ write_encrypted_content() {
     local content="$1"
     local temp_file
     temp_file=$(mktemp)
+    
+    # Set up trap to ensure cleanup even on unexpected exit
+    # This is critical because temp_file contains unencrypted secrets
+    trap "rm -f '$temp_file'" EXIT INT TERM ERR
 
     echo "$content" > "$temp_file"
 
@@ -129,6 +133,9 @@ write_encrypted_content() {
     cp "$temp_file" "${SECRETS_FILE}"
     chezmoi add --encrypt "${SECRETS_FILE}"
     rm -f "$temp_file" "${SECRETS_FILE}"
+    
+    # Clear the trap since we've cleaned up successfully
+    trap - EXIT INT TERM ERR
 }
 
 # =============================================================================
@@ -258,15 +265,22 @@ cmd_validate() {
     # Get decrypted content to a temp file for validation
     local temp_file
     temp_file=$(mktemp)
+    
+    # Set up trap to ensure cleanup even on unexpected exit
+    # This is critical because temp_file contains unencrypted secrets
+    trap "rm -f '$temp_file'" EXIT INT TERM ERR
+    
     get_decrypted_content > "$temp_file"
 
     local var_count
     if var_count=$(validate_env_file "$temp_file"); then
         log_success "Secrets file is valid ($var_count variable(s) defined)"
         rm -f "$temp_file"
+        trap - EXIT INT TERM ERR
         return 0
     else
         rm -f "$temp_file"
+        trap - EXIT INT TERM ERR
         exit 3
     fi
 }

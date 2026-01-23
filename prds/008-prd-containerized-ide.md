@@ -149,6 +149,53 @@ Selected based on spike results (2026-01-21):
 
 See `spikes/008-containerized-ide/RESULTS.md` for detailed comparison
 
+### Extension Management
+
+Extensions are managed declaratively via a manifest file to ensure reproducibility across container rebuilds.
+
+**Manifest**: `.devcontainer/extensions.json`
+```json
+{
+  "recommendations": [
+    "ms-python.python",
+    "rust-lang.rust-analyzer",
+    "Continue.continue"
+  ]
+}
+```
+
+**Installation Script**: `scripts/install-extensions.sh`
+```bash
+#!/bin/bash
+EXTENSIONS_FILE="${1:-.devcontainer/extensions.json}"
+if [ -f "$EXTENSIONS_FILE" ]; then
+  jq -r '.recommendations[]' "$EXTENSIONS_FILE" | while read ext; do
+    openvscode-server --install-extension "$ext" --force
+  done
+fi
+```
+
+Run at container build time (Dockerfile) or startup (entrypoint) to ensure consistent extension availability.
+
+### Resource Management
+
+Containers may have memory limits. Configure language servers to respect these constraints:
+
+**VS Code Settings** (`settings.json`):
+```json
+{
+  "typescript.tsserver.maxTsServerMemory": 2048,
+  "java.jdt.ls.vmargs": "-Xmx1G",
+  "python.analysis.memory": 1024,
+  "extensions.autoUpdate": false
+}
+```
+
+**Recommendations**:
+- Set `typescript.tsserver.maxTsServerMemory` to 50% of container memory limit
+- Disable auto-updates (`extensions.autoUpdate: false`) to prevent unexpected resource spikes
+- Monitor with `docker stats` and adjust limits based on actual usage
+
 ## Acceptance Criteria
 
 - [ ] Given the container image, when I access the IDE URL in browser, then full editor loads without host installation

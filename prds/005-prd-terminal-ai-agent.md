@@ -208,11 +208,20 @@ OPENCODE_MODEL=gpt-4o       # Model selection
 OPENCODE_PROVIDER=openai    # Provider selection
 ```
 
-### Agent Modes (OpenCode-specific)
-| Mode | Description | File Access |
-|------|-------------|-------------|
-| `plan` | Read-only analysis and planning | Read only |
-| `build` | Full development with file modifications | Read/Write |
+### API Key Configuration
+
+Each tool expects API keys via environment variables. Use the secret injection system (PRD 003) to provide these securely.
+
+| Internal Secret | OpenCode | Aider | Claude Code | Notes |
+|-----------------|----------|-------|-------------|-------|
+| `OPENAI_API_KEY` | `OPENAI_API_KEY` | `OPENAI_API_KEY` | N/A | OpenAI models |
+| `ANTHROPIC_API_KEY` | `ANTHROPIC_API_KEY` | `ANTHROPIC_API_KEY` | `ANTHROPIC_API_KEY` | Claude models |
+| `OPENROUTER_API_KEY` | `OPENROUTER_API_KEY` | `OPENROUTER_API_KEY` | N/A | OpenRouter proxy |
+| `GEMINI_API_KEY` | `GEMINI_API_KEY` | `GEMINI_API_KEY` | N/A | Google Gemini |
+
+**Note**: Most tools use standard environment variable names. Aider supports additional prefixed variants (e.g., `AIDER_OPENAI_API_KEY`) which take precedence if set.
+
+### When to Use Aider Instead
 
 ---
 
