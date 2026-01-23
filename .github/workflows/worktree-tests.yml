@@ -52,3 +52,14 @@ jobs:
         with:
           scandir: 'docker/'
           severity: warning
+
+  shellcheck-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run ShellCheck (tests)
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: 'tests/'
+          severity: warning
