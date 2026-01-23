@@ -124,8 +124,125 @@ create_locked_worktree() {
     local main_dir="$FIXTURES_DIR/main-repo"
     if [[ -d "$main_dir" ]] && [[ -d "$FIXTURES_DIR/worktree-feature" ]]; then
         cd "$main_dir"
-        git worktree lock "$FIXTURES_DIR/worktree-feature" --reason "testing lock display" 2>/dev/null || true
-        echo "Created: locked worktree-feature"
+        if git worktree lock "$FIXTURES_DIR/worktree-feature" --reason "testing lock display" 2>/dev/null; then
+            echo "Created: locked worktree-feature"
+        else
+            echo "Warning: Failed to lock worktree-feature (non-critical)" >&2
+        fi
+    else
+        echo "Warning: Cannot lock worktree-feature - dependencies missing" >&2
+    fi
+}
+
+# =============================================================================
+# Validation: Verify all expected fixtures were created correctly
+# =============================================================================
+validate_fixtures() {
+    local errors=0
+    
+    echo ""
+    echo "Validating fixture structures..."
+    
+    # Fixture 1: standard-repo
+    if [[ ! -d "$FIXTURES_DIR/standard-repo/.git" ]]; then
+        echo "  ERROR: standard-repo/.git directory missing"
+        errors=$((errors + 1))
+    fi
+    if [[ ! -f "$FIXTURES_DIR/standard-repo/file.txt" ]]; then
+        echo "  ERROR: standard-repo/file.txt missing"
+        errors=$((errors + 1))
+    fi
+    
+    # Fixture 2: main-repo
+    if [[ ! -d "$FIXTURES_DIR/main-repo/.git" ]]; then
+        echo "  ERROR: main-repo/.git directory missing"
+        errors=$((errors + 1))
+    fi
+    if [[ ! -f "$FIXTURES_DIR/main-repo/main.txt" ]]; then
+        echo "  ERROR: main-repo/main.txt missing"
+        errors=$((errors + 1))
+    fi
+    
+    # Fixture 2a: worktree-feature (created by main-repo)
+    if [[ ! -f "$FIXTURES_DIR/worktree-feature/.git" ]]; then
+        echo "  ERROR: worktree-feature/.git file missing"
+        errors=$((errors + 1))
+    fi
+    if [[ ! -d "$FIXTURES_DIR/worktree-feature" ]]; then
+        echo "  ERROR: worktree-feature directory missing"
+        errors=$((errors + 1))
+    fi
+    
+    # Fixture 2b: worktree-detached (created by main-repo)
+    if [[ ! -f "$FIXTURES_DIR/worktree-detached/.git" ]]; then
+        echo "  ERROR: worktree-detached/.git file missing"
+        errors=$((errors + 1))
+    fi
+    if [[ ! -d "$FIXTURES_DIR/worktree-detached" ]]; then
+        echo "  ERROR: worktree-detached directory missing"
+        errors=$((errors + 1))
+    fi
+    
+    # Fixture 3: broken-worktree
+    if [[ ! -f "$FIXTURES_DIR/broken-worktree/.git" ]]; then
+        echo "  ERROR: broken-worktree/.git file missing"
+        errors=$((errors + 1))
+    fi
+    if [[ ! -f "$FIXTURES_DIR/broken-worktree/file.txt" ]]; then
+        echo "  ERROR: broken-worktree/file.txt missing"
+        errors=$((errors + 1))
+    fi
+    
+    # Fixture 4: corrupt-git-file
+    if [[ ! -f "$FIXTURES_DIR/corrupt-git-file/.git" ]]; then
+        echo "  ERROR: corrupt-git-file/.git file missing"
+        errors=$((errors + 1))
+    fi
+    
+    # Fixture 5: empty-git-file
+    if [[ ! -f "$FIXTURES_DIR/empty-git-file/.git" ]]; then
+        echo "  ERROR: empty-git-file/.git file missing"
+        errors=$((errors + 1))
+    fi
+    if [[ ! -s "$FIXTURES_DIR/empty-git-file/.git" ]]; then
+        # This is expected - file should be empty
+        :
+    else
+        echo "  ERROR: empty-git-file/.git should be empty"
+        errors=$((errors + 1))
+    fi
+    
+    # Fixture 6: plain-dir
+    if [[ ! -d "$FIXTURES_DIR/plain-dir" ]]; then
+        echo "  ERROR: plain-dir directory missing"
+        errors=$((errors + 1))
+    fi
+    if [[ ! -f "$FIXTURES_DIR/plain-dir/file.txt" ]]; then
+        echo "  ERROR: plain-dir/file.txt missing"
+        errors=$((errors + 1))
+    fi
+    if [[ -e "$FIXTURES_DIR/plain-dir/.git" ]]; then
+        echo "  ERROR: plain-dir should not have .git"
+        errors=$((errors + 1))
+    fi
+    
+    # Fixture 7: relative-worktree
+    if [[ ! -f "$FIXTURES_DIR/relative-worktree/.git" ]]; then
+        echo "  ERROR: relative-worktree/.git file missing"
+        errors=$((errors + 1))
+    fi
+    if [[ ! -d "$FIXTURES_DIR/relative-main/.git/worktrees/relative-wt" ]]; then
+        echo "  ERROR: relative-main worktree metadata missing"
+        errors=$((errors + 1))
+    fi
+    
+    # Report results
+    if [[ $errors -eq 0 ]]; then
+        echo "  ✓ All fixtures validated successfully"
+        return 0
+    else
+        echo "  ✗ Validation failed with $errors error(s)"
+        return 1
     fi
 }
 
@@ -148,3 +265,10 @@ echo ""
 echo "All fixtures created in: $FIXTURES_DIR"
 echo "Fixtures:"
 ls -1 "$FIXTURES_DIR"
+
+# Validate all fixtures were created correctly
+validate_fixtures || {
+    echo ""
+    echo "ERROR: Fixture creation validation failed. Tests may produce false positives."
+    exit 1
+}
