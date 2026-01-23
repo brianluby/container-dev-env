@@ -168,18 +168,10 @@ validate_fixtures() {
         echo "  ERROR: worktree-feature/.git file missing"
         errors=$((errors + 1))
     fi
-    if [[ ! -d "$FIXTURES_DIR/worktree-feature" ]]; then
-        echo "  ERROR: worktree-feature directory missing"
-        errors=$((errors + 1))
-    fi
     
     # Fixture 2b: worktree-detached (created by main-repo)
     if [[ ! -f "$FIXTURES_DIR/worktree-detached/.git" ]]; then
         echo "  ERROR: worktree-detached/.git file missing"
-        errors=$((errors + 1))
-    fi
-    if [[ ! -d "$FIXTURES_DIR/worktree-detached" ]]; then
-        echo "  ERROR: worktree-detached directory missing"
         errors=$((errors + 1))
     fi
     
@@ -203,12 +195,8 @@ validate_fixtures() {
     if [[ ! -f "$FIXTURES_DIR/empty-git-file/.git" ]]; then
         echo "  ERROR: empty-git-file/.git file missing"
         errors=$((errors + 1))
-    fi
-    if [[ ! -s "$FIXTURES_DIR/empty-git-file/.git" ]]; then
-        # This is expected - file should be empty
-        :
-    else
-        echo "  ERROR: empty-git-file/.git should be empty"
+    elif [[ -s "$FIXTURES_DIR/empty-git-file/.git" ]]; then
+        echo "  ERROR: empty-git-file/.git should be empty but has content"
         errors=$((errors + 1))
     fi
     
