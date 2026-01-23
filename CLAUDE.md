@@ -30,6 +30,7 @@ tests/
 Dockerfile (multi-stage), Bash for shell configuration: Follow standard conventions
 
 ## Recent Changes
+- 007-git-worktree-compat: Added Bash (POSIX-compatible, targeting bash 5.x in Debian Bookworm) + git CLI (already in base image per 001-container-base-image)
 - 006-agentic-assistant: Added Bash 5.x (wrapper scripts, entrypoint), Dockerfile (container layer) + OpenCode (MIT, CLI/TUI binary), Claude Code (proprietary, native binary, optional)
 - 005-terminal-ai-agent: Added Bash (Dockerfile, scripts), Go templates (Chezmoi configs) + OpenCode (pre-built Go binary, MIT license)
 - 003-secret-injection: Added Bash (shell scripts), Go templates (Chezmoi) + Chezmoi (dotfile manager), age (encryption), existing base container image

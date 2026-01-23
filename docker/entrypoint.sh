@@ -24,6 +24,9 @@ readonly LOG_PREFIX="[entrypoint]"
 readonly EXPECTED_UID="${LOCAL_UID:-1000}"
 readonly EXPECTED_GID="${LOCAL_GID:-1000}"
 
+# Workspace directory for worktree detection (007-git-worktree-compat)
+readonly WORKSPACE_DIR="${WORKSPACE_DIR:-/workspace}"
+
 # Volume directories requiring permission fixes (named volumes only)
 # Bind mounts are handled automatically by VirtioFS on macOS
 readonly VOLUME_DIRS=(
@@ -167,6 +170,112 @@ validate_workspace() {
 }
 
 # =============================================================================
+# GIT WORKTREE VALIDATION (007-git-worktree-compat) - US1
+# =============================================================================
+
+# Validate git worktree metadata accessibility (FR-001, FR-002, FR-003, FR-010)
+# Non-blocking: always returns 0, prints warnings to stderr if issues detected
+validate_worktree() {
+    local ws_dir="${WORKSPACE_DIR:-/workspace}"
+    local git_path="$ws_dir/.git"
+
+    # FR-001: Check if .git exists at all
+    if [[ ! -e "$git_path" ]]; then
+        # Not a git repository — nothing to validate
+        return 0
+    fi
+
+    # FR-001: Check if .git is a directory (standard repo) or file (worktree)
+    if [[ -d "$git_path" ]]; then
+        # Standard repository — no worktree validation needed
+        return 0
+    fi
+
+    # .git is a file — this is a worktree
+    if [[ ! -r "$git_path" ]]; then
+        # Permission denied reading .git file
+        log_warning "Git worktree .git file is not readable at $git_path"
+        return 0
+    fi
+
+    # Read and validate .git file content
+    local git_content
+    git_content=$(cat "$git_path" 2>/dev/null) || {
+        log_warning "Failed to read .git file at $git_path"
+        return 0
+    }
+
+    # Check for empty file
+    if [[ -z "$git_content" ]]; then
+        log_warning "Git .git file is empty or corrupt at $git_path"
+        return 0
+    fi
+
+    # Parse gitdir: pointer (FR-002)
+    if [[ ! "$git_content" =~ ^gitdir:[[:space:]]+(.+)$ ]]; then
+        log_warning "Git .git file is corrupt (no 'gitdir:' prefix) at $git_path"
+        return 0
+    fi
+
+    local gitdir_path="${BASH_REMATCH[1]}"
+
+    # Handle relative paths — resolve relative to workspace directory
+    if [[ "$gitdir_path" != /* ]]; then
+        local gitdir_rel_dir gitdir_base resolved_dir
+        gitdir_rel_dir=$(dirname "$gitdir_path")
+        gitdir_base=$(basename "$gitdir_path")
+
+        # Resolve the relative directory against the workspace, with error handling
+        if ! resolved_dir="$(cd "$ws_dir/$gitdir_rel_dir" 2>/dev/null && pwd)"; then
+            log_warning "Failed to resolve gitdir path '$gitdir_path' relative to workspace $ws_dir"
+            return 0
+        fi
+
+        gitdir_path="$resolved_dir/$gitdir_base"
+    fi
+
+    # FR-002: Validate metadata directory is accessible
+    if [[ -d "$gitdir_path" ]]; then
+        log "  Git worktree detected: metadata accessible at $gitdir_path"
+        return 0
+    fi
+
+    # FR-003, FR-010: Metadata is inaccessible — warn with actionable fix
+    log_warning "Git worktree detected but metadata is inaccessible"
+    log "  Workspace: $ws_dir"
+    log "  Expected git dir: $gitdir_path"
+    log "  This path is not accessible inside the container."
+
+    # Infer the main repository root from the gitdir path
+    # Expected pattern: /path/to/main-repo/.git/worktrees/<name>
+    if [[ "$gitdir_path" == *"/.git/worktrees/"* ]]; then
+        local main_repo_git="${gitdir_path%/worktrees/*}"
+        local main_repo_root="${main_repo_git%/.git}"
+
+        # Ensure the inferred paths are sane before suggesting fixes
+        if [[ -n "$main_repo_root" ]] && \
+           [[ "$main_repo_git" != "$gitdir_path" ]] && \
+           [[ "$main_repo_root" != "$main_repo_git" ]] && \
+           [[ "$main_repo_git" == */.git ]]; then
+            log "  Fix: Mount the main repository root instead:"
+            log "    docker run -v $main_repo_root:/workspace ..."
+            log "  Or mount both the worktree and the main .git directory:"
+            log "    docker run -v $ws_dir:/workspace -v $main_repo_git:$main_repo_git:ro ..."
+        else
+            log "  Note: Git worktree path is non-standard; could not safely infer main repository root."
+            log "        Please mount the appropriate repository paths manually based on:"
+            log "          gitdir: $gitdir_path"
+        fi
+    else
+        log "  Note: Gitdir path does not match expected worktree pattern (/path/to/main-repo/.git/worktrees/<name>)."
+        log "        Please mount the appropriate repository paths manually based on:"
+        log "          gitdir: $gitdir_path"
+    fi
+
+    return 0
+}
+
+# =============================================================================
 # HOME VOLUME PERMISSION FIX (T027, T028) - US2
 # =============================================================================
 
@@ -279,6 +388,19 @@ log_volume_status() {
         fi
     done
 
+    # Log git worktree status (007-git-worktree-compat - US3, FR-008)
+    local ws_dir="${WORKSPACE_DIR:-/workspace}"
+    if [[ -f "$ws_dir/.git" ]] && command -v git &>/dev/null; then
+        local wt_list
+        wt_list=$(cd "$ws_dir" && git worktree list 2>/dev/null) || true
+        if [[ -n "$wt_list" ]]; then
+            log "  Git worktrees:"
+            while IFS= read -r line; do
+                log "    $line"
+            done <<< "$wt_list"
+        fi
+    fi
+
     # Log tmpfs status (T051 - US4)
     if [[ -d "/tmp" ]]; then
         local tmp_type
@@ -303,6 +425,9 @@ main() {
 
     # Validate workspace bind mount (T017, T018)
     validate_workspace
+
+    # Validate git worktree metadata accessibility (007-git-worktree-compat)
+    validate_worktree
 
     # Fix home volume permissions (T027, T028)
     fix_home_permissions

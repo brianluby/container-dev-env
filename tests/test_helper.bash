@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # BATS test helper for agent wrapper tests
 # Provides common setup, teardown, and assertion functions
+# shellcheck disable=SC2154 # $status and $output are set by BATS' run command
 
 # Resolve paths relative to the test file location
 TESTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

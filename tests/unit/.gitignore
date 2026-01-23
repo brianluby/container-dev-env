@@ -1,0 +1,2 @@
+# BATS dependencies - cloned locally for development, CI clones fresh
+.bats-battery/

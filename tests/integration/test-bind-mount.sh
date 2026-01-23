@@ -89,8 +89,10 @@ test_host_to_container_sync() {
     ((TESTS_RUN++))
     log_test "T012: Verify host→container file sync (<1s)"
 
-    local test_file="test-host-sync-$(date +%s).txt"
-    local test_content="Hello from host at $(date)"
+    local test_file
+    test_file="test-host-sync-$(date +%s).txt"
+    local test_content
+    test_content="Hello from host at $(date)"
 
     # Create file on host
     echo "$test_content" > "$TEST_WORKSPACE/$test_file"
@@ -120,8 +122,10 @@ test_container_to_host_sync() {
     ((TESTS_RUN++))
     log_test "T013: Verify container→host file sync (<1s)"
 
-    local test_file="test-container-sync-$(date +%s).txt"
-    local test_content="Hello from container at $(date)"
+    local test_file
+    test_file="test-container-sync-$(date +%s).txt"
+    local test_content
+    test_content="Hello from container at $(date)"
 
     # Create file in container
     docker exec "$CONTAINER_NAME" bash -c "echo '$test_content' > /workspace/$test_file"
@@ -151,7 +155,8 @@ test_file_permissions() {
     ((TESTS_RUN++))
     log_test "T014: Verify file permissions are host-readable"
 
-    local test_file="test-permissions-$(date +%s).txt"
+    local test_file
+    test_file="test-permissions-$(date +%s).txt"
 
     # Create file in container
     docker exec "$CONTAINER_NAME" bash -c "echo 'permission test' > /workspace/$test_file"
