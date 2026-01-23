@@ -62,6 +62,9 @@ build_image() {
 create_fixtures() {
     echo "=== Creating test fixtures ==="
     bash "$PROJECT_ROOT/tests/fixtures/create-worktree-fixtures.sh" "$FIXTURES_DIR"
+    # Make fixtures world-writable so the container user (UID 1000) can write
+    # to bind-mounted directories regardless of host UID
+    chmod -R a+rwX "$FIXTURES_DIR"
     echo ""
 }
 
@@ -157,7 +160,7 @@ test_git_ops_in_worktree() {
         -v "$FIXTURES_DIR/worktree-feature:/workspace" \
         -v "$main_git:$main_git:ro" \
         "$IMAGE_NAME" \
-        bash -c "cd /workspace && git status && git log --oneline -1 && git branch" 2>&1) || true
+        bash -c "git config --global --add safe.directory '*' && cd /workspace && git status && git log --oneline -1 && git branch" 2>&1) || true
 
     if echo "$output" | grep -q "feature-branch"; then
         pass "Git operations work in worktree (branch detected)"
@@ -178,7 +181,7 @@ test_commit_correct_branch() {
         -v "$FIXTURES_DIR/worktree-feature:/workspace" \
         -v "$main_git:$main_git" \
         "$IMAGE_NAME" \
-        bash -c "cd /workspace && git rev-parse --abbrev-ref HEAD" 2>&1) || true
+        bash -c "git config --global --add safe.directory '*' && cd /workspace && git rev-parse --abbrev-ref HEAD" 2>&1) || true
 
     if echo "$output" | grep -q "feature-branch"; then
         pass "HEAD points to feature-branch in worktree"
@@ -199,7 +202,7 @@ test_detached_head() {
         -v "$FIXTURES_DIR/worktree-detached:/workspace" \
         -v "$main_git:$main_git:ro" \
         "$IMAGE_NAME" \
-        bash -c "cd /workspace && git rev-parse --abbrev-ref HEAD" 2>&1) || true
+        bash -c "git config --global --add safe.directory '*' && cd /workspace && git rev-parse --abbrev-ref HEAD" 2>&1) || true
 
     if echo "$output" | grep -q "HEAD"; then
         pass "Detached HEAD state correctly reported"
@@ -245,7 +248,7 @@ test_worktree_list() {
         -v "$main_git:$main_git:ro" \
         -v "$FIXTURES_DIR/main-repo:/mnt/main-repo:ro" \
         "$IMAGE_NAME" \
-        bash -c "cd /workspace && git worktree list 2>/dev/null" 2>&1) || true
+        bash -c "git config --global --add safe.directory '*' && cd /workspace && git worktree list 2>/dev/null" 2>&1) || true
 
     if echo "$output" | grep -q "worktree\|feature"; then
         pass "git worktree list shows worktree information"
