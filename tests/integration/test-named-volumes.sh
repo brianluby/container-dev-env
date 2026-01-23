@@ -100,7 +100,8 @@ test_shell_history_persistence() {
     log_test "T021: Verify shell history persists across restarts"
 
     # First run: Add command to history
-    local test_cmd="echo 'HISTORY_TEST_$(date +%s)'"
+    local test_cmd
+    test_cmd="echo 'HISTORY_TEST_$(date +%s)'"
     run_container "HISTFILE=/home/dev/.bash_history && history -s '$test_cmd' && history -w"
 
     # Second run: Check history contains the command
@@ -122,7 +123,8 @@ test_dotfile_persistence() {
     ((TESTS_RUN++))
     log_test "T022: Verify dotfiles persist across restarts"
 
-    local test_marker="DOTFILE_TEST_$(date +%s)"
+    local test_marker
+    test_marker="DOTFILE_TEST_$(date +%s)"
 
     # First run: Create custom dotfile
     run_container "echo 'export CUSTOM_VAR=$test_marker' >> /home/dev/.bashrc"
@@ -146,7 +148,8 @@ test_local_tool_persistence() {
     ((TESTS_RUN++))
     log_test "T023: Verify local tools persist across restarts"
 
-    local test_script="test-tool-$(date +%s).sh"
+    local test_script
+    test_script="test-tool-$(date +%s).sh"
 
     # First run: Create a local tool in home directory
     run_container "mkdir -p /home/dev/bin && echo '#!/bin/bash\necho \"Tool works\"' > /home/dev/bin/$test_script && chmod +x /home/dev/bin/$test_script"

@@ -92,7 +92,8 @@ test_tmpfs_cleanup_on_restart() {
     ((TESTS_RUN++))
     log_test "T047: Verify /tmp is cleaned on container restart"
 
-    local test_file="tmpfs-test-$(date +%s).txt"
+    local test_file
+    test_file="tmpfs-test-$(date +%s).txt"
 
     # First run: Create a file in /tmp
     run_container "echo 'test content' > /tmp/$test_file"
