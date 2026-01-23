@@ -525,12 +525,22 @@ Before marking as Approved:
 - Document the fallback path if OpenCode install script fails during container build
   - Add a note to the Implementation Guidance section.
 
-### Questions for the Author
-1. Is the 70k GitHub stars figure for OpenCode current and verified? This seems high for a relatively new project — please confirm.
-2. Is there a version of OpenCode that has been tested in the spike, and should we pin to that version?
-3. For Q4 (session persistence across rebuilds) — does this tie into 004-volume-architecture? Should a volume mount be specified?
-4. Should the PRD specify minimum LLM model requirements (e.g., "must work with GPT-4o and Claude Sonnet" vs. "any model the provider supports")?
-5. The installation uses `curl | bash` — is this acceptable per the project's security posture, or should we verify checksums?
+### Review Decisions and Clarifications
+1. **OpenCode GitHub stars / adoption claim**
+   - The PRD MUST NOT hard-code a specific GitHub star count for OpenCode. Instead, it SHOULD describe OpenCode in qualitative terms (e.g., “widely adopted open-source project”) or require that any concrete adoption metrics (such as star counts) be verified and updated at the time of publication/release.
+2. **OpenCode version pinning**
+   - The implementation MUST pin OpenCode to a specific, spike-validated version (for example, the latest release tag that was successfully used in the spike). The PRD SHOULD state that:
+     - OpenCode is pinned to a known-good release version used in the spike, and
+     - Updating to a newer version requires a regression check equivalent to the spike evaluation.
+3. **Session persistence and volume architecture integration**
+   - Session persistence across container rebuilds MUST be implemented using the shared volume strategy defined in `004-volume-architecture`. The PRD MUST specify at least one volume mount (e.g., a workspace or state directory) whose contents are preserved across rebuilds so that agent context and relevant artifacts can be restored.
+4. **Minimum LLM model requirements**
+   - The PRD MUST specify minimum supported LLM models. At a minimum, the solution MUST support GPT-4o and Claude Sonnet (or their current equivalents) and MAY support additional models offered by the configured provider(s). Any additional supported models are optional and do not change the minimum bar.
+5. **`curl | bash` installation and security posture**
+   - Plain `curl | bash` without integrity verification is NOT acceptable. The PRD MUST require that any `curl | bash`-style installation:
+     - Verifies the integrity of the downloaded artifact (e.g., via checksum or signature verification), and
+     - Follows the project’s security guidelines for remote script execution.
+   - Where possible, prefer package-managed or pinned-binary installation methods over `curl | bash`.
 
 ### Positive Observations
 - Excellent spike research with comprehensive comparison across 5 tools and 11 criteria
