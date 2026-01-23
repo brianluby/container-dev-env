@@ -144,6 +144,83 @@ create_plain_dir
 create_relative_worktree
 create_locked_worktree
 
+# =============================================================================
+# VALIDATION
+# =============================================================================
+
+validate_fixtures() {
+    local errors=0
+
+    # Standard repo must have .git directory
+    if [[ ! -d "$FIXTURES_DIR/standard-repo/.git" ]]; then
+        echo "ERROR: standard-repo/.git directory missing"
+        ((errors++))
+    fi
+
+    # Main repo must have .git directory with worktrees
+    if [[ ! -d "$FIXTURES_DIR/main-repo/.git/worktrees" ]]; then
+        echo "ERROR: main-repo/.git/worktrees directory missing"
+        ((errors++))
+    fi
+
+    # Worktree fixtures must have .git files (not directories)
+    for wt in worktree-feature worktree-detached broken-worktree relative-worktree; do
+        if [[ ! -f "$FIXTURES_DIR/$wt/.git" ]]; then
+            echo "ERROR: $wt/.git file missing"
+            ((errors++))
+        fi
+    done
+
+    # Relative worktree main repo must have expected worktree directory
+    if [[ ! -d "$FIXTURES_DIR/relative-main/.git/worktrees/relative-wt" ]]; then
+        echo "ERROR: relative-main/.git/worktrees/relative-wt directory missing"
+        ((errors++))
+    fi
+
+    # Corrupt fixture must have non-gitdir content
+    if [[ ! -f "$FIXTURES_DIR/corrupt-git-file/.git" ]]; then
+        echo "ERROR: corrupt-git-file/.git file missing"
+        ((errors++))
+    fi
+
+    # Empty fixture must exist and be empty
+    if [[ ! -f "$FIXTURES_DIR/empty-git-file/.git" ]]; then
+        echo "ERROR: empty-git-file/.git file missing"
+        ((errors++))
+    elif [[ -s "$FIXTURES_DIR/empty-git-file/.git" ]]; then
+        local size
+        size=$(wc -c < "$FIXTURES_DIR/empty-git-file/.git")
+        echo "ERROR: empty-git-file/.git should be empty but has content (size: $size bytes)"
+        ((errors++))
+    fi
+
+    # Plain dir must NOT have .git
+    if [[ -e "$FIXTURES_DIR/plain-dir/.git" ]]; then
+        echo "ERROR: plain-dir should not have .git"
+        ((errors++))
+    fi
+
+    # Locked worktree is optional (git worktree lock may not be available)
+    # No validation needed
+
+    if [[ $errors -gt 0 ]]; then
+        if [[ $errors -eq 1 ]]; then
+            echo "Validation failed with 1 error"
+        else
+            echo "Validation failed with $errors errors"
+        fi
+        return 1
+    fi
+
+    echo "Fixture validation passed"
+    return 0
+}
+
+validate_fixtures || {
+    echo "ERROR: Fixture creation validation failed. Tests may produce false positives."
+    exit 1
+}
+
 echo ""
 echo "All fixtures created in: $FIXTURES_DIR"
 echo "Fixtures:"
