@@ -15,6 +15,11 @@
 #   /usr/local/bin/opencode — Verified, executable binary
 
 ARG OPENCODE_VERSION=v0.1.0
+# NOTE: The following SHA256 values are placeholders only.
+# Obtain the real checksums from the corresponding OpenCode GitHub release, e.g.:
+#   curl -fsSL "https://github.com/opencode-ai/opencode/releases/download/${OPENCODE_VERSION}/opencode-linux-amd64" | sha256sum
+#   curl -fsSL "https://github.com/opencode-ai/opencode/releases/download/${OPENCODE_VERSION}/opencode-linux-arm64" | sha256sum
+# Then set OPENCODE_SHA256_AMD64 / OPENCODE_SHA256_ARM64 via build args or update the defaults below.
 ARG OPENCODE_SHA256_AMD64=placeholder_amd64_sha256
 ARG OPENCODE_SHA256_ARM64=placeholder_arm64_sha256
 
