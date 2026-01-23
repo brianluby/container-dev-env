@@ -14,15 +14,15 @@ IMAGE="${TEST_IMAGE:-devcontainer:test}"
 echo "=== Integration: OpenCode Install Verification ==="
 
 # Test 1: Binary exists
-echo "  [1/4] Checking binary exists..."
+echo "  [1/5] Checking binary exists..."
 docker run --rm "$IMAGE" test -f /usr/local/bin/opencode
 
 # Test 2: Binary is executable
-echo "  [2/4] Checking binary is executable..."
+echo "  [2/5] Checking binary is executable..."
 docker run --rm "$IMAGE" test -x /usr/local/bin/opencode
 
 # Test 3: Binary returns version
-echo "  [3/4] Checking version output..."
+echo "  [3/5] Checking version output..."
 VERSION_OUTPUT=$(docker run --rm "$IMAGE" /usr/local/bin/opencode --version 2>&1 || true)
 if [[ -z "$VERSION_OUTPUT" ]]; then
     echo "FAIL: No version output from opencode --version"
@@ -31,7 +31,7 @@ fi
 echo "      Version: $VERSION_OUTPUT"
 
 # Test 4: Binary matches architecture
-echo "  [4/4] Checking architecture match..."
+echo "  [4/5] Checking architecture match..."
 CONTAINER_ARCH=$(docker run --rm "$IMAGE" dpkg --print-architecture)
 FILE_INFO=$(docker run --rm "$IMAGE" file /usr/local/bin/opencode)
 
