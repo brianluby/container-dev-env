@@ -25,7 +25,11 @@ run_unit_tests() {
 
     if [[ ! -x "$bats_bin" ]]; then
         echo "ERROR: BATS not found at $bats_bin"
-        echo "Run: cd tests/unit && git clone --depth 1 https://github.com/bats-core/bats-core.git .bats-battery/bats-core"
+        echo "To install the BATS test dependencies (as in CI), run from the project root:"
+        echo "  cd tests/unit"
+        echo "  git clone --depth 1 https://github.com/bats-core/bats-core.git .bats-battery/bats-core"
+        echo "  git clone --depth 1 https://github.com/bats-core/bats-support.git .bats-battery/bats-support"
+        echo "  git clone --depth 1 https://github.com/bats-core/bats-assert.git .bats-battery/bats-assert"
         exit 2
     fi
 
