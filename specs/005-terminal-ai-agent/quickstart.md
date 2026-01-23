@@ -15,7 +15,7 @@
 
 ```bash
 opencode --version
-# Expected: opencode v0.1.0 (or later pinned version from Dockerfile ARG OPENCODE_VERSION)
+# Expected: opencode <version pinned in Dockerfile ARG OPENCODE_VERSION>
 ```
 
 ### 2. Configure Your Provider
