@@ -1,0 +1,19 @@
+# Claude Code Instructions
+
+## Behavior Preferences
+
+- [Claude-specific instruction for how to approach tasks]
+- [Preference for tool usage: e.g., Read before Edit]
+- [When to ask vs. proceed autonomously]
+
+## Tool Usage
+
+- [Preferred tools and commands for Claude to use]
+- [Tools or commands to avoid in this project]
+- [Custom slash commands or workflows]
+
+## Response Style
+
+- [Output format preferences: concise CLI output, markdown, etc.]
+- [Verbosity level: brief vs. detailed explanations]
+- [When to show code vs. describe changes]

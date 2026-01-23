@@ -1,0 +1,68 @@
+# Project Context
+
+## Overview
+
+[Describe what this project does, who it's for, and its key goals.
+Include 1-3 paragraphs covering the project's purpose and scope.]
+
+## Technology Stack
+
+- Language: [primary language and version]
+- Framework: [primary framework]
+- Database: [database technology, if applicable]
+- Infrastructure: [deployment target, container runtime, cloud provider]
+- Build Tools: [build system, package manager]
+
+## Coding Standards
+
+- [Style guide reference or key inline rules]
+- [Naming conventions: variables, functions, files, classes]
+- [File organization patterns and module structure]
+- [Import/module ordering conventions]
+- [Formatting tool and configuration reference]
+
+## Architecture
+
+- [High-level architecture description: monolith, microservices, serverless]
+- [Key design patterns used: MVC, hexagonal, event-driven]
+- [Important boundaries and module responsibilities]
+- [Link to Architecture Decision Records if applicable]
+
+## Common Patterns
+
+- [Pattern 1: Brief description with example usage]
+- [Pattern 2: Brief description with example usage]
+- [Anti-patterns to avoid: what NOT to do and why]
+
+## Testing Requirements
+
+- [Test coverage expectations: minimum percentage or policy]
+- [Testing frameworks and conventions: unit, integration, e2e]
+- [Test file naming and location conventions]
+- [Test data management approach]
+
+## Git Workflow
+
+- [Branch naming: e.g., feature/xxx, fix/xxx, docs/xxx]
+- [Commit message format: e.g., conventional commits]
+- [PR requirements: required reviewers, checks, squash policy]
+- [Release process: tags, changelogs, versioning scheme]
+
+## Security Considerations
+
+<!-- WARNING: Do NOT include actual secrets, API keys, passwords, or internal URLs.
+     Document security PATTERNS and PRACTICES only.
+     Use AGENTS.local.md (gitignored) for environment-specific details. -->
+
+- [Authentication and authorization patterns]
+- [Data handling requirements and constraints]
+- [Known security constraints or compliance requirements]
+- [Input validation approach]
+
+## AI Agent Instructions
+
+- [Specific rules AI tools must always follow in this project]
+- [Code generation preferences: style, patterns to use]
+- [Things to always do: e.g., write tests, check types]
+- [Things to never do: e.g., commit secrets, skip validation]
+- [Preferred approaches for common tasks]

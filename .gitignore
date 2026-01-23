@@ -29,6 +29,9 @@ build/
 coverage/
 .nyc_output/
 
+# Local context overrides (not shared)
+AGENTS.local.md
+
 # Dependencies (language-specific)
 node_modules/
 __pycache__/
@@ -37,3 +40,7 @@ __pycache__/
 venv/
 *.egg-info/
 target/
+
+# BATS test artifacts
+tests/test_helper/
+tests/.bats/
