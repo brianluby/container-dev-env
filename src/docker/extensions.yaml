@@ -1,0 +1,14 @@
+# Extension Manifest: AI IDE Extensions
+# Pinned versions for reproducible container builds
+# Source: Open VSX Registry (https://open-vsx.org)
+
+extensions:
+  - id: Continue.continue
+    version: "1.2.14"
+    source: open-vsx
+    vsix_path: /tmp/continue.vsix
+
+  - id: saoudrizwan.claude-dev
+    version: "3.51.0"
+    source: open-vsx
+    vsix_path: /tmp/cline.vsix

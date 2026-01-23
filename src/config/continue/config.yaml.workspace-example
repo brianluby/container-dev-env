@@ -1,0 +1,32 @@
+# Workspace Override Example for Continue
+# Place this file at .continue/config.yaml in your project root
+# to override or extend the user-scoped config.
+#
+# Behavior (per Contract 2):
+#   - Workspace 'models' entries ADD to user models (don't replace)
+#   - Workspace 'mcpServers' entries ADD to user servers
+#
+# Use case: Local-only Ollama provider for sensitive/private projects
+# that should never send code to external APIs.
+
+name: local-only-workspace
+version: 0.0.1
+schema: v1
+
+models:
+  # Override: use only local models for this workspace
+  - name: Local Qwen (Private)
+    provider: ollama
+    model: qwen2.5-coder:7b
+    apiBase: http://localhost:11434
+    roles:
+      - chat
+      - edit
+      - autocomplete
+
+mcpServers:
+  # Workspace-scoped MCP: restrict to project directory
+  - name: project-files
+    command: mcp-server-filesystem
+    args:
+      - /workspace/my-project

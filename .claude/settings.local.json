@@ -52,9 +52,20 @@
       "Bash(claude mcp list:*)",
       "WebFetch(domain:docs.ntfy.sh)",
       "Bash(/Users/bluby/personal-repos/container-dev-env/spikes/015-mobile-access/scripts/notify.sh:*)",
-      "mcp__sequential-thinking__sequentialthinking"
+      "mcp__sequential-thinking__sequentialthinking",
       "Bash(git rm:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "WebFetch(domain:pypi.org)",
+      "Bash(curl:*)",
+      "WebFetch(domain:cymulate.com)",
+      "Bash(bash:*)",
+      "Skill(speckit.analyze)",
+      "mcp__filesystem__read_text_file",
+      "mcp__filesystem__edit_file",
+      "Bash(export ANTHROPIC_API_KEY=\"sk-ant-test123\")",
+      "Bash(echo:*)",
+      "Bash(for:*)",
+      "Bash(done)"
     ]
   }
 }
