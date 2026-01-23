@@ -261,25 +261,49 @@ LLM may draft based on context, but human must validate:
 - Ownership of dependencies
 - Timeline alignment
 - External system constraints
+- Forward dependencies that need to be tracked
 -->
 
 ```mermaid
 graph LR
-    subgraph This Feature
-        A[NNN-prd-slug]
-    end
     subgraph Requires
         B[NNN-prd-xxx] --> A
         C[NNN-prd-yyy] --> A
     end
+    subgraph This Feature
+        A[NNN-prd-slug]
+    end
     subgraph Blocks
         A --> D[NNN-prd-zzz]
     end
+    subgraph Informs
+        A -.-> E[NNN-prd-future]
+        A -.-> F[NNN-prd-other]
+    end
 ```
 
-- **Requires:** none | NNN-prd-xxx
-- **Blocks:** none | NNN-prd-xxx
-- **External:** [any external system dependencies]
+### Requires (must be complete before this PRD)
+<!-- PRDs that must be done before this one can be implemented -->
+- none | [NNN-prd-xxx] — [why required]
+
+### Blocks (waiting on this PRD)
+<!-- PRDs that cannot proceed until this one is complete -->
+- none | [NNN-prd-xxx] — [what they're waiting for]
+
+### Informs (decisions here affect future PRDs) 🔴 `@human-required`
+<!-- 
+Forward dependencies: Open questions or requirements in THIS PRD that depend on 
+decisions in FUTURE PRDs. Track these so they aren't lost.
+When the future PRD is complete, circle back and resolve these items.
+-->
+| Open Item | Dependent PRD | What We Need | Working Assumption |
+|-----------|---------------|--------------|-------------------|
+| Q4 | [004-prd-volume-architecture] | Volume mount strategy | In-container persistence only |
+| S-3 | [004-prd-volume-architecture] | Persistence mechanism | Optional if volume mounted |
+
+### External
+<!-- External systems, APIs, or services this feature depends on -->
+- none | [External system] — [nature of dependency]
 
 ---
 
@@ -339,6 +363,7 @@ Full details in the linked Security Review document.
 <!-- 
 This section serves as a formal gate before implementation begins.
 All items must be checked before proceeding to ARD or implementation.
+Deferred questions with working assumptions do NOT block readiness.
 -->
 
 ### Readiness Checklist
@@ -346,8 +371,9 @@ All items must be checked before proceeding to ARD or implementation.
 - [ ] All Must Have requirements have acceptance criteria
 - [ ] Technical constraints are explicit and agreed
 - [ ] Dependencies identified and owners confirmed
+- [ ] Forward dependencies tracked (Informs table complete if questions deferred)
 - [ ] Security review completed (or N/A documented with justification)
-- [ ] No open questions blocking implementation
+- [ ] No open questions blocking implementation (deferred with working assumptions = OK)
 
 ### Sign-off
 | Role | Name | Date | Decision |
@@ -375,8 +401,25 @@ All items must be checked before proceeding to ARD or implementation.
 
 ## Open Questions 🟡 `@human-review`
 
+<!-- 
+Question Resolution Patterns:
+1. RESOLVED: Answer inline, check the box, add to Decision Log if significant
+2. DEFERRED: Mark as dependent on future PRD, state working assumption, add to Informs table
+3. BLOCKED: State what's blocking, who owns unblocking
+
+When questions are resolved, keep them visible (checked) for context.
+-->
+
 - [ ] **Q1:** [Unresolved question that needs input]
-- [ ] **Q2:** [Unresolved question that needs input]
+
+- [x] **Q2:** [Example resolved question]
+  > **Resolved (YYYY-MM-DD):** [Answer]. [Brief rationale].
+  > *(Added to Decision Log)*
+
+- [ ] **Q3:** [Example deferred question]
+  > **Deferred to:** [NNN-prd-future] — [What that PRD will decide].
+  > **Working assumption:** [What we assume for now so this PRD isn't blocked].
+  > *(Tracked in Dependencies → Informs table)*
 
 ---
 
@@ -389,4 +432,5 @@ Before marking as Approved:
 - [ ] Diagrams use terminology from Glossary
 - [ ] Security considerations documented (or N/A justified)
 - [ ] Definition of Ready checklist is complete
-- [ ] No open questions blocking implementation
+- [ ] No open questions blocking implementation (deferred questions with working assumptions are OK)
+- [ ] Forward dependencies tracked in Informs table (if any questions deferred to future PRDs)

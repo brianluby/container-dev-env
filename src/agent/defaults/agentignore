@@ -1,0 +1,33 @@
+# Default agent exclusion patterns
+# Files matching these patterns will NOT be read or sent to LLM providers
+# Format: gitignore-compatible glob patterns (one per line)
+
+# Secrets and credentials
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+credentials/
+secrets/
+.secret*
+
+# Auth tokens and package configs with credentials
+.npmrc
+.pypirc
+.docker/config.json
+
+# Databases with potential sensitive data
+*.sqlite
+*.db
+
+# SSH keys
+.ssh/
+id_rsa*
+id_ed25519*
+
+# Cloud provider credentials
+.aws/credentials
+.azure/
+.gcloud/
