@@ -221,7 +221,17 @@ validate_worktree() {
 
     # Handle relative paths — resolve relative to workspace directory
     if [[ "$gitdir_path" != /* ]]; then
-        gitdir_path="$(cd "$ws_dir" && cd "$(dirname "$gitdir_path")" && pwd)/$(basename "$gitdir_path")"
+        local gitdir_rel_dir gitdir_base resolved_dir
+        gitdir_rel_dir=$(dirname "$gitdir_path")
+        gitdir_base=$(basename "$gitdir_path")
+
+        # Resolve the relative directory against the workspace, with error handling
+        if ! resolved_dir="$(cd "$ws_dir/$gitdir_rel_dir" 2>/dev/null && pwd)"; then
+            log_warning "Failed to resolve gitdir path '$gitdir_path' relative to workspace $ws_dir"
+            return 0
+        fi
+
+        gitdir_path="$resolved_dir/$gitdir_base"
     fi
 
     # FR-002: Validate metadata directory is accessible
