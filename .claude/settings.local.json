@@ -52,9 +52,12 @@
       "Bash(claude mcp list:*)",
       "WebFetch(domain:docs.ntfy.sh)",
       "Bash(/Users/bluby/personal-repos/container-dev-env/spikes/015-mobile-access/scripts/notify.sh:*)",
-      "mcp__sequential-thinking__sequentialthinking"
+      "mcp__sequential-thinking__sequentialthinking",
       "Bash(git rm:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(bash:*)",
+      "Bash(/Users/bluby/personal-repos/container-dev-env_specs/010-project-context-files/tests/bats/bin/bats --version)",
+      "Bash(/Users/bluby/personal-repos/container-dev-env_specs/010-project-context-files/tests/bats/bin/bats:*)"
     ]
   }
 }
