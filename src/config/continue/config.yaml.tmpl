@@ -1,0 +1,55 @@
+name: container-dev-env
+version: 0.0.1
+schema: v1
+
+models:
+  # US2: Chat and edit model (Claude Sonnet)
+  - name: Claude Sonnet (Chat)
+    provider: anthropic
+    model: claude-sonnet-4-20250514
+    apiKey: ${{ secrets.ANTHROPIC_API_KEY }}
+    roles:
+      - chat
+      - edit
+
+  # US1: Autocomplete model (Codestral — FIM-trained for fill-in-the-middle)
+  - name: Codestral (Autocomplete)
+    provider: mistral
+    model: codestral-latest
+    apiKey: ${{ secrets.MISTRAL_API_KEY }}
+    roles:
+      - autocomplete
+    autocompleteOptions:
+      disable: false
+      debounceDelay: 250
+
+  # US1: Local fallback autocomplete (no API key required)
+  - name: Qwen Coder (Local Autocomplete)
+    provider: ollama
+    model: qwen2.5-coder:1.5b
+    apiBase: http://localhost:11434
+    roles:
+      - autocomplete
+
+  # US4: Alternative chat provider (OpenAI)
+  - name: GPT-4o (Alternative)
+    provider: openai
+    model: gpt-4o
+    apiKey: ${{ secrets.OPENAI_API_KEY }}
+    roles:
+      - chat
+
+  # US4: Local chat model (Ollama, no API key)
+  - name: Qwen Coder 7B (Local Chat)
+    provider: ollama
+    model: qwen2.5-coder:7b
+    apiBase: http://localhost:11434
+    roles:
+      - chat
+
+# US5: MCP server declarations for extended context
+mcpServers:
+  - name: filesystem
+    command: mcp-server-filesystem
+    args:
+      - /workspace

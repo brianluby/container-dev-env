@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "mcp-server-filesystem",
+      "args": ["/workspace"],
+      "disabled": false,
+      "autoApprove": []
+    },
+    "git": {
+      "command": "python",
+      "args": ["-m", "mcp_server_git", "--repository", "/workspace"],
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}

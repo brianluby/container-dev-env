@@ -127,7 +127,7 @@ flowchart LR
 - [x] **No sensitive data in URL parameters** — Token passed in query param on initial connect (acceptable for localhost; risky if exposed externally)
 - [ ] **File uploads validated** — IDE allows arbitrary file creation in workspace (by design)
 - [ ] **Rate limiting configured** — No built-in rate limiting on token validation
-- [x] **CORS policy is restrictive** — OpenVSVC-Server restricts to same origin by default
+- [x] **CORS policy is restrictive** — OpenVSCode-Server restricts to same origin by default
 - [x] **No debug/admin endpoints exposed** — No separate admin interface
 - [ ] **Webhooks validate signatures** — N/A; no webhook receivers
 
