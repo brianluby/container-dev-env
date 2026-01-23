@@ -21,11 +21,9 @@ setup() {
     # Source only the functions from entrypoint (not main)
     ENTRYPOINT_PATH="$(cd "$(dirname "$BATS_TEST_FILENAME")/../../docker" && pwd)/entrypoint.sh"
 
-    # Create a sourceable version that doesn't execute main or set strict modes
+    # Create a sourceable version that doesn't execute main
     FUNC_FILE="$TEST_DIR/functions.sh"
     grep -v '^main "\$@"$' "$ENTRYPOINT_PATH" \
-        | grep -v '^set -e$' \
-        | grep -v '^set -o pipefail$' \
         | sed 's/^readonly WORKSPACE_DIR=.*/readonly WORKSPACE_DIR="${WORKSPACE_DIR:-\/workspace}"/' \
         > "$FUNC_FILE"
     source "$FUNC_FILE"
