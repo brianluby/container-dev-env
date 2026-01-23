@@ -1,0 +1,23 @@
+# Project Context
+
+## Overview
+
+[One paragraph describing what this project does and who it's for.]
+
+## Technology Stack
+
+- Language: [primary language and version]
+- Framework: [primary framework]
+- Infrastructure: [deployment target]
+
+## Key Conventions
+
+- [Most important coding convention or style rule]
+- [Most important architectural pattern or constraint]
+- [Most important workflow or process rule]
+
+## AI Instructions
+
+- [Critical instruction for AI tools working in this project]
+- [What to always do when generating or modifying code]
+- [What to never do in this project]
