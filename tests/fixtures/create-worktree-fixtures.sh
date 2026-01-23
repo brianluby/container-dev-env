@@ -122,15 +122,17 @@ create_relative_worktree() {
 # =============================================================================
 create_locked_worktree() {
     local main_dir="$FIXTURES_DIR/main-repo"
+    local optional_msg="Note: Failed to lock worktree-feature (optional fixture - tests will still work)"
+    
     if [[ -d "$main_dir" ]] && [[ -d "$FIXTURES_DIR/worktree-feature" ]]; then
         cd "$main_dir"
         if git worktree lock "$FIXTURES_DIR/worktree-feature" --reason "testing lock display" 2>/dev/null; then
             echo "Created: locked worktree-feature"
         else
-            echo "Note: Failed to lock worktree-feature (optional fixture - tests will still work)" >&2
+            echo "$optional_msg" >&2
         fi
     else
-        echo "Note: Cannot lock worktree-feature (optional fixture - tests will still work)" >&2
+        echo "$optional_msg" >&2
     fi
 }
 
@@ -196,7 +198,7 @@ validate_fixtures() {
         echo "  ERROR: empty-git-file/.git file missing"
         errors=$((errors + 1))
     elif [[ -s "$FIXTURES_DIR/empty-git-file/.git" ]]; then
-        local size=$(wc -c < "$FIXTURES_DIR/empty-git-file/.git" | tr -d ' ')
+        local size=$(wc -c < "$FIXTURES_DIR/empty-git-file/.git")
         echo "  ERROR: empty-git-file/.git should be empty but has content (size: ${size} bytes)"
         errors=$((errors + 1))
     fi
