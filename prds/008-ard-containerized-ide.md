@@ -243,7 +243,7 @@ graph TD
 ## Decision
 
 ### Selected Option 🔴 `@human-required`
-> **Option 1: OpenVSVC-Server (Gitpod)**
+> **Option 1: OpenVSCode-Server (Gitpod)**
 
 ### Rationale 🔴 `@human-required`
 
@@ -387,9 +387,9 @@ RUN /home/.openvscode-server/bin/openvscode-server \
 # Entrypoint with token auth
 ENTRYPOINT ["/home/.openvscode-server/bin/openvscode-server", \
     "--host", "0.0.0.0", \
-    "--port", "3000", \
-    "--without-connection-token"]
-# Note: --connection-token is set via env var at runtime, not baked in
+    "--port", "3000"]
+# Note: The entrypoint script adds --connection-token "${CONNECTION_TOKEN}"
+# where CONNECTION_TOKEN is provided via env var at runtime, not baked into the image.
 ```
 
 ```json
