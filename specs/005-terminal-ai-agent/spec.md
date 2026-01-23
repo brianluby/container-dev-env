@@ -3,165 +3,207 @@
 **Feature Branch**: `005-terminal-ai-agent`
 **Created**: 2026-01-22
 **Status**: Draft
-**Input**: User description: "Terminal AI Agent for containerized development environment - pre-configured AI code assistant with OpenCode as primary tool"
+**Input**: User description: "Install and configure a terminal-based AI coding agent in the containerized development environment, enabling code generation, editing, and git integration without leaving the CLI."
+
+## Clarifications
+
+### Session 2026-01-22
+
+- Q: If the developer manually edits a file while the agent has proposed changes to that same file, what should happen on approval? → A: Detect and warn — agent detects the file changed since it was read, alerts the developer, and asks them to re-request.
+- Q: How long should the agent wait for an LLM response before timing out, and should it retry? → A: 60-second timeout, 1 retry — retry once on timeout, then fail with error message.
+- Q: Should the agent commit to whatever branch is checked out, or enforce branch rules? → A: Current branch — commit to whatever branch is checked out; developer's responsibility.
 
 ## User Scenarios & Testing *(mandatory)*
 
-### User Story 1 - Start AI Agent in Container (Priority: P1)
+### User Story 1 - Generate Code from Natural Language (Priority: P1)
 
-A developer opens a terminal in their containerized development environment and wants to start using an AI assistant to help write code. They type a simple command to launch the agent and begin interacting with it immediately.
+A developer working in the container opens their terminal and asks the AI agent to write a new function. The agent reads the project context, generates syntactically correct code in the appropriate language, and writes it to the correct file. The developer reviews the proposed changes before they are applied.
 
-**Why this priority**: This is the core functionality - without the ability to start the agent, no other features matter. Developers need a frictionless entry point to AI assistance.
+**Why this priority**: This is the core value proposition — AI-assisted code generation directly in the terminal without context-switching to a browser or IDE.
 
-**Independent Test**: Can be fully tested by launching the container, running the start command, and verifying the agent responds to a simple prompt. Delivers immediate value by enabling AI-assisted coding.
+**Independent Test**: Can be fully tested by starting the agent, requesting a simple function, and verifying the output is syntactically valid code written to the correct file.
 
 **Acceptance Scenarios**:
 
-1. **Given** a running container with API keys configured, **When** the developer runs the AI agent start command, **Then** the agent starts within 5 seconds and displays a ready prompt
-2. **Given** the agent is running, **When** the developer types "What files are in this directory?", **Then** the agent provides an accurate list of files
-3. **Given** no API keys are configured, **When** the developer tries to start the agent, **Then** a clear error message indicates which keys are missing and how to configure them
+1. **Given** a project with existing source files, **When** the developer asks "add a function to parse JSON from a file", **Then** the agent generates syntactically correct code in the project's language and proposes changes for review.
+2. **Given** a Python project, **When** the developer requests a new utility function, **Then** the generated code follows the project's existing style and imports.
+3. **Given** generated code changes, **When** the developer reviews and approves them, **Then** the changes are written to the appropriate file(s).
+4. **Given** generated code changes, **When** the developer rejects them, **Then** no files are modified.
 
 ---
 
-### User Story 2 - Generate Code from Natural Language (Priority: P1)
+### User Story 2 - Auto-Commit Approved Changes (Priority: P2)
 
-A developer describes a function or feature they need in plain English, and the AI agent generates working code that can be directly inserted into their project files.
+After the developer approves code changes, the agent automatically creates a clean git commit with a descriptive message that explains what was changed and why. The commit is atomic — all related changes across multiple files are included in a single commit.
 
-**Why this priority**: Code generation is the primary value proposition of a terminal AI agent. This is why developers would use the tool at all.
+**Why this priority**: Git integration with quality commits is the second-highest value — it eliminates the manual commit step and ensures a clean, reviewable history.
 
-**Independent Test**: Can be tested by asking the agent to generate a specific function and verifying the output compiles/runs correctly.
+**Independent Test**: Can be tested by approving a code change and verifying a new git commit exists with a descriptive, conventional-format message.
 
 **Acceptance Scenarios**:
 
-1. **Given** the agent is running in a Python project, **When** the developer asks "Create a function to validate email addresses using regex", **Then** the agent generates syntactically correct Python code with appropriate imports
-2. **Given** the agent is running in a TypeScript project, **When** the developer asks for a utility function, **Then** the generated code includes proper type annotations
-3. **Given** a code generation request, **When** the agent generates code, **Then** the code follows the language's common conventions and is formatted consistently
+1. **Given** the developer approves code changes, **When** the changes are applied, **Then** a git commit is created automatically with a descriptive message.
+2. **Given** a multi-file change is approved, **When** the commit is created, **Then** all changed files are included in a single atomic commit.
+3. **Given** auto-commit is enabled, **When** the developer inspects the git log, **Then** commit messages follow a conventional format and describe the intent of the change.
 
 ---
 
-### User Story 3 - Edit Existing Code Files (Priority: P1)
+### User Story 3 - Context-Aware Code Understanding (Priority: P3)
 
-A developer wants the AI agent to modify existing code in their project, such as adding a method to a class, fixing a bug, or refactoring a function.
+The developer asks the agent a question about their project's structure or asks for a change that requires understanding the existing codebase. The agent reads and searches local files to build context, then responds accurately based on actual project contents.
 
-**Why this priority**: Most development work involves modifying existing code rather than greenfield development. The agent must be able to work with existing codebases.
+**Why this priority**: Without codebase awareness, generated code would be generic and disconnected from the project. Context is what makes the agent useful for real work.
 
-**Independent Test**: Can be tested by asking the agent to add a method to an existing class and verifying the file is correctly modified without breaking existing code.
+**Independent Test**: Can be tested by asking the agent about the project structure or requesting a change that references existing code, and verifying the response is accurate.
 
 **Acceptance Scenarios**:
 
-1. **Given** an existing source file, **When** the developer asks "Add a method called 'validate' to the User class", **Then** the agent adds the method in the appropriate location within the file
-2. **Given** a code change request, **When** the agent proposes changes, **Then** the developer can review the proposed changes before they are applied
-3. **Given** a multi-line edit, **When** the changes are applied, **Then** the file maintains consistent indentation and formatting
+1. **Given** a multi-file project, **When** the developer asks "what does the main function do?", **Then** the agent reads the relevant file and provides an accurate answer.
+2. **Given** a project with existing utilities, **When** the developer asks to "add error handling using the existing error types", **Then** the agent finds and references the actual error types in the project.
+3. **Given** a project with more than 1000 files, **When** the developer asks about a specific component, **Then** the agent searches and finds the relevant files without performance degradation.
 
 ---
 
-### User Story 4 - Auto-Commit Code Changes (Priority: P2)
+### User Story 4 - Multi-Language Code Generation (Priority: P4)
 
-After the AI agent makes code changes that the developer approves, the changes are automatically committed to git with a meaningful commit message.
+The developer works across projects in different languages (Python, TypeScript, Rust, Go). The agent generates valid code in whichever language the current project uses, respecting language-specific conventions and idioms.
 
-**Why this priority**: Git integration reduces context switching and maintains a clean commit history. However, manual commits are still possible, making this enhancement rather than core functionality.
+**Why this priority**: Multi-language support ensures the agent is useful across the developer's full workflow, not limited to a single ecosystem.
 
-**Independent Test**: Can be tested by approving an agent-made change and verifying a git commit is created with an appropriate message.
+**Independent Test**: Can be tested by creating small projects in each language and verifying the agent generates syntactically valid, idiomatic code for each.
 
 **Acceptance Scenarios**:
 
-1. **Given** approved code changes, **When** auto-commit is enabled, **Then** a git commit is created with a descriptive message summarizing the changes
-2. **Given** multiple file changes in one operation, **When** auto-commit runs, **Then** all changes are included in a single atomic commit
-3. **Given** auto-commit is disabled, **When** the developer approves changes, **Then** changes are saved to files but not committed
+1. **Given** a Python project, **When** the developer requests code generation, **Then** the output is valid Python following PEP 8 conventions.
+2. **Given** a TypeScript project, **When** the developer requests code generation, **Then** the output is valid TypeScript with proper type annotations.
+3. **Given** a Rust project, **When** the developer requests code generation, **Then** the output is valid Rust that compiles without errors.
+4. **Given** a Go project, **When** the developer requests code generation, **Then** the output is valid Go that passes `go vet`.
 
 ---
 
-### User Story 5 - Resume Previous Conversation (Priority: P2)
+### User Story 5 - Resume Previous Sessions (Priority: P5)
 
-A developer closes their terminal or container session, then returns later and wants to continue where they left off with the AI agent.
+The developer exits the agent and later returns to continue working on the same task. The agent restores the previous conversation context so the developer can pick up where they left off without re-explaining the problem.
 
-**Why this priority**: Session persistence improves developer experience but isn't required for basic functionality.
+**Why this priority**: Session persistence avoids wasted time re-establishing context and enables multi-session workflows for complex tasks.
 
-**Independent Test**: Can be tested by having a conversation, exiting, restarting, and verifying previous context is available.
+**Independent Test**: Can be tested by having a conversation, exiting, restarting the agent, and verifying previous context is available.
 
 **Acceptance Scenarios**:
 
-1. **Given** a previous conversation session exists, **When** the developer starts the agent, **Then** they can see or reference their previous conversation
-2. **Given** conversation history, **When** the developer asks a follow-up question, **Then** the agent maintains context from the previous session
-3. **Given** no previous session, **When** the developer starts the agent, **Then** a fresh session begins without errors
+1. **Given** an active session with conversation history, **When** the developer exits and restarts the agent, **Then** the previous conversation context is available to resume.
+2. **Given** multiple previous sessions exist, **When** the developer starts the agent, **Then** they can select which session to resume.
 
 ---
 
-### User Story 6 - View Token Usage and Cost (Priority: P3)
+### User Story 6 - Track API Usage and Costs (Priority: P6)
 
-A developer wants to understand how much they're spending on AI API calls and track token usage over time.
+After completing a task, the developer can see how many tokens were used and the approximate cost. This helps them manage API spending and make informed decisions about which tasks to delegate to the agent.
 
-**Why this priority**: Cost awareness is helpful but not essential for basic functionality.
+**Why this priority**: Cost visibility prevents surprise bills and helps developers budget their AI usage.
 
-**Independent Test**: Can be tested by completing a task and verifying usage statistics are displayed.
+**Independent Test**: Can be tested by completing a code generation task and verifying token count and cost estimate are displayed.
 
 **Acceptance Scenarios**:
 
-1. **Given** a completed AI interaction, **When** the developer requests usage information, **Then** approximate token count and estimated cost are displayed
-2. **Given** a session with multiple interactions, **When** viewing usage, **Then** cumulative totals for the session are shown
+1. **Given** a completed code generation task, **When** the operation finishes, **Then** the agent displays token usage and approximate cost.
+2. **Given** a session with multiple operations, **When** the developer requests a summary, **Then** cumulative usage for the session is shown.
 
 ---
 
-### User Story 7 - Use Multiple LLM Providers (Priority: P3)
+### User Story 7 - Execute Shell Commands with Approval (Priority: P7)
 
-A developer wants to switch between different AI providers (OpenAI, Anthropic, local models) based on their preferences or requirements.
+The agent determines that running a shell command would help complete the developer's request (e.g., running tests, checking build output). The agent proposes the command and waits for explicit developer approval before executing.
 
-**Why this priority**: Provider flexibility is valuable but the system works with a single provider configured.
+**Why this priority**: Shell integration extends the agent's capabilities beyond code generation, but requires a safety gate.
 
-**Independent Test**: Can be tested by configuring different provider API keys and verifying the agent works with each.
+**Independent Test**: Can be tested by requesting a task that requires a shell command and verifying the agent asks for approval before execution.
 
 **Acceptance Scenarios**:
 
-1. **Given** multiple API keys configured, **When** the developer specifies a different provider, **Then** the agent uses that provider for subsequent requests
-2. **Given** a local model is configured, **When** the developer selects the local provider, **Then** requests are processed locally without external API calls
+1. **Given** a task that requires running a command, **When** the agent proposes a shell command, **Then** it waits for explicit developer approval before executing.
+2. **Given** the developer denies a proposed command, **When** the agent receives the denial, **Then** the command is not executed and the agent continues with alternative approaches.
 
 ---
 
 ### Edge Cases
 
-- What happens when the API key is invalid or expired? The agent should display a clear authentication error without crashing
-- How does the system handle network interruptions mid-request? The agent should timeout gracefully and allow retry
-- What happens when the codebase is too large for context? The agent should intelligently select relevant files rather than failing
-- How does the agent handle binary files or non-text content? It should skip these files with appropriate messaging
-- What happens when attempting to edit a read-only file? The agent should detect this before making changes and notify the user
+- What happens when the API key environment variable is missing or invalid? The agent displays a clear error message indicating which key is needed and how to configure it.
+- What happens when git has uncommitted changes (dirty state) before auto-commit? The agent warns the developer and offers to proceed or abort.
+- What happens when the project contains binary files or very large files? The agent skips them gracefully without crashing or performance issues.
+- What happens when generated code would introduce a syntax error? The agent validates output before proposing changes to the developer.
+- What happens when the configured LLM provider is unreachable (network issues)? The agent fails with a clear connectivity error message.
+- What happens when the developer requests undo but no changes have been made? The agent informs the developer that there are no changes to revert.
+- What happens when the API key has insufficient credits or quota? The agent fails immediately with a clear message and direction to the provider's dashboard.
+- What happens when the developer manually edits a file while the agent has proposed changes to it? The agent detects the file modification (changed since last read), warns the developer of the conflict, and asks them to re-request the change with the updated file contents.
+- What happens when the LLM provider is slow to respond? The agent waits up to 60 seconds, retries once on timeout, then fails with a clear timeout error message.
 
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
 
-- **FR-001**: System MUST provide a terminal-based interface that operates without any graphical components
-- **FR-002**: System MUST read and understand files in the current codebase to provide context-aware responses
-- **FR-003**: System MUST generate code in Python, TypeScript, Rust, and Go programming languages
-- **FR-004**: System MUST be able to create new files with generated content
-- **FR-005**: System MUST be able to modify existing files in place
-- **FR-006**: System MUST integrate with git to create commits for approved changes
-- **FR-007**: System MUST load API credentials from environment variables
-- **FR-008**: System MUST work within the containerized development environment without requiring additional installation
-- **FR-009**: System MUST use open source software with permissive licensing (MIT, Apache 2.0, or similar)
-- **FR-010**: System MUST allow the developer to review and approve/reject proposed changes before they are applied
-- **FR-011**: System SHOULD persist conversation history across sessions
-- **FR-012**: System SHOULD support running shell commands with explicit developer approval
-- **FR-013**: System SHOULD support editing multiple files in a single operation
-- **FR-014**: System SHOULD provide undo/revert capability for recent changes
-- **FR-015**: System SHOULD display token usage and estimated costs after interactions
-- **FR-016**: System SHOULD support multiple LLM providers (OpenAI, Anthropic, local models via Ollama)
+- **FR-001**: The agent MUST provide a terminal-native interface that requires no browser, GUI, or display server.
+- **FR-002**: The agent MUST generate and edit code in existing project files when requested by the developer.
+- **FR-003**: The agent MUST create git commits automatically after approved changes, with descriptive messages following conventional commit format, on the currently checked-out branch.
+- **FR-004**: The agent MUST support code generation for at least Python, TypeScript, Rust, and Go.
+- **FR-005**: The agent MUST read and search local project files to maintain awareness of the codebase context.
+- **FR-006**: The agent MUST work within the container environment without requiring additional setup beyond API key configuration.
+- **FR-007**: The agent MUST be available under an open source license that permits commercial use without restrictions.
+- **FR-008**: The agent MUST accept LLM provider credentials exclusively from environment variables, never prompting for or persisting credentials to disk.
+- **FR-009**: The agent MUST persist conversation history within the container so sessions can be resumed after restart.
+- **FR-010**: The agent MUST display proposed shell commands and wait for explicit developer approval before execution.
+- **FR-011**: The agent MUST support editing multiple files in a single operation, committing all changes atomically.
+- **FR-012**: The agent MUST provide a way to revert the most recent set of applied changes.
+- **FR-013**: The agent MUST display token usage and approximate cost after each operation.
+- **FR-014**: The agent MUST support connecting to multiple LLM providers (at minimum: OpenAI, Anthropic, and local/self-hosted models).
+- **FR-015**: The agent MUST be ready to accept input within 3 seconds of invocation.
+- **FR-016**: The agent MUST NOT auto-start when the container launches; it must be explicitly invoked by the developer.
+- **FR-017**: The agent's binary MUST be integrity-verified during container build to prevent supply chain compromise.
+- **FR-018**: The agent MUST detect when a target file has been modified since it was last read, warn the developer of the conflict, and refuse to apply stale changes.
+- **FR-019**: The agent MUST timeout LLM requests after 60 seconds, retry once on timeout, and fail with a clear error message if the retry also times out.
 
 ### Key Entities
 
-- **Session**: A continuous interaction between developer and AI agent, containing conversation history and context
-- **Code Change**: A proposed modification to one or more files, including file path, original content, and new content
-- **Commit**: A git commit created from approved code changes, including message and changed file references
-- **Provider Configuration**: Settings for an LLM provider including API endpoint, credentials, and model selection
+- **Session**: A conversation between the developer and the agent, containing message history, referenced files, and token usage. Sessions persist within the container and can be resumed.
+- **Code Change**: A proposed set of file modifications generated by the agent. Has a pending/approved/rejected state. When approved, results in a git commit.
+- **Configuration**: User preferences including LLM provider selection, model choice, and behavior settings. Provided via environment variables and a configuration file.
+- **Provider**: An external LLM service (or local model) that the agent connects to for inference. Identified by name and authenticated via API key.
 
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 
-- **SC-001**: Developer can launch the AI agent and receive a response to a simple query within 10 seconds of container startup (with valid API keys pre-configured)
-- **SC-002**: Code generation requests complete within 30 seconds for typical function-level requests
-- **SC-003**: Generated code compiles/parses without syntax errors in 95% of cases
-- **SC-004**: Auto-commit creates well-formed git commits with descriptive messages that accurately describe the changes
-- **SC-005**: Session resume works correctly after container restart, preserving conversation context
-- **SC-006**: System functions correctly in headless container environments without any GUI dependencies
-- **SC-007**: Developer approval is required before any file modifications are applied (no automatic file changes without consent)
-- **SC-008**: Clear error messages are displayed for all common failure scenarios (missing API keys, invalid credentials, network issues)
+- **SC-001**: The agent is ready to accept developer input within 3 seconds of invocation.
+- **SC-002**: Developers can generate syntactically valid code in all 4 supported languages (Python, TypeScript, Rust, Go) on first request.
+- **SC-003**: Auto-generated commit messages pass conventional commit format validation.
+- **SC-004**: Multi-file changes are committed atomically in a single git commit (never partial).
+- **SC-005**: The agent correctly answers questions about projects containing over 1000 files.
+- **SC-006**: Session history is available for resumption after agent exit and restart within the same container.
+- **SC-007**: Token usage and cost are displayed within 1 second of operation completion.
+- **SC-008**: The container image size increases by no more than 50MB from adding the agent.
+- **SC-009**: The agent operates on both x86_64 and ARM64 container architectures without modification.
+- **SC-010**: Shell commands are never executed without explicit developer approval.
+
+## Assumptions
+
+- Developers have valid API keys for at least one supported LLM provider before using the agent.
+- The container has outbound internet access to reach LLM provider APIs.
+- Git is already installed and configured in the container from the base image.
+- Developers are comfortable with terminal-based interfaces.
+- The container filesystem provides sufficient writable storage for session history.
+- No default LLM provider is pre-configured; the developer must specify one on first run.
+- Session history does not need to persist across container rebuilds (in-container persistence is sufficient for MVP).
+- Conversation history is stored as plaintext for MVP (encryption is a future enhancement).
+
+## Dependencies
+
+- **001-container-base**: Provides the base container image with git and filesystem.
+- **003-secret-injection**: Provides API key delivery via encrypted environment variables.
+
+## Constraints
+
+- The agent adds no more than 50MB to the container image.
+- No additional runtime interpreters (Python, Node.js) are required solely for the agent.
+- API keys are never written to disk, logged, or included in git commits.
+- The total container image size must remain under 3GB.
+- The agent must support linux/amd64 and linux/arm64 architectures.

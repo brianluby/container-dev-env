@@ -31,9 +31,9 @@
 
 ## Notes
 
-- All checklist items pass validation
-- The specification references OpenCode in the PRD as the selected tool, but the spec itself remains technology-agnostic by referring to "the AI agent" generically
-- 7 user stories cover P1 (core functionality), P2 (enhancement), and P3 (nice-to-have) priorities
-- 16 functional requirements cover MUST (10) and SHOULD (6) categories
-- 8 success criteria with measurable outcomes
-- Ready for `/speckit.clarify` or `/speckit.plan`
+- All items pass validation. Spec is ready for `/speckit.plan`.
+- 3 clarifications resolved (2026-01-22): file conflict detection, LLM timeout/retry, git branch behavior.
+- 7 user stories with prioritized acceptance scenarios (P1-P7).
+- 19 functional requirements (FR-001 through FR-019), all testable.
+- 10 measurable success criteria, technology-agnostic.
+- 9 edge cases identified and documented with expected behavior.

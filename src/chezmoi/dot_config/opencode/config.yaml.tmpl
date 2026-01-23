@@ -1,0 +1,22 @@
+# OpenCode Configuration
+# Managed by Chezmoi — do not edit directly.
+# Override via environment variables: OPENCODE_PROVIDER, OPENCODE_MODEL, OPENCODE_MODE
+
+provider: {{ env "OPENCODE_PROVIDER" | default "" | quote }}
+model: {{ env "OPENCODE_MODEL" | default "" | quote }}
+
+agent:
+  mode: {{ env "OPENCODE_MODE" | default "build" }}
+  auto_commit: true
+  commit_style: conventional
+
+session:
+  persist: true
+  path: {{ .chezmoi.homeDir }}/.local/share/opencode/sessions/
+
+shell:
+  approval_required: true
+
+api:
+  timeout: 60
+  retries: 1
