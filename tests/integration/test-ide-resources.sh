@@ -55,24 +55,24 @@ mem_usage=$(docker stats "${CONTAINER_NAME}" --no-stream --format '{{.MemUsage}}
 mem_value=$(echo "${mem_usage}" | grep -oE '[0-9.]+')
 mem_unit=$(echo "${mem_usage}" | grep -oE '[A-Za-z]+')
 
+# Truncate to integer for bash arithmetic (no bc dependency)
+mem_value_int=${mem_value%.*}
+
 case "${mem_unit}" in
   MiB|MB)
-    mem_mb="${mem_value}"
+    mem_int="${mem_value_int}"
     ;;
   GiB|GB)
-    mem_mb=$(echo "${mem_value} * 1024" | bc)
+    mem_int=$((mem_value_int * 1024))
     ;;
   KiB|KB)
-    mem_mb=$(echo "${mem_value} / 1024" | bc)
+    mem_int=$((mem_value_int / 1024))
     ;;
   *)
     echo "WARN: Unknown memory unit: ${mem_unit}, assuming MB"
-    mem_mb="${mem_value}"
+    mem_int="${mem_value_int}"
     ;;
 esac
-
-# Use integer comparison (truncate to int)
-mem_int=${mem_mb%.*}
 if [[ ${mem_int} -lt 50 ]]; then
   echo "PASS: Idle memory is ${mem_usage} (< 50MB)"
 else

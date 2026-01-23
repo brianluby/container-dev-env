@@ -19,12 +19,11 @@
 
 services:
   ide:
-    # Pin to specific version for reproducibility (Constitution V)
-    # Update version explicitly via PR
-    image: gitpod/openvscode-server:1.96.4
+    # Base image version is pinned in Dockerfile.ide for reproducibility (Constitution V)
+    # Update the base image version in Dockerfile.ide explicitly via PR
     build:
-      context: ../../src/docker
-      dockerfile: Dockerfile.ide
+      context: ../../src
+      dockerfile: docker/Dockerfile.ide
     ports:
       # Bind to localhost only (SEC-3, FR-018)
       # Change to "0.0.0.0:3000:3000" for remote access (requires HTTPS proxy)
@@ -33,7 +32,8 @@ services:
       # Token injected from .env file (FR-019, SEC-5)
       - CONNECTION_TOKEN=${CONNECTION_TOKEN}
     env_file:
-      - .env
+      # Path relative to compose file location
+      - ../../.env
     volumes:
       # Workspace persistence (FR-005, FR-013)
       - workspace:/home/workspace
@@ -47,8 +47,9 @@ services:
     # Restart policy for development convenience
     restart: unless-stopped
     # Health check for observability (Constitution VI)
+    # Uses TCP check to avoid exposing token in docker inspect output
     healthcheck:
-      test: ["CMD", "curl", "-sf", "http://localhost:3000/"]
+      test: ["CMD-SHELL", "timeout 1 bash -c 'cat < /dev/null > /dev/tcp/localhost/3000'"]
       interval: 30s
       timeout: 5s
       retries: 3

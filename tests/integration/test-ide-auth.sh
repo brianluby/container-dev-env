@@ -23,7 +23,11 @@ fi
 source "${REPO_ROOT}/.env"
 
 cleanup() {
-  docker compose -f "${REPO_ROOT}/${COMPOSE_FILE}" down -v --remove-orphans 2>/dev/null || true
+  if [[ -z "${DEBUG:-}" ]]; then
+    docker compose -f "${REPO_ROOT}/${COMPOSE_FILE}" down -v --remove-orphans 2>/dev/null || true
+  else
+    echo "DEBUG mode: Skipping cleanup. Run 'docker compose down -v' manually."
+  fi
 }
 trap cleanup EXIT
 
@@ -112,6 +116,17 @@ if [[ ${token_len} -ge 32 ]] && echo "${token_value}" | grep -qE '^[0-9a-f]+$'; 
   echo "PASS: generate-token.sh produces ${token_len}-char hex token"
 else
   echo "FAIL: generate-token.sh produced invalid token: ${token_value} (len=${token_len})"
+  exit 1
+fi
+
+# Test 7: Token generator produces unique tokens
+echo "Test 7: Token uniqueness..."
+token1=$("${REPO_ROOT}/src/scripts/generate-token.sh" | cut -d= -f2)
+token2=$("${REPO_ROOT}/src/scripts/generate-token.sh" | cut -d= -f2)
+if [[ "${token1}" != "${token2}" ]]; then
+  echo "PASS: Token generator produces unique tokens"
+else
+  echo "FAIL: Token generator produced identical tokens"
   exit 1
 fi
 

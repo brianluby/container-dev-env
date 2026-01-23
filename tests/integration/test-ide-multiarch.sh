@@ -21,7 +21,7 @@ fi
 builder_name="devenv-multiarch-test"
 if ! docker buildx inspect "${builder_name}" >/dev/null 2>&1; then
   echo "Creating buildx builder: ${builder_name}..."
-  docker buildx create --name "${builder_name}" --use >/dev/null 2>&1 || true
+  docker buildx create --name "${builder_name}" --bootstrap --use >/dev/null 2>&1 || true
 fi
 
 # Build for both platforms (no push, just verify it builds)

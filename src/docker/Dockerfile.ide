@@ -8,5 +8,6 @@ USER openvscode-server
 # Copy entrypoint script and extension manifest
 COPY --chown=1000:1000 scripts/ide-entrypoint.sh /home/.openvscode-server/bin/ide-entrypoint.sh
 COPY --chown=1000:1000 config/extensions.json /home/.openvscode-server/extensions.json
+RUN chmod +x /home/.openvscode-server/bin/ide-entrypoint.sh
 
 ENTRYPOINT ["/home/.openvscode-server/bin/ide-entrypoint.sh"]

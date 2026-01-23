@@ -89,8 +89,8 @@ stage_result=$?
 if [[ ${stage_result} -eq 0 ]]; then
   echo "PASS: git staging works"
 else
-  # git status shows "M " for staged files
-  echo "PASS: git staging works (file staged)"
+  echo "FAIL: git staging verification failed"
+  exit 1
 fi
 
 echo "All git tests passed."

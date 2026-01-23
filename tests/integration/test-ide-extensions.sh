@@ -60,7 +60,7 @@ installed=$(docker exec "${CONTAINER_NAME}" \
 # Note: Open VSX extension IDs may differ slightly from VS Code Marketplace IDs
 found=0
 for ext in "ms-python.python" "esbenp.prettier-vscode" "dbaeumer.vscode-eslint"; do
-  if echo "${installed}" | grep -qi "${ext}"; then
+  if echo "${installed}" | grep -q "${ext}"; then
     echo "  Found: ${ext}"
     found=$((found + 1))
   else

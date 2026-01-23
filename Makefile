@@ -27,7 +27,7 @@ ide-logs:
 
 ## Open a shell in the IDE container
 ide-shell:
-	docker exec -it devenv-ide-1 bash
+	docker compose -f $(COMPOSE_FILE) exec ide bash
 
 ## Run all IDE integration tests
 ide-test:

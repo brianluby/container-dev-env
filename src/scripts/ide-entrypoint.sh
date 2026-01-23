@@ -6,8 +6,8 @@
 set -euo pipefail
 
 OPENVSCODE_BIN="/home/.openvscode-server/bin/openvscode-server"
-EXTENSIONS_MANIFEST="/home/workspace/.vscode/extensions.json"
-# Fallback to bundled manifest if workspace doesn't have one
+# Only auto-install from the bundled (trusted) manifest.
+# Workspace manifests are untrusted input and could declare malicious extensions.
 BUNDLED_MANIFEST="/home/.openvscode-server/extensions.json"
 
 # Validate CONNECTION_TOKEN
@@ -25,9 +25,7 @@ fi
 install_extensions() {
   local manifest_file=""
 
-  if [[ -f "${EXTENSIONS_MANIFEST}" ]]; then
-    manifest_file="${EXTENSIONS_MANIFEST}"
-  elif [[ -f "${BUNDLED_MANIFEST}" ]]; then
+  if [[ -f "${BUNDLED_MANIFEST}" ]]; then
     manifest_file="${BUNDLED_MANIFEST}"
   else
     echo "INFO: No extensions manifest found, skipping auto-install"
@@ -51,7 +49,7 @@ install_extensions() {
 
   while IFS= read -r ext_id; do
     # Skip if already installed (idempotent - T028)
-    if echo "${installed}" | grep -qi "^${ext_id}$"; then
+    if echo "${installed}" | grep -q "^${ext_id}$"; then
       echo "INFO: Extension ${ext_id} already installed, skipping"
       continue
     fi
