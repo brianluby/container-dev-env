@@ -127,10 +127,10 @@ create_locked_worktree() {
         if git worktree lock "$FIXTURES_DIR/worktree-feature" --reason "testing lock display" 2>/dev/null; then
             echo "Created: locked worktree-feature"
         else
-            echo "Warning: Failed to lock worktree-feature (non-critical)" >&2
+            echo "Warning: Failed to lock worktree-feature. Locked worktree tests will be skipped." >&2
         fi
     else
-        echo "Warning: Cannot lock worktree-feature - dependencies missing" >&2
+        echo "Warning: Cannot lock worktree-feature - main-repo or worktree-feature missing. Locked worktree tests will be skipped." >&2
     fi
 }
 
@@ -196,7 +196,8 @@ validate_fixtures() {
         echo "  ERROR: empty-git-file/.git file missing"
         errors=$((errors + 1))
     elif [[ -s "$FIXTURES_DIR/empty-git-file/.git" ]]; then
-        echo "  ERROR: empty-git-file/.git should be empty but has content"
+        local size=$(stat -f%z "$FIXTURES_DIR/empty-git-file/.git" 2>/dev/null || stat -c%s "$FIXTURES_DIR/empty-git-file/.git" 2>/dev/null)
+        echo "  ERROR: empty-git-file/.git should be empty but has content (size: ${size} bytes)"
         errors=$((errors + 1))
     fi
     
@@ -258,5 +259,6 @@ ls -1 "$FIXTURES_DIR"
 validate_fixtures || {
     echo ""
     echo "ERROR: Fixture creation validation failed. Tests may produce false positives."
+    echo "       Review the error messages above and re-run this script to recreate fixtures."
     exit 1
 }
