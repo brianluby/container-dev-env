@@ -65,15 +65,22 @@ create_fixtures() {
     echo ""
 }
 
-# Run container and capture stderr
+# Run container and capture stdout and stderr separately
 # Usage: run_container <mount_args...>
-# Returns: stdout+stderr combined in $CONTAINER_OUTPUT, exit code in $CONTAINER_EXIT
+# Returns: stdout in $CONTAINER_STDOUT, stderr in $CONTAINER_STDERR, exit code in $CONTAINER_EXIT
 run_container() {
-    local output
+    local stdout_file stderr_file
+    stdout_file=$(mktemp)
+    stderr_file=$(mktemp)
     local exit_code=0
-    output=$(docker run --rm "$@" "$IMAGE_NAME" echo "started" 2>&1) || exit_code=$?
-    CONTAINER_OUTPUT="$output"
+    
+    docker run --rm "$@" "$IMAGE_NAME" echo "started" >"$stdout_file" 2>"$stderr_file" || exit_code=$?
+    
+    CONTAINER_STDOUT=$(cat "$stdout_file")
+    CONTAINER_STDERR=$(cat "$stderr_file")
     CONTAINER_EXIT=$exit_code
+    
+    rm -f "$stdout_file" "$stderr_file"
 }
 
 # =============================================================================
@@ -84,7 +91,7 @@ test_standard_repo_mount() {
 
     run_container -v "$FIXTURES_DIR/standard-repo:/workspace"
 
-    if echo "$CONTAINER_OUTPUT" | grep -q "worktree detected"; then
+    if echo "$CONTAINER_STDERR" | grep -q "worktree detected"; then
         fail "Unexpected worktree warning for standard repo"
     else
         pass "No worktree warning for standard repo"
@@ -102,9 +109,9 @@ test_worktree_with_parent() {
         -v "$FIXTURES_DIR/worktree-feature:/workspace" \
         -v "$main_git:$main_git:ro"
 
-    if echo "$CONTAINER_OUTPUT" | grep -q "WARNING"; then
+    if echo "$CONTAINER_STDERR" | grep -q "WARNING"; then
         fail "Unexpected warning for worktree with accessible parent"
-    elif echo "$CONTAINER_OUTPUT" | grep -q "accessible"; then
+    elif echo "$CONTAINER_STDERR" | grep -q "accessible"; then
         pass "Worktree with accessible metadata detected correctly"
     else
         pass "No warning for worktree with parent mounted"
@@ -119,14 +126,14 @@ test_worktree_without_parent() {
 
     run_container -v "$FIXTURES_DIR/broken-worktree:/workspace"
 
-    if echo "$CONTAINER_OUTPUT" | grep -q "inaccessible"; then
-        if echo "$CONTAINER_OUTPUT" | grep -q "started"; then
-            pass "Warning shown and container started"
+    if echo "$CONTAINER_STDERR" | grep -q "inaccessible"; then
+        if echo "$CONTAINER_STDOUT" | grep -q "started"; then
+            pass "Warning shown on stderr and container started"
         else
             fail "Warning shown but container did not start"
         fi
     else
-        fail "No inaccessible warning for broken worktree"
+        fail "No inaccessible warning on stderr for broken worktree"
     fi
 }
 
@@ -138,8 +145,8 @@ test_non_git_dir() {
 
     run_container -v "$FIXTURES_DIR/plain-dir:/workspace"
 
-    if echo "$CONTAINER_OUTPUT" | grep -q "worktree"; then
-        fail "Unexpected worktree output for non-git directory"
+    if echo "$CONTAINER_STDERR" | grep -q "worktree"; then
+        fail "Unexpected worktree output on stderr for non-git directory"
     else
         pass "No worktree-related output for non-git directory"
     fi
@@ -157,7 +164,7 @@ test_git_ops_in_worktree() {
         -v "$FIXTURES_DIR/worktree-feature:/workspace" \
         -v "$main_git:$main_git:ro" \
         "$IMAGE_NAME" \
-        bash -c "cd /workspace && git status && git log --oneline -1 && git branch" 2>&1) || true
+        bash -c "git config --global --add safe.directory /workspace && cd /workspace && git status && git log --oneline -1 && git branch" 2>&1) || true
 
     if echo "$output" | grep -q "feature-branch"; then
         pass "Git operations work in worktree (branch detected)"
@@ -178,7 +185,7 @@ test_commit_correct_branch() {
         -v "$FIXTURES_DIR/worktree-feature:/workspace" \
         -v "$main_git:$main_git" \
         "$IMAGE_NAME" \
-        bash -c "cd /workspace && git rev-parse --abbrev-ref HEAD" 2>&1) || true
+        bash -c "git config --global --add safe.directory /workspace && cd /workspace && git rev-parse --abbrev-ref HEAD" 2>&1) || true
 
     if echo "$output" | grep -q "feature-branch"; then
         pass "HEAD points to feature-branch in worktree"
@@ -199,7 +206,7 @@ test_detached_head() {
         -v "$FIXTURES_DIR/worktree-detached:/workspace" \
         -v "$main_git:$main_git:ro" \
         "$IMAGE_NAME" \
-        bash -c "cd /workspace && git rev-parse --abbrev-ref HEAD" 2>&1) || true
+        bash -c "git config --global --add safe.directory /workspace && cd /workspace && git rev-parse --abbrev-ref HEAD" 2>&1) || true
 
     if echo "$output" | grep -q "HEAD"; then
         pass "Detached HEAD state correctly reported"
@@ -219,15 +226,15 @@ test_custom_workspace_dir() {
         -v "$FIXTURES_DIR/broken-worktree:/custom" \
         -v "$FIXTURES_DIR/plain-dir:/workspace"
 
-    if echo "$CONTAINER_OUTPUT" | grep -q "/custom"; then
+    if echo "$CONTAINER_STDERR" | grep -q "/custom"; then
         pass "Custom WORKSPACE_DIR used for detection"
     else
         # The workspace validation might fail if /workspace has content but no worktree
         # Check that the worktree warning references the custom path
-        if echo "$CONTAINER_OUTPUT" | grep -q "inaccessible"; then
+        if echo "$CONTAINER_STDERR" | grep -q "inaccessible"; then
             pass "Worktree check ran against custom path"
         else
-            fail "Custom WORKSPACE_DIR not used: $CONTAINER_OUTPUT"
+            fail "Custom WORKSPACE_DIR not used: $CONTAINER_STDERR"
         fi
     fi
 }
@@ -245,7 +252,7 @@ test_worktree_list() {
         -v "$main_git:$main_git:ro" \
         -v "$FIXTURES_DIR/main-repo:/mnt/main-repo:ro" \
         "$IMAGE_NAME" \
-        bash -c "cd /workspace && git worktree list 2>/dev/null" 2>&1) || true
+        bash -c "git config --global --add safe.directory /workspace && git config --global --add safe.directory /mnt/main-repo && cd /workspace && git worktree list 2>/dev/null" 2>&1) || true
 
     if echo "$output" | grep -q "worktree\|feature"; then
         pass "git worktree list shows worktree information"
@@ -263,10 +270,10 @@ test_warning_includes_fix() {
 
     run_container -v "$FIXTURES_DIR/broken-worktree:/workspace"
 
-    if echo "$CONTAINER_OUTPUT" | grep -q "docker run"; then
-        pass "Warning includes docker run fix command"
+    if echo "$CONTAINER_STDERR" | grep -q "docker run"; then
+        pass "Warning includes docker run fix command on stderr"
     else
-        fail "Warning does not include fix command: $CONTAINER_OUTPUT"
+        fail "Warning does not include fix command on stderr: $CONTAINER_STDERR"
     fi
 }
 

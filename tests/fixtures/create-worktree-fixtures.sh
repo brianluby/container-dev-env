@@ -144,6 +144,9 @@ create_plain_dir
 create_relative_worktree
 create_locked_worktree
 
+# Make all fixtures writable by any user (for container testing)
+chmod -R 777 "$FIXTURES_DIR" 2>/dev/null || true
+
 echo ""
 echo "All fixtures created in: $FIXTURES_DIR"
 echo "Fixtures:"
