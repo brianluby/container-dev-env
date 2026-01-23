@@ -1,0 +1,14 @@
+# ShellCheck configuration for container-dev-env agent scripts
+# See: https://www.shellcheck.net/wiki/
+
+# Use bash as the default shell
+shell=bash
+
+# Allow sourcing from paths relative to the script
+source-path=SCRIPTDIR
+source-path=SCRIPTDIR/lib
+
+# Disable specific checks where justified:
+# SC2034: Unused variables (exit code constants sourced by other scripts)
+# SC1090: Can't follow non-constant source (dynamic lib loading)
+disable=SC2034,SC1090
