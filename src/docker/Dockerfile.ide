@@ -1,0 +1,12 @@
+# Containerized IDE: OpenVSCode-Server
+# Pinned version per Constitution Principle V (Reproducibility)
+FROM gitpod/openvscode-server:1.96.4
+
+# Preserve default user (UID 1000) from base image
+USER openvscode-server
+
+# Copy entrypoint script and extension manifest
+COPY --chown=1000:1000 scripts/ide-entrypoint.sh /home/.openvscode-server/bin/ide-entrypoint.sh
+COPY --chown=1000:1000 config/extensions.json /home/.openvscode-server/extensions.json
+
+ENTRYPOINT ["/home/.openvscode-server/bin/ide-entrypoint.sh"]

@@ -1,0 +1,37 @@
+services:
+  ide:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.ide
+    ports:
+      # Bind to localhost only (SEC-3, FR-018)
+      - "127.0.0.1:3000:3000"
+    environment:
+      - CONNECTION_TOKEN=${CONNECTION_TOKEN}
+    env_file:
+      - ../../.env
+    volumes:
+      # Workspace persistence (FR-005, FR-013)
+      - workspace:/home/workspace
+      # Extension persistence (FR-007)
+      - extensions:/home/.openvscode-server/extensions
+    # Non-root user (FR-016, SEC-9)
+    user: "1000:1000"
+    # Resource constraints (FR-012)
+    mem_limit: 512m
+    memswap_limit: 512m
+    # Restart policy for development convenience
+    restart: unless-stopped
+    # Health check for observability (Constitution VI)
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  workspace:
+    name: ${COMPOSE_PROJECT_NAME:-devenv}_workspace
+  extensions:
+    name: ${COMPOSE_PROJECT_NAME:-devenv}_extensions

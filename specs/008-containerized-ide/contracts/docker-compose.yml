@@ -1,0 +1,61 @@
+# Docker Compose Contract: Containerized IDE
+#
+# This is the canonical interface contract for the IDE service.
+# Implementations MUST conform to this structure.
+#
+# Usage:
+#   1. Copy .env.example to .env and generate a token
+#   2. docker compose -f docker-compose.ide.yml up -d
+#   3. Open http://localhost:3000/?tkn=$CONNECTION_TOKEN
+#
+# Requirements satisfied:
+#   FR-001: Browser-accessible editor (port 3000)
+#   FR-010: Connection token auth (env var)
+#   FR-011: Multi-arch (image manifest)
+#   FR-016: Non-root user (UID 1000)
+#   FR-017: Single port (3000 only)
+#   FR-018: Localhost binding (127.0.0.1)
+#   FR-007/FR-013: Persistence (named volumes)
+
+services:
+  ide:
+    # Pin to specific version for reproducibility (Constitution V)
+    # Update version explicitly via PR
+    image: gitpod/openvscode-server:1.96.4
+    build:
+      context: ../../src/docker
+      dockerfile: Dockerfile.ide
+    ports:
+      # Bind to localhost only (SEC-3, FR-018)
+      # Change to "0.0.0.0:3000:3000" for remote access (requires HTTPS proxy)
+      - "127.0.0.1:3000:3000"
+    environment:
+      # Token injected from .env file (FR-019, SEC-5)
+      - CONNECTION_TOKEN=${CONNECTION_TOKEN}
+    env_file:
+      - .env
+    volumes:
+      # Workspace persistence (FR-005, FR-013)
+      - workspace:/home/workspace
+      # Extension persistence (FR-007)
+      - extensions:/home/.openvscode-server/extensions
+    # Non-root user (FR-016, SEC-9)
+    user: "1000:1000"
+    # Resource constraints (FR-012)
+    mem_limit: 512m
+    memswap_limit: 512m
+    # Restart policy for development convenience
+    restart: unless-stopped
+    # Health check for observability (Constitution VI)
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  workspace:
+    name: ${COMPOSE_PROJECT_NAME:-devenv}_workspace
+  extensions:
+    name: ${COMPOSE_PROJECT_NAME:-devenv}_extensions
