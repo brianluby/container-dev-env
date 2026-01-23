@@ -2,8 +2,8 @@
 # Managed by Chezmoi — do not edit directly.
 # Override via environment variables: OPENCODE_PROVIDER, OPENCODE_MODEL, OPENCODE_MODE
 
-provider: {{ env "OPENCODE_PROVIDER" | default "" | quote }}
-model: {{ env "OPENCODE_MODEL" | default "" | quote }}
+provider: {{ env "OPENCODE_PROVIDER" | default "MISSING_OPENCODE_PROVIDER" | quote }}
+model: {{ env "OPENCODE_MODEL" | default "MISSING_OPENCODE_MODEL" | quote }}
 
 agent:
   mode: {{ env "OPENCODE_MODE" | default "build" }}
