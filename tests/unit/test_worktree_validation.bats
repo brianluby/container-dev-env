@@ -26,7 +26,7 @@ setup() {
     grep -v '^main "\$@"$' "$ENTRYPOINT_PATH" \
         | grep -v '^set -e$' \
         | grep -v '^set -o pipefail$' \
-        | sed 's/^readonly WORKSPACE_DIR=.*/WORKSPACE_DIR="${WORKSPACE_DIR:-\/workspace}"/' \
+        | sed 's/^readonly WORKSPACE_DIR=.*/readonly WORKSPACE_DIR="${WORKSPACE_DIR:-\/workspace}"/' \
         > "$FUNC_FILE"
     source "$FUNC_FILE"
 }
