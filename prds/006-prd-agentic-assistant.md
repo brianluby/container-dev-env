@@ -485,6 +485,29 @@ graph LR
 ---
 
 ## Changelog ⚪ `@auto`
+### Checkpoint Implementation
+
+For tools without native checkpointing, implement git-based checkpoints:
+
+```bash
+# Pre-task snapshot (before agent starts work)
+PRE_TASK_REF=$(git stash create)
+[ -z "$PRE_TASK_REF" ] && PRE_TASK_REF=$(git rev-parse HEAD)
+
+# Step commits (agent creates atomic commits per logical change)
+git commit -m "Agent Step: <action description>"
+
+# Rollback (if needed)
+git reset --hard $PRE_TASK_REF
+```
+
+**Checkpoint Strategy**:
+- Create a stash or note the current HEAD before starting autonomous work
+- Agent commits after each logical change (not after each file edit)
+- Rollback restores to the pre-task state, discarding all agent changes
+- For tools with native checkpoints (Claude Code), use built-in `/rewind` command
+
+## Acceptance Criteria
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|

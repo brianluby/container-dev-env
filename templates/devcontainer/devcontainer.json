@@ -13,8 +13,10 @@
     // Post-create command to apply chezmoi (decrypt secrets)
     "postCreateCommand": "chezmoi apply --force",
 
-    // Ensure secrets are loaded on attach
-    "postAttachCommand": "source /usr/local/bin/secrets-load.sh 2>/dev/null || true",
+    // NOTE: Do NOT use postAttachCommand to load secrets - it runs in a separate
+    // shell that exits after completion, so environment variables won't persist.
+    // Instead, source secrets-load.sh in your shell rc file (e.g., ~/.bashrc)
+    // See docs/secrets-guide.md for integration instructions.
 
     // VS Code settings
     "customizations": {
