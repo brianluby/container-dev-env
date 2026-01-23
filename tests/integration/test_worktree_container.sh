@@ -75,6 +75,7 @@ run_container() {
     local stdout_file stderr_file
     stdout_file=$(mktemp)
     stderr_file=$(mktemp)
+    trap 'rm -f "$stdout_file" "$stderr_file"' RETURN
     local exit_code=0
 
     docker run --rm "$@" "$IMAGE_NAME" echo "started" >"$stdout_file" 2>"$stderr_file" || exit_code=$?
@@ -82,8 +83,6 @@ run_container() {
     CONTAINER_STDOUT=$(cat "$stdout_file")
     CONTAINER_STDERR=$(cat "$stderr_file")
     CONTAINER_EXIT=$exit_code
-
-    rm -f "$stdout_file" "$stderr_file"
 }
 
 # =============================================================================

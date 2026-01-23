@@ -164,12 +164,18 @@ validate_fixtures() {
     fi
 
     # Worktree fixtures must have .git files (not directories)
-    for wt in worktree-feature worktree-detached broken-worktree; do
+    for wt in worktree-feature worktree-detached broken-worktree relative-worktree; do
         if [[ ! -f "$FIXTURES_DIR/$wt/.git" ]]; then
             echo "ERROR: $wt/.git file missing"
             ((errors++))
         fi
     done
+
+    # Relative worktree main repo must have expected worktree directory
+    if [[ ! -d "$FIXTURES_DIR/relative-main/.git/worktrees/relative-wt" ]]; then
+        echo "ERROR: relative-main/.git/worktrees/relative-wt directory missing"
+        ((errors++))
+    fi
 
     # Corrupt fixture must have non-gitdir content
     if [[ ! -f "$FIXTURES_DIR/corrupt-git-file/.git" ]]; then
@@ -198,7 +204,11 @@ validate_fixtures() {
     # No validation needed
 
     if [[ $errors -gt 0 ]]; then
-        echo "Validation failed with $errors error(s)"
+        if [[ $errors -eq 1 ]]; then
+            echo "Validation failed with 1 error"
+        else
+            echo "Validation failed with $errors errors"
+        fi
         return 1
     fi
 
