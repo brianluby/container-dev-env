@@ -14,8 +14,8 @@ i=1
 while [ $i -le $# ]; do
     arg="${!i}"
     case "$arg" in
-        --json)
-            JSON_MODE=true
+        --json) 
+            JSON_MODE=true 
             ;;
         --short-name)
             if [ $((i + 1)) -gt $# ]; then
@@ -44,7 +44,7 @@ while [ $i -le $# ]; do
             fi
             BRANCH_NUMBER="$next_arg"
             ;;
-        --help|-h)
+        --help|-h) 
             echo "Usage: $0 [--json] [--short-name <name>] [--number N] <feature_description>"
             echo ""
             echo "Options:"
@@ -58,8 +58,8 @@ while [ $i -le $# ]; do
             echo "  $0 'Implement OAuth2 integration for API' --number 5"
             exit 0
             ;;
-        *)
-            ARGS+=("$arg")
+        *) 
+            ARGS+=("$arg") 
             ;;
     esac
     i=$((i + 1))
@@ -111,15 +111,15 @@ get_highest_from_specs() {
 # Function to get highest number from git branches
 get_highest_from_branches() {
     local highest=0
-
+    
     # Get all branches (local and remote)
     branches=$(git branch -a 2>/dev/null || echo "")
-
+    
     if [ -n "$branches" ]; then
         while IFS= read -r branch; do
             # Clean branch name: remove leading markers and remote prefixes
             clean_branch=$(echo "$branch" | sed 's/^[* ]*//; s|^remotes/[^/]*/||')
-
+            
             # Extract feature number if branch matches pattern ###-*
             if echo "$clean_branch" | grep -q '^[0-9]\{3\}-'; then
                 number=$(echo "$clean_branch" | grep -o '^[0-9]\{3\}' || echo "0")
@@ -130,7 +130,7 @@ get_highest_from_branches() {
             fi
         done <<< "$branches"
     fi
-
+    
     echo "$highest"
 }
 
@@ -177,6 +177,7 @@ calculate_worktree_path() {
     strategy=$(read_config_value "worktree_strategy" "sibling")
     custom_path=$(read_config_value "worktree_custom_path" "")
     repo_name=$(basename "$repo_root")
+    worktree_base="$(dirname "$repo_root")/${repo_name}_specs"
 
     case "$strategy" in
         nested)
@@ -184,13 +185,13 @@ calculate_worktree_path() {
             echo "$repo_root/.worktrees/$branch_name"
             ;;
         sibling)
-            # Sibling uses repo_name-branch_name for clarity
-            echo "$(dirname "$repo_root")/${repo_name}-${branch_name}"
+            # Sibling uses centralized specs structure
+            echo "$worktree_base/$branch_name"
             ;;
         custom)
             if [[ -n "$custom_path" ]]; then
-                # Custom also uses repo_name-branch_name for clarity
-                echo "$custom_path/${repo_name}-${branch_name}"
+                # Custom also uses specs subdirectory
+                echo "$custom_path/${repo_name}_specs/$branch_name"
             else
                 # Fallback to nested if custom path not set
                 echo "$repo_root/.worktrees/$branch_name"
@@ -224,8 +225,24 @@ branch_exists() {
 # were initialised with --no-git.
 # Note: SCRIPT_DIR is already set at the top of this script
 
-if git rev-parse --show-toplevel >/dev/null 2>&1; then
-    REPO_ROOT=$(git rev-parse --show-toplevel)
+if git rev-parse --git-dir >/dev/null 2>&1; then
+    # Resolve the canonical git directory. This handles worktrees where .git
+    # may be a file pointing to the real git dir under .git/worktrees/.
+    GIT_DIR_RAW=$(git rev-parse --git-dir)
+    # If git returned a relative path, make it absolute
+    GIT_DIR_ABS=$(realpath "$GIT_DIR_RAW")
+
+    # If the git dir path points inside a worktrees subdir (e.g. /.git/worktrees/<id>),
+    # walk up to the common .git directory.
+    if [[ "$GIT_DIR_ABS" == */.git/worktrees/* ]]; then
+        COMMON_GIT_DIR=$(dirname $(dirname "$GIT_DIR_ABS"))
+    else
+        # Otherwise the git dir is already the common .git directory
+        COMMON_GIT_DIR="$GIT_DIR_ABS"
+    fi
+
+    # Repository root is the parent of the common .git directory
+    REPO_ROOT=$(dirname "$COMMON_GIT_DIR")
     HAS_GIT=true
 else
     REPO_ROOT="$(find_repo_root "$SCRIPT_DIR")"
@@ -238,25 +255,30 @@ fi
 
 cd "$REPO_ROOT"
 
+# Use main repo specs directory for numbering
 SPECS_DIR="$REPO_ROOT/specs"
 mkdir -p "$SPECS_DIR"
+
+# Set worktree base path for later use
+repo_name=$(basename "$REPO_ROOT")
+WORKTREE_BASE="$(dirname "$REPO_ROOT")/${repo_name}_specs"
 
 # Function to generate branch name with stop word filtering and length filtering
 generate_branch_name() {
     local description="$1"
-
+    
     # Common stop words to filter out
     local stop_words="^(i|a|an|the|to|for|of|in|on|at|by|with|from|is|are|was|were|be|been|being|have|has|had|do|does|did|will|would|should|could|can|may|might|must|shall|this|that|these|those|my|your|our|their|want|need|add|get|set)$"
-
+    
     # Convert to lowercase and split into words
     local clean_name=$(echo "$description" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/ /g')
-
+    
     # Filter words: remove stop words and words shorter than 3 chars (unless they're uppercase acronyms in original)
     local meaningful_words=()
     for word in $clean_name; do
         # Skip empty words
         [ -z "$word" ] && continue
-
+        
         # Keep words that are NOT stop words AND (length >= 3 OR are potential acronyms)
         if ! echo "$word" | grep -qiE "$stop_words"; then
             if [ ${#word} -ge 3 ]; then
@@ -267,12 +289,12 @@ generate_branch_name() {
             fi
         fi
     done
-
+    
     # If we have meaningful words, use first 3-4 of them
     if [ ${#meaningful_words[@]} -gt 0 ]; then
         local max_words=3
         if [ ${#meaningful_words[@]} -eq 4 ]; then max_words=4; fi
-
+        
         local result=""
         local count=0
         for word in "${meaningful_words[@]}"; do
@@ -321,15 +343,15 @@ if [ ${#BRANCH_NAME} -gt $MAX_BRANCH_LENGTH ]; then
     # Calculate how much we need to trim from suffix
     # Account for: feature number (3) + hyphen (1) = 4 chars
     MAX_SUFFIX_LENGTH=$((MAX_BRANCH_LENGTH - 4))
-
+    
     # Truncate suffix at word boundary if possible
     TRUNCATED_SUFFIX=$(echo "$BRANCH_SUFFIX" | cut -c1-$MAX_SUFFIX_LENGTH)
     # Remove trailing hyphen if truncation created one
     TRUNCATED_SUFFIX=$(echo "$TRUNCATED_SUFFIX" | sed 's/-$//')
-
+    
     ORIGINAL_BRANCH_NAME="$BRANCH_NAME"
     BRANCH_NAME="${FEATURE_NUM}-${TRUNCATED_SUFFIX}"
-
+    
     >&2 echo "[specify] Warning: Branch name exceeded GitHub's 244-byte limit"
     >&2 echo "[specify] Original: $ORIGINAL_BRANCH_NAME (${#ORIGINAL_BRANCH_NAME} bytes)"
     >&2 echo "[specify] Truncated to: $BRANCH_NAME (${#BRANCH_NAME} bytes)"
@@ -393,6 +415,8 @@ if [ "$HAS_GIT" = true ]; then
             if git worktree add "$WORKTREE_PATH" -b "$BRANCH_NAME" 2>/dev/null; then
                 CREATION_MODE="worktree"
                 FEATURE_ROOT="$WORKTREE_PATH"
+                # Create placeholder folder in main repo to reserve the number
+                mkdir -p "$SPECS_DIR/$BRANCH_NAME"
             else
                 # Fallback to branch mode
                 >&2 echo "[specify] Warning: Worktree creation failed. Falling back to branch mode."
@@ -415,17 +439,21 @@ else
 fi
 
 # Create feature directory and spec file
-# In worktree mode, create specs in the worktree; in branch mode, create in main repo
 if [ "$CREATION_MODE" = "worktree" ]; then
+    # In worktree mode, create spec in the worktree's specs directory
     FEATURE_DIR="$FEATURE_ROOT/specs/$BRANCH_NAME"
+    mkdir -p "$FEATURE_DIR"
+    TEMPLATE="$REPO_ROOT/.specify/templates/spec-template.md"
+    SPEC_FILE="$FEATURE_DIR/spec.md"
+    if [ -f "$TEMPLATE" ]; then cp "$TEMPLATE" "$SPEC_FILE"; else touch "$SPEC_FILE"; fi
 else
+    # In branch mode, create spec in main repo
     FEATURE_DIR="$SPECS_DIR/$BRANCH_NAME"
+    mkdir -p "$FEATURE_DIR"
+    TEMPLATE="$REPO_ROOT/.specify/templates/spec-template.md"
+    SPEC_FILE="$FEATURE_DIR/spec.md"
+    if [ -f "$TEMPLATE" ]; then cp "$TEMPLATE" "$SPEC_FILE"; else touch "$SPEC_FILE"; fi
 fi
-mkdir -p "$FEATURE_DIR"
-
-TEMPLATE="$REPO_ROOT/.specify/templates/spec-template.md"
-SPEC_FILE="$FEATURE_DIR/spec.md"
-if [ -f "$TEMPLATE" ]; then cp "$TEMPLATE" "$SPEC_FILE"; else touch "$SPEC_FILE"; fi
 
 # Set the SPECIFY_FEATURE environment variable for the current session
 export SPECIFY_FEATURE="$BRANCH_NAME"

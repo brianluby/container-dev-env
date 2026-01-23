@@ -358,6 +358,29 @@ Git commands and GitPython transparently follow this pointer, making worktrees i
 - `setup-test-repo.sh` - Creates test repository with 3 worktrees
 - `test-worktree-compat.sh` - Automated test script (partial)
 - `RESULTS.md` - Detailed test results and analysis
+### Container Mount Warning
+
+When mounting a worktree directory into a container, ensure the parent repository's `.git` directory is also accessible. The container's `entrypoint.sh` should include a validation check:
+
+```bash
+# Validate git repository access in worktree scenarios
+if [ -f ".git" ]; then
+  GIT_DIR=$(cat .git | sed 's/gitdir: //')
+  if [ ! -d "$GIT_DIR" ]; then
+    echo "WARNING: Git worktree detected but git directory is not accessible."
+    echo "  Worktree points to: $GIT_DIR"
+    echo "  Ensure the parent repository is mounted in the container."
+    echo "  Recommended: Mount the repository root, not just the worktree directory."
+  fi
+fi
+```
+
+**Mount Patterns**:
+- ✅ Mount repository root: `-v /path/to/repo:/workspace`
+- ✅ Mount parent containing both: `-v /projects:/projects` (where `/projects/repo/.git` and `/projects/worktrees/feature` both exist)
+- ❌ Mount only worktree: `-v /path/to/worktree:/workspace` (git metadata inaccessible)
+
+## Acceptance Criteria
 
 ---
 

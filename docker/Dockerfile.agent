@@ -1,0 +1,110 @@
+# Dockerfile.agent — Agent layer for container development environment
+# Extends the base container image with AI coding assistants
+# Multi-arch: arm64 + amd64 via docker buildx
+
+# Build args
+ARG BASE_IMAGE=devcontainer:base
+ARG OPENCODE_VERSION=0.5.2
+ARG INSTALL_CLAUDE_CODE=false
+ARG CLAUDE_CODE_VERSION=1.0.23
+ARG AGENT_USER=developer
+
+# --- Stage 1: Install agent binaries ---
+FROM ${BASE_IMAGE} AS agent-install
+
+ARG OPENCODE_VERSION
+ARG INSTALL_CLAUDE_CODE
+ARG CLAUDE_CODE_VERSION
+
+USER root
+
+# Install OpenCode from pinned version (direct binary download)
+# Architecture auto-detected via uname -m
+RUN set -eux; \
+    ARCH="$(uname -m)"; \
+    case "${ARCH}" in \
+      x86_64)  ARCH_LABEL="amd64" ;; \
+      aarch64) ARCH_LABEL="arm64" ;; \
+      arm64)   ARCH_LABEL="arm64" ;; \
+      *)       echo "Unsupported architecture: ${ARCH}" >&2; exit 1 ;; \
+    esac; \
+    curl -fsSL "https://github.com/anomalyco/opencode/releases/download/v${OPENCODE_VERSION}/opencode-linux-${ARCH_LABEL}" \
+      -o /usr/local/bin/opencode; \
+    chmod +x /usr/local/bin/opencode
+
+# Install Claude Code (optional, from pinned version)
+RUN set -eux; \
+    if [ "${INSTALL_CLAUDE_CODE}" = "true" ]; then \
+      curl -fsSL "https://claude.ai/install.sh" | CLAUDE_VERSION="${CLAUDE_CODE_VERSION}" bash; \
+    fi
+
+# --- Stage 2: Final image ---
+FROM ${BASE_IMAGE}
+
+ARG AGENT_USER
+ARG OPENCODE_VERSION
+ARG INSTALL_CLAUDE_CODE
+ARG CLAUDE_CODE_VERSION
+
+USER root
+
+# Copy agent binaries from install stage
+COPY --from=agent-install /usr/local/bin/opencode /usr/local/bin/opencode
+# Claude Code installs to ~/.local/bin by default; copy if installed
+RUN if [ "${INSTALL_CLAUDE_CODE}" = "true" ]; then \
+      cp /usr/local/bin/claude /usr/local/bin/claude 2>/dev/null || true; \
+    fi
+
+# Copy agent wrapper script and libraries
+COPY src/agent/agent.sh /usr/local/bin/agent
+COPY src/agent/lib/ /usr/local/lib/agent/lib/
+COPY src/agent/defaults/ /usr/local/lib/agent/defaults/
+RUN chmod +x /usr/local/bin/agent
+
+# Update agent.sh to find libs at installed location
+RUN sed -i 's|SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE\[0\]}")" && pwd)"|SCRIPT_DIR="/usr/local/lib/agent"|' /usr/local/bin/agent
+
+# Create state directories with correct ownership
+RUN mkdir -p /home/${AGENT_USER}/.local/share/agent/sessions \
+             /home/${AGENT_USER}/.local/share/agent/logs \
+             /home/${AGENT_USER}/.local/share/agent/bg \
+             /home/${AGENT_USER}/.local/share/opencode \
+             /home/${AGENT_USER}/.config/opencode \
+    && chown -R ${AGENT_USER}:${AGENT_USER} /home/${AGENT_USER}/.local \
+    && chown -R ${AGENT_USER}:${AGENT_USER} /home/${AGENT_USER}/.config
+
+# Create .claude directory if Claude Code is installed
+RUN if [ "${INSTALL_CLAUDE_CODE}" = "true" ]; then \
+      mkdir -p /home/${AGENT_USER}/.claude && \
+      chown -R ${AGENT_USER}:${AGENT_USER} /home/${AGENT_USER}/.claude; \
+    fi
+
+# Verify installed binaries match pinned versions (integrity check)
+RUN set -eux; \
+    opencode --version; \
+    if [ "${INSTALL_CLAUDE_CODE}" = "true" ]; then \
+      claude --version; \
+    fi
+
+# Set file permissions
+RUN chmod 755 /usr/local/bin/agent \
+              /usr/local/bin/opencode \
+    && chmod 700 /home/${AGENT_USER}/.local/share/agent \
+                 /home/${AGENT_USER}/.config/opencode
+
+# Labels
+LABEL org.opencontainers.image.title="Container Dev Env - Agent Layer" \
+      org.opencontainers.image.description="AI coding assistants for containerized development" \
+      org.opencontainers.image.version="${OPENCODE_VERSION}" \
+      org.opencontainers.image.source="https://github.com/container-dev-env"
+
+# Health check: verify agent binary is functional
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
+  CMD /usr/local/bin/agent --version > /dev/null 2>&1 || exit 1
+
+# Run as non-root user (FR-012, Constitution IV)
+USER ${AGENT_USER}
+WORKDIR /workspace
+
+# Expose headless server port (optional, only when agent --serve is running)
+EXPOSE 4096
