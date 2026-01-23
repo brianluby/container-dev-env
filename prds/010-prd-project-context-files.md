@@ -3,7 +3,7 @@
 > **Document Type:** Product Requirements Document  
 > **Audience:** LLM agents, human reviewers  
 > **Status:** Draft  
-> **Last Updated:** 2025-01-23 <!-- @auto -->  
+> **Last Updated:** 2026-01-23 <!-- @auto -->  
 > **Owner:** Brian <!-- @human-required -->
 
 ---
@@ -586,8 +586,8 @@ echo "Created AGENTS.md - edit to add project-specific context"
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 0.1 | 2025-01-XX | Brian | Initial draft |
-| 0.2 | 2025-01-23 | Claude | Migrated to PRD template v3 format |
+| 0.1 | 2026-01-XX | Brian | Initial draft |
+| 0.2 | 2026-01-23 | Claude | Migrated to PRD template v3 format |
 
 ---
 
@@ -595,9 +595,9 @@ echo "Created AGENTS.md - edit to add project-specific context"
 
 | Date | Decision | Rationale | Alternatives Considered |
 |------|----------|-----------|------------------------|
-| 2025-01-XX | Selected AGENTS.md as primary format | 60k+ project adoption, cross-tool support, simple Markdown | Custom format (no recognition), tool-specific only (fragmented) |
-| 2025-01-XX | Support nested AGENTS.md | Allows module-specific context without bloating root file | Single file only (doesn't scale), separate naming (confusing) |
-| 2025-01-XX | Keep tool-specific files optional | AGENTS.md covers most needs; supplements only when necessary | Require all formats (maintenance burden), single format only (loses features) |
+| 2026-01-XX | Selected AGENTS.md as primary format | 60k+ project adoption, cross-tool support, simple Markdown | Custom format (no recognition), tool-specific only (fragmented) |
+| 2026-01-XX | Support nested AGENTS.md | Allows module-specific context without bloating root file | Single file only (doesn't scale), separate naming (confusing) |
+| 2026-01-XX | Keep tool-specific files optional | AGENTS.md covers most needs; supplements only when necessary | Require all formats (maintenance burden), single format only (loses features) |
 
 ---
 
@@ -637,5 +637,5 @@ Before marking as Approved:
 - [AGENTS.md GitHub](https://github.com/agentsmd/agents.md)
 - [Keep AGENTS.md in Sync](https://kau.sh/blog/agents-md/)
 - [Improve AI Output with AGENTS.md](https://www.builder.io/blog/agents-md)
-- [Mastering Project Context Files](https://eclipsesource.com/blogs/2025/11/20/mastering-project-context-files-for-ai-coding-agents/)
+- [Mastering Project Context Files](https://eclipsesource.com/blogs/2026/11/20/mastering-project-context-files-for-ai-coding-agents/)
 - [Cursor Rules Documentation](https://cursor.com/docs/context/rules)

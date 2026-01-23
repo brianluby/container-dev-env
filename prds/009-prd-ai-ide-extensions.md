@@ -3,7 +3,7 @@
 > **Document Type:** Product Requirements Document  
 > **Audience:** LLM agents, human reviewers  
 > **Status:** In Progress  
-> **Last Updated:** 2025-01-23 <!-- @auto -->  
+> **Last Updated:** 2026-01-23 <!-- @auto -->  
 > **Owner:** Brian <!-- @human-required -->
 
 ---
@@ -256,7 +256,7 @@ N/A — Extension configuration is file-based (JSON/YAML).
 models:
   - name: claude-sonnet
     provider: anthropic
-    model: claude-sonnet-4-20250514
+    model: claude-sonnet-4-20260514
     apiKey: ${{ secrets.ANTHROPIC_API_KEY }}  # Injected from env
 
   - name: gpt-4o
@@ -266,7 +266,7 @@ models:
 
 tabAutocompleteModel:
   provider: anthropic
-  model: claude-sonnet-4-20250514
+  model: claude-sonnet-4-20260514
 
 mcpServers:
   - name: filesystem
@@ -559,8 +559,8 @@ openvscode-server --list-extensions | grep -E "(Continue|claude-dev)"
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 0.1 | 2025-01-XX | Brian | Initial draft |
-| 0.2 | 2025-01-23 | Claude | Migrated to PRD template v3 format |
+| 0.1 | 2026-01-XX | Brian | Initial draft |
+| 0.2 | 2026-01-23 | Claude | Migrated to PRD template v3 format |
 
 ---
 
@@ -568,9 +568,9 @@ openvscode-server --list-extensions | grep -E "(Continue|claude-dev)"
 
 | Date | Decision | Rationale | Alternatives Considered |
 |------|----------|-----------|------------------------|
-| 2025-01-XX | Selected Continue as primary extension | Open VSX available, multi-provider, MCP support, active development | Cline (secondary), Roo-Code (alternative), Copilot (rejected—not on Open VSX) |
-| 2025-01-XX | Added Cline as secondary for agentic tasks | Best human-in-the-loop UX for complex multi-step operations | Roo-Code (less mature), Continue-only (lacks agentic features) |
-| 2025-01-XX | Rejected GitHub Copilot | Not available on Open VSX, OAuth authentication problematic in containers | Manual VSIX install (fragile), Copilot CLI (different use case) |
+| 2026-01-XX | Selected Continue as primary extension | Open VSX available, multi-provider, MCP support, active development | Cline (secondary), Roo-Code (alternative), Copilot (rejected—not on Open VSX) |
+| 2026-01-XX | Added Cline as secondary for agentic tasks | Best human-in-the-loop UX for complex multi-step operations | Roo-Code (less mature), Continue-only (lacks agentic features) |
+| 2026-01-XX | Rejected GitHub Copilot | Not available on Open VSX, OAuth authentication problematic in containers | Manual VSIX install (fragile), Copilot CLI (different use case) |
 
 ---
 

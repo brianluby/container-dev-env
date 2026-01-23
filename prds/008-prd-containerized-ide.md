@@ -3,7 +3,7 @@
 > **Document Type:** Product Requirements Document  
 > **Audience:** LLM agents, human reviewers  
 > **Status:** In Progress <!-- Previously had spike results completed -->  
-> **Last Updated:** 2025-01-23 <!-- @auto -->  
+> **Last Updated:** 2026-01-23 <!-- @auto -->  
 > **Owner:** Brian <!-- @human-required -->
 
 ---
@@ -489,8 +489,8 @@ NEEDS HUMAN INPUT:
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 0.1 | 2025-01-21 | Brian | Initial draft with spike results |
-| 0.2 | 2025-01-23 | Claude | Migrated to PRD template v3 format |
+| 0.1 | 2026-01-21 | Brian | Initial draft with spike results |
+| 0.2 | 2026-01-23 | Claude | Migrated to PRD template v3 format |
 
 ---
 
@@ -498,16 +498,16 @@ NEEDS HUMAN INPUT:
 
 | Date | Decision | Rationale | Alternatives Considered |
 |------|----------|-----------|------------------------|
-| 2025-01-21 | Selected OpenVSCode-Server over code-server | Smaller footprint (848MB vs 1.12GB), lower RAM (23MB vs 37MB), closer upstream alignment | code-server (fallback), JetBrains Gateway (rejected—requires host client), VS Code Tunnels (rejected—requires MS account) |
-| 2025-01-21 | Use token auth over password auth | Simpler automation, environment variable injection | Password auth (available as alternative) |
-| 2025-01-21 | Defer HTTPS to reverse proxy | Separates concerns, simplifies certificate management | Embedded TLS (rejected—complexity) |
+| 2026-01-21 | Selected OpenVSCode-Server over code-server | Smaller footprint (848MB vs 1.12GB), lower RAM (23MB vs 37MB), closer upstream alignment | code-server (fallback), JetBrains Gateway (rejected—requires host client), VS Code Tunnels (rejected—requires MS account) |
+| 2026-01-21 | Use token auth over password auth | Simpler automation, environment variable injection | Password auth (available as alternative) |
+| 2026-01-21 | Defer HTTPS to reverse proxy | Separates concerns, simplifies certificate management | Embedded TLS (rejected—complexity) |
 
 ---
 
 ## Open Questions 🟡 `@human-review`
 
 - [x] **Q1:** Which web-based IDE best fits container-first requirements?
-  > **Resolved (2025-01-21):** OpenVSCode-Server selected based on spike results.
+  > **Resolved (2026-01-21):** OpenVSCode-Server selected based on spike results.
   > *(Added to Decision Log)*
 
 - [ ] **Q2:** What authentication strategy for multi-user team access?

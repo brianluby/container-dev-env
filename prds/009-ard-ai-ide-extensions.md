@@ -376,7 +376,7 @@ sequenceDiagram
 models:
   - name: claude-sonnet
     provider: anthropic
-    model: claude-sonnet-4-20250514
+    model: claude-sonnet-4-20260514
     apiKey: ${{ secrets.ANTHROPIC_API_KEY }}
 
   - name: gpt-4o
@@ -391,7 +391,7 @@ models:
 
 tabAutocompleteModel:
   provider: anthropic
-  model: claude-haiku-4-20250514
+  model: claude-haiku-4-20260514
 
 mcpServers:
   - name: filesystem

@@ -480,15 +480,15 @@ RUN go install github.com/opencode-ai/opencode@latest
 ## Open Questions 🟡 `@human-review`
 
 - [ ] **Q1:** Should the container pre-configure a default LLM provider, or require the user to specify one on first run?
-      **Resolved (2025-01-22):** Require user to specify on first run. Avoids shipping default API keys and forces intentional configuration. See Decision Log.
+      **Resolved (2026-01-22):** Require user to specify on first run. Avoids shipping default API keys and forces intentional configuration. See Decision Log.
 - [ ] **Q2:** Should Aider also be installed alongside OpenCode, or only documented as an alternative?
-      **Resolved (2025-01-22):** Document only. Reduces image size and avoids opinionated defaults
+      **Resolved (2026-01-22):** Document only. Reduces image size and avoids opinionated defaults
 - [ ] **Q3:** What is the maximum acceptable container image size increase from adding the AI agent tooling?
-      **Resolved (2025-01-22):** 3 GB total image size; OpenCode binary is ~30MB so well within limits
+      **Resolved (2026-01-22):** 3 GB total image size; OpenCode binary is ~30MB so well within limits
 - [ ] **Q4:** Should session history persist across container rebuilds (volume-mounted), or is in-container persistence sufficient?
-      **Resolved (2025-01-22):** In-container persistence sufficient for MVP; document volume mount option for advanced users
+      **Resolved (2026-01-22):** In-container persistence sufficient for MVP; document volume mount option for advanced users
 - [ ] **Q5:** How should the agent behave when the user's API key has insufficient credits/quota?
-      **Resolved (2025-01-22):** Fail fast with clear error message and link to provider dashboard. No retry loop.
+      **Resolved (2026-01-22):** Fail fast with clear error message and link to provider dashboard. No retry loop.
 ---
 
 ## Review Checklist 🟢 `@llm-autonomous`

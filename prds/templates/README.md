@@ -1,7 +1,7 @@
 # Spec-Kit Templates
 
 > **Version:** 3.0  
-> **Last Updated:** January 2025  
+> **Last Updated:** January 2026  
 > **Audience:** LLM agents, human product managers, engineers
 
 A spec-driven development framework for human-AI collaboration. These templates create structured requirements documents that both humans and LLM agents can work with effectively.
@@ -289,9 +289,9 @@ Recommended directory layout:
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | Jan 2025 | Initial templates |
-| 2.0 | Jan 2025 | Added review tier markers for Speckit automation |
-| 3.0 | Jan 2025 | Added traceability (requirement IDs, PRD cross-refs), Definition of Ready, Supply Chain section, Completion Order guidance, anti-hallucination guardrails |
+| 1.0 | Jan 2026 | Initial templates |
+| 2.0 | Jan 2026 | Added review tier markers for Speckit automation |
+| 3.0 | Jan 2026 | Added traceability (requirement IDs, PRD cross-refs), Definition of Ready, Supply Chain section, Completion Order guidance, anti-hallucination guardrails |
 
 ---
 
