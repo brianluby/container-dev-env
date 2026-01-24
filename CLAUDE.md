@@ -15,6 +15,13 @@ Auto-generated from all feature plans. Last updated: 2026-01-20
 - File-based (YAML, JSON, dotenv) persisted via Docker volumes (009-ai-ide-extensions)
 - Bash 5.x (scripts), YAML (configuration) + curl (HTTP client, in base image), jq (optional, for Slack JSON payloads), ntfy.sh API, Slack Webhooks API (016-mobile-access)
 - File-based — notify.yaml for service config and priority mapping; environment variables for secrets (access tokens, webhook URLs) (016-mobile-access)
+- Bash 5.x (helper scripts), Markdown (documentation format) + None (static Markdown files, no runtime dependencies) (014-project-knowledge)
+- File-based (`docs/` directory at project root, version-controlled) (014-project-knowledge)
+- Bash 5.x (optional helper script for ADR creation) + None (static Markdown files, no runtime dependencies) (014-project-knowledge)
+- Python 3.11+ (MCP server, embedding inference, CLI) + FastEmbed (embeddings), sqlite-vec (vector search), mcp SDK 1.x (server framework), pydantic (models) (013-persistent-memory)
+- SQLite with sqlite-vec extension (tactical), Markdown files (strategic) (013-persistent-memory)
+- Bash 5.x (config generation, validation scripts), Node.js 22.x LTS (MCP server runtime) + @modelcontextprotocol/server-filesystem 2026.1.14, @modelcontextprotocol/server-memory, @modelcontextprotocol/server-sequential-thinking, @upstash/context7-mcp 2.1.0, @modelcontextprotocol/server-github, @playwright/mcp (012-mcp-integration)
+- File-based JSON knowledge graph in Docker volume (`~/.local/share/mcp-memory/memory.json`) (012-mcp-integration)
 
 - Dockerfile (multi-stage), Bash for shell configuration + Debian Bookworm-slim base image, Python 3.14+, Node.js LTS (22.x) (001-container-base-image)
 
@@ -35,6 +42,10 @@ Dockerfile (multi-stage), Bash for shell configuration: Follow standard conventi
 
 ## Recent Changes
 - 016-mobile-access: Added Bash 5.x (scripts), YAML (configuration) + curl (HTTP client, in base image), jq (optional, for Slack JSON payloads), ntfy.sh API, Slack Webhooks API
+- 014-project-knowledge: Added Bash 5.x (optional helper script for ADR creation) + None (static Markdown files, no runtime dependencies)
+- 014-project-knowledge: Added Bash 5.x (helper scripts), Markdown (documentation format) + None (static Markdown files, no runtime dependencies)
+- 013-persistent-memory: Added Python 3.11+ (MCP server, embedding inference, CLI) + FastEmbed (embeddings), sqlite-vec (vector search), mcp SDK 1.x (server framework), pydantic (models)
+- 012-mcp-integration: Added Bash 5.x (config generation, validation scripts), Node.js 22.x LTS (MCP server runtime) + @modelcontextprotocol/server-filesystem 2026.1.14, @modelcontextprotocol/server-memory, @modelcontextprotocol/server-sequential-thinking, @upstash/context7-mcp 2.1.0, @modelcontextprotocol/server-github, @playwright/mcp
 - 010-project-context-files: Added Bash 5.x (bootstrap script), Markdown (content files) + None (static files + POSIX-compatible shell script)
 - 009-ai-ide-extensions: Added Bash 5.x (scripts), Dockerfile (container layer), Go templates (Chezmoi configs) + Continue v1.2.14, Cline v3.51.0, @modelcontextprotocol/server-filesystem 2026.1.14, mcp-server-git 2026.1.14 (Python)
 

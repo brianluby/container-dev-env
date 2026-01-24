@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MCP Memory Server Configuration",
+  "description": "Configuration contract for AI tools to connect to the memory MCP server",
+  "examples": {
+    "claude-code": {
+      "description": "Configuration for Claude Code (.mcp.json or claude_desktop_config.json)",
+      "config": {
+        "mcpServers": {
+          "memory": {
+            "command": "python",
+            "args": ["-m", "memory_server"],
+            "env": {
+              "MEMORY_DB_PATH": "${HOME}/.local/share/ai-memory/projects",
+              "MEMORY_WORKSPACE": "${workspaceFolder}",
+              "MEMORY_SOURCE_TOOL": "claude-code",
+              "MEMORY_LOG_LEVEL": "INFO"
+            }
+          }
+        }
+      }
+    },
+    "cline": {
+      "description": "Configuration for Cline (.cline/cline_mcp_settings.json)",
+      "config": {
+        "mcpServers": {
+          "memory": {
+            "command": "python",
+            "args": ["-m", "memory_server"],
+            "env": {
+              "MEMORY_DB_PATH": "${HOME}/.local/share/ai-memory/projects",
+              "MEMORY_WORKSPACE": "${workspaceFolder}",
+              "MEMORY_SOURCE_TOOL": "cline",
+              "MEMORY_LOG_LEVEL": "INFO"
+            },
+            "disabled": false,
+            "alwaysAllow": ["search_memories", "list_memories", "get_memory_stats"]
+          }
+        }
+      }
+    },
+    "continue": {
+      "description": "Configuration for Continue (continue/config.yaml mcpServers section)",
+      "config": {
+        "mcpServers": [
+          {
+            "name": "memory",
+            "command": "python",
+            "args": ["-m", "memory_server"],
+            "env": {
+              "MEMORY_DB_PATH": "${HOME}/.local/share/ai-memory/projects",
+              "MEMORY_WORKSPACE": "${workspaceFolder}",
+              "MEMORY_SOURCE_TOOL": "continue"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "environment_variables": {
+    "MEMORY_DB_PATH": {
+      "description": "Base directory for per-project SQLite databases",
+      "default": "${HOME}/.local/share/ai-memory/projects",
+      "required": false
+    },
+    "MEMORY_WORKSPACE": {
+      "description": "Current workspace path (used to derive project_id hash)",
+      "default": "${PWD}",
+      "required": true
+    },
+    "MEMORY_SOURCE_TOOL": {
+      "description": "Identifies which AI tool started this server instance (claude-code, cline, continue, opencode, unknown)",
+      "default": "unknown",
+      "required": false
+    },
+    "MEMORY_LOG_LEVEL": {
+      "description": "Logging verbosity (DEBUG, INFO, WARNING, ERROR)",
+      "default": "INFO",
+      "required": false
+    },
+    "MEMORY_RETENTION_DAYS": {
+      "description": "Override default retention period (overrides .memoryrc)",
+      "default": "30",
+      "required": false
+    },
+    "MEMORY_MAX_SIZE_MB": {
+      "description": "Override default size cap (overrides .memoryrc)",
+      "default": "500",
+      "required": false
+    }
+  },
+  "volume_mounts": {
+    "tactical_memory": {
+      "description": "Docker volume for persistent tactical memory databases",
+      "source": "ai-memory-data",
+      "target": "/home/developer/.local/share/ai-memory",
+      "type": "volume"
+    },
+    "workspace": {
+      "description": "Bind mount for workspace (contains .memory/ strategic files)",
+      "source": "${HOST_WORKSPACE}",
+      "target": "/workspace",
+      "type": "bind"
+    }
+  }
+}

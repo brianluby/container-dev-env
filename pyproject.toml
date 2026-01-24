@@ -1,0 +1,87 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "persistent-memory"
+version = "0.1.0"
+description = "Persistent memory system for AI coding agents"
+requires-python = ">=3.11"
+dependencies = [
+    "fastembed>=0.4.0,<1.0.0",
+    "sqlite-vec>=0.1.6,<1.0.0",
+    "mcp>=1.0.0,<2.0.0",
+    "pydantic>=2.0,<3.0.0",
+    "pyyaml>=6.0,<7.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+    "pytest-timeout>=2.3",
+    "mypy>=1.11",
+    "ruff>=0.7",
+    "pip-audit>=2.7",
+    "types-PyYAML>=6.0",
+]
+
+[project.scripts]
+memory-init = "memory_init.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/memory_server", "src/memory_init"]
+
+# T003: Ruff configuration
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "A",    # flake8-builtins
+    "S",    # flake8-bandit (security)
+    "T20",  # flake8-print
+    "RUF",  # ruff-specific
+]
+ignore = [
+    "S101",  # assert used in tests
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101", "S105", "S106", "S108", "S603", "S607", "B017", "B905"]
+"src/memory_server/__main__.py" = ["S108"]  # /tmp fallback is intentional
+
+# T003b: Mypy configuration
+[tool.mypy]
+strict = true
+packages = ["memory_server", "memory_init"]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = [
+    "fastembed.*",
+    "sqlite_vec.*",
+]
+ignore_missing_imports = true
+
+# T004: Pytest configuration
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+timeout = 30
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks integration tests",
+]
