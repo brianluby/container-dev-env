@@ -14,7 +14,7 @@ FROM python:3.14-slim-bookworm AS python-base
 # =============================================================================
 # Base image: Debian Bookworm-slim for glibc compatibility
 # Pinned to specific date tag for reproducibility (constitution principle V)
-FROM debian:bookworm-20250113-slim
+FROM debian:bookworm-20260112-slim
 
 # Build arguments for user configuration
 ARG USERNAME=dev
