@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "MCP Server Configuration for Container Dev Env",
+  "mcpServers": {
+    "filesystem": {
+      "command": "mcp-server-filesystem",
+      "args": ["/workspace"],
+      "enabled": true,
+      "description": "Secure file operations within allowed directories"
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@2.1.0"],
+      "env": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+      },
+      "enabled": true,
+      "description": "Up-to-date library documentation and code examples"
+    },
+    "memory": {
+      "command": "mcp-server-memory",
+      "env": {
+        "MEMORY_FILE_PATH": "/home/dev/.local/share/mcp-memory/memory.json"
+      },
+      "enabled": true,
+      "description": "Knowledge graph-based persistent memory"
+    },
+    "sequential-thinking": {
+      "command": "mcp-server-sequential-thinking",
+      "enabled": true,
+      "description": "Dynamic and reflective problem-solving"
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github@2026.1.14"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      },
+      "enabled": false,
+      "description": "GitHub API integration (requires personal access token)"
+    },
+    "git": {
+      "command": "python3",
+      "args": ["-m", "mcp_server_git", "--repository", "/workspace"],
+      "enabled": false,
+      "description": "Git repository introspection (diffs, history, branches)"
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@0.0.28"],
+      "enabled": false,
+      "description": "Browser automation (requires Chromium installation)"
+    }
+  }
+}

@@ -41,6 +41,17 @@ venv/
 *.egg-info/
 target/
 
+# Python tooling caches
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# SQLite tactical memory (never commit)
+*.db
+*.db-wal
+*.db-shm
+
 # BATS test artifacts
 tests/test_helper/
 tests/.bats/
+.claude/settings.local.json

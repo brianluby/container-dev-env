@@ -94,3 +94,10 @@ with AI coding tools (OpenCode, Claude Code) available out of the box.
 - Context files must be under 10KB
 - Run `.specify/scripts/bash/check-prerequisites.sh` before implementation work
 - Use absolute paths in scripts; avoid `cd` when possible
+
+## Project Knowledge
+
+Before implementing features that touch architectural boundaries, read
+docs/navigation.md for a map of documented architecture decisions, domain
+terminology, and design patterns. Check docs/decisions/ for relevant
+Architecture Decision Records before proposing new architectural approaches.

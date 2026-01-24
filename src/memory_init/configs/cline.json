@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "memory": {
+      "command": "python",
+      "args": ["-m", "memory_server"],
+      "env": {
+        "MEMORY_DB_PATH": "${HOME}/.local/share/ai-memory/projects",
+        "MEMORY_WORKSPACE": "${workspaceFolder}",
+        "MEMORY_SOURCE_TOOL": "cline",
+        "MEMORY_LOG_LEVEL": "INFO"
+      },
+      "disabled": false,
+      "alwaysAllow": ["search_memories", "list_memories", "get_memory_stats"]
+    }
+  }
+}
