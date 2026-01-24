@@ -7,6 +7,11 @@ Containerized development environment
 - **Dotfile Management**: Personal configuration via Chezmoi
 - **Secret Injection**: Secure handling of API keys, tokens, and credentials
 
+## Documentation
+
+- Getting started: [docs/getting-started.md](docs/getting-started.md)
+- Advanced guide: [docs/advanced-guide.md](docs/advanced-guide.md)
+
 ## Secret Injection
 
 Securely manage secrets (API keys, tokens, credentials) using age-encrypted dotfiles:
@@ -34,18 +39,18 @@ See [docs/secrets-guide.md](docs/secrets-guide.md) for complete documentation.
 
 1. Build the container:
    ```bash
-   docker-compose build
-   ```
+    docker compose -f docker/docker-compose.yml build
+    ```
 
 2. Start the container:
    ```bash
-   docker-compose up -d
-   ```
+    docker compose -f docker/docker-compose.yml up -d
+    ```
 
 3. Attach to the container:
    ```bash
-   docker-compose exec dev bash
-   ```
+    docker compose -f docker/docker-compose.yml exec dev bash
+    ```
 
 4. Set up secrets (first time only):
    ```bash

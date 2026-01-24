@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 # run-tests.sh — Executes all integration and contract tests, reports pass/fail
 #
 # Usage: ./tests/run-tests.sh [TEST_IMAGE]

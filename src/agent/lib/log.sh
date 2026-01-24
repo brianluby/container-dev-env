@@ -77,28 +77,38 @@ log_action() {
   target=$(_redact_credentials "${target}")
   details=$(_redact_credentials "${details}")
 
-  # Build JSON entry
+  # Build JSON entry using jq for safe escaping (FR-002)
   local timestamp
   timestamp=$(_get_timestamp)
 
-  local result_json
+  # Construct JSONL entry with jq — all user-controlled fields via --arg
+  local jq_args=(
+    -n -c
+    --arg timestamp "${timestamp}"
+    --arg action "${action}"
+    --arg target "${target}"
+    --arg details "${details}"
+  )
+
+  local jq_filter
   if [[ "${result}" == "null" ]]; then
-    result_json="null"
+    if [[ "${checkpoint_id}" == "null" ]]; then
+      jq_filter='{timestamp: $timestamp, action: $action, target: $target, details: $details, result: null, checkpoint_id: null}'
+    else
+      jq_args+=(--arg checkpoint_id "${checkpoint_id}")
+      jq_filter='{timestamp: $timestamp, action: $action, target: $target, details: $details, result: null, checkpoint_id: $checkpoint_id}'
+    fi
   else
-    result_json="\"${result}\""
+    jq_args+=(--arg result "${result}")
+    if [[ "${checkpoint_id}" == "null" ]]; then
+      jq_filter='{timestamp: $timestamp, action: $action, target: $target, details: $details, result: $result, checkpoint_id: null}'
+    else
+      jq_args+=(--arg checkpoint_id "${checkpoint_id}")
+      jq_filter='{timestamp: $timestamp, action: $action, target: $target, details: $details, result: $result, checkpoint_id: $checkpoint_id}'
+    fi
   fi
 
-  local checkpoint_json
-  if [[ "${checkpoint_id}" == "null" ]]; then
-    checkpoint_json="null"
-  else
-    checkpoint_json="\"${checkpoint_id}\""
-  fi
-
-  # Write JSONL entry (one JSON object per line)
-  printf '{"timestamp":"%s","action":"%s","target":"%s","details":"%s","result":%s,"checkpoint_id":%s}\n' \
-    "${timestamp}" "${action}" "${target}" "${details}" "${result_json}" "${checkpoint_json}" \
-    >> "${log_path}"
+  jq "${jq_args[@]}" "${jq_filter}" >> "${log_path}"
 }
 
 # read_log <session_id>

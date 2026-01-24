@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 # generate-configs.sh — Generate tool-native MCP config files from source config
 #
 # Reads the unified MCP source configuration and generates config files

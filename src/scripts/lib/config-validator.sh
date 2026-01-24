@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 # config-validator.sh — Validate voice-input settings.yaml against schema
 # Source this file after common.sh
 
