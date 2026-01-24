@@ -39,3 +39,31 @@ ide-test:
 	./tests/integration/test-ide-volumes.sh
 	./tests/integration/test-ide-resources.sh
 	./tests/contract/test-ide-interface.sh
+
+# ─── Notification System (016-mobile-access) ───────────────────────────
+
+NOTIFY_SRC := src/notify.sh src/notify-sanitize.sh
+
+## Lint notify scripts with shellcheck
+notify-lint:
+	shellcheck $(NOTIFY_SRC)
+
+## Format notify scripts with shfmt
+notify-format:
+	shfmt -w -i 2 -ci $(NOTIFY_SRC)
+
+## Check notify script formatting (CI mode)
+notify-format-check:
+	shfmt -d -i 2 -ci $(NOTIFY_SRC)
+
+## Run all notify tests
+notify-test:
+	bats tests/unit/ tests/integration/
+
+## Run notify unit tests only
+notify-test-unit:
+	bats tests/unit/
+
+## Run notify integration tests only
+notify-test-integration:
+	bats tests/integration/

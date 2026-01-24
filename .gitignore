@@ -54,3 +54,4 @@ target/
 # BATS test artifacts
 tests/test_helper/
 tests/.bats/
+.claude/settings.local.json
