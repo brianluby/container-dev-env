@@ -34,6 +34,7 @@ readonly VOLUME_DIRS=(
     "/home/dev/.npm"
     "/home/dev/.cache/pip"
     "/home/dev/.cargo/registry"
+    "/home/dev/.local/share/mcp-memory"
     "/workspace/node_modules"
     "/workspace/target"
 )
@@ -437,6 +438,26 @@ main() {
 
     # Log volume status (T019, T029)
     log_volume_status
+
+    # MCP server validation and config generation (012-mcp-integration, T018)
+    if [[ -f "/home/dev/.mcp/validate-mcp.sh" ]]; then
+        log_section "MCP Server Initialization"
+        # Validate MCP server availability (non-fatal: exit 3 = warnings only)
+        bash /home/dev/.mcp/validate-mcp.sh --quiet || {
+            local mcp_exit=$?
+            if [[ $mcp_exit -le 3 ]]; then
+                log_warning "MCP validation completed with warnings (exit $mcp_exit)"
+            else
+                log_error "MCP validation failed (exit $mcp_exit)"
+            fi
+        }
+        # Generate tool-native configs from source configuration
+        if [[ -f "/home/dev/.mcp/generate-configs.sh" ]]; then
+            bash /home/dev/.mcp/generate-configs.sh --quiet || {
+                log_warning "MCP config generation failed (non-fatal)"
+            }
+        fi
+    fi
 
     log_section "Container Ready"
 

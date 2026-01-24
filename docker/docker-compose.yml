@@ -113,6 +113,16 @@ services:
         source: cargo-target
         target: /workspace/target
 
+      # -----------------------------------------------------------------------
+      # MCP MEMORY (Named Volume) - 012-mcp-integration T039
+      # Type: volume
+      # Purpose: Persistent knowledge graph for Memory MCP server
+      # Persistence: Survives restarts, retains AI context across sessions
+      # -----------------------------------------------------------------------
+      - type: volume
+        source: mcp-memory
+        target: /home/dev/.local/share/mcp-memory
+
 
     # -----------------------------------------------------------------------
     # TEMPORARY FILES (tmpfs) - US4: Clean Temporary Storage (T049, T050)
@@ -198,3 +208,16 @@ volumes:
       com.devenv.type: "build"
       com.devenv.persistence: "project"
       com.devenv.safe-to-prune: "true"
+
+  # ---------------------------------------------------------------------------
+  # MCP MEMORY VOLUME (012-mcp-integration T039)
+  # ---------------------------------------------------------------------------
+  # Persistent knowledge graph for Memory MCP server
+  # Retains AI agent context (entities, relations) across container restarts
+  # ---------------------------------------------------------------------------
+  mcp-memory:
+    name: devenv-mcp-memory
+    labels:
+      com.devenv.type: "state"
+      com.devenv.persistence: "session"
+      com.devenv.safe-to-prune: "false"
