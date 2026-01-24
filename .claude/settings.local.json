@@ -57,7 +57,7 @@
       "Bash(git commit:*)",
       "Bash(bash:*)",
       "Bash(/Users/bluby/personal-repos/container-dev-env_specs/010-project-context-files/tests/bats/bin/bats --version)",
-      "Bash(/Users/bluby/personal-repos/container-dev-env_specs/010-project-context-files/tests/bats/bin/bats:*)"
+      "Bash(/Users/bluby/personal-repos/container-dev-env_specs/010-project-context-files/tests/bats/bin/bats:*)",
       "WebFetch(domain:pypi.org)",
       "Bash(curl:*)",
       "WebFetch(domain:cymulate.com)",
