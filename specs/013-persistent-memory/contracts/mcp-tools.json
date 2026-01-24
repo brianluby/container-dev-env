@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MCP Memory Server Tool Definitions",
+  "description": "Tool contracts for the persistent memory MCP server (013-persistent-memory)",
+  "version": "1.0.0",
+  "transport": "stdio",
+  "server_name": "memory",
+  "tools": [
+    {
+      "name": "store_memory",
+      "description": "Store a new memory entry with automatic embedding generation. Use this to capture decisions, patterns, observations, or errors from the current session.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "The context to remember (max 10,000 characters)",
+            "maxLength": 10000,
+            "minLength": 1
+          },
+          "entry_type": {
+            "type": "string",
+            "description": "Category of the memory entry",
+            "enum": ["decision", "pattern", "observation", "error", "context"]
+          },
+          "tags": {
+            "type": "array",
+            "description": "Optional tags for organization",
+            "items": { "type": "string" },
+            "maxItems": 10
+          }
+        },
+        "required": ["content", "entry_type"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "description": "Unique ID of stored entry" },
+          "status": { "type": "string", "enum": ["stored", "error"] },
+          "message": { "type": "string" }
+        },
+        "required": ["id", "status"]
+      }
+    },
+    {
+      "name": "search_memories",
+      "description": "Semantic search across tactical memory. Returns entries ranked by relevance to the query, using vector similarity.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Natural language search query",
+            "minLength": 1
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum results to return (default: 5)",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 5
+          },
+          "entry_type": {
+            "type": "string",
+            "description": "Filter by entry type (optional)",
+            "enum": ["decision", "pattern", "observation", "error", "context"]
+          },
+          "min_score": {
+            "type": "number",
+            "description": "Minimum similarity score threshold (0.0-1.0, default: 0.3)",
+            "minimum": 0.0,
+            "maximum": 1.0,
+            "default": 0.3
+          }
+        },
+        "required": ["query"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "content": { "type": "string" },
+                "entry_type": { "type": "string" },
+                "score": { "type": "number" },
+                "source_tool": { "type": "string" },
+                "created_at": { "type": "string", "format": "date-time" },
+                "tags": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          },
+          "total_matches": { "type": "integer" }
+        },
+        "required": ["results", "total_matches"]
+      }
+    },
+    {
+      "name": "list_memories",
+      "description": "List recent memory entries, optionally filtered by type. Returns entries in reverse chronological order.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "Maximum entries to return (default: 10)",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10
+          },
+          "entry_type": {
+            "type": "string",
+            "description": "Filter by entry type (optional)",
+            "enum": ["decision", "pattern", "observation", "error", "context"]
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Skip first N entries for pagination (default: 0)",
+            "minimum": 0,
+            "default": 0
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "entries": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "content": { "type": "string" },
+                "entry_type": { "type": "string" },
+                "source_tool": { "type": "string" },
+                "created_at": { "type": "string", "format": "date-time" },
+                "tags": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          },
+          "total_count": { "type": "integer" },
+          "has_more": { "type": "boolean" }
+        },
+        "required": ["entries", "total_count", "has_more"]
+      }
+    },
+    {
+      "name": "delete_memory",
+      "description": "Delete a specific memory entry by ID. Use this to remove accidentally captured sensitive information or irrelevant entries.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique ID of the memory entry to delete"
+          }
+        },
+        "required": ["id"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "enum": ["deleted", "not_found", "error"] },
+          "message": { "type": "string" }
+        },
+        "required": ["status"]
+      }
+    },
+    {
+      "name": "get_memory_stats",
+      "description": "Get statistics about the memory system for the current project. Includes entry counts, storage usage, and retention info.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "project_id": { "type": "string" },
+          "total_entries": { "type": "integer" },
+          "storage_size_mb": { "type": "number" },
+          "oldest_entry": { "type": "string", "format": "date-time" },
+          "newest_entry": { "type": "string", "format": "date-time" },
+          "entries_by_type": {
+            "type": "object",
+            "additionalProperties": { "type": "integer" }
+          },
+          "entries_by_tool": {
+            "type": "object",
+            "additionalProperties": { "type": "integer" }
+          },
+          "retention_config": {
+            "type": "object",
+            "properties": {
+              "retention_days": { "type": "integer" },
+              "max_size_mb": { "type": "integer" }
+            }
+          }
+        },
+        "required": ["project_id", "total_entries", "storage_size_mb"]
+      }
+    }
+  ]
+}
