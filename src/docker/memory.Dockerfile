@@ -19,9 +19,10 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies from lockfile
+# Pin uv to specific version to prevent supply-chain attacks
 WORKDIR /app
 COPY pyproject.toml uv.lock ./
-RUN pip install --no-cache-dir uv \
+RUN pip install --no-cache-dir uv==0.5.11 \
     && uv pip install --system --no-cache . \
     && pip uninstall -y uv
 

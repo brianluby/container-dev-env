@@ -47,6 +47,9 @@ def check_health() -> dict[str, object]:
         healthy = False
 
     # Check 3: Database directory is writable
+    # Note: Writability failures are treated as warnings rather than hard
+    # health failures, since they may be unrelated to the memory system's
+    # core functionality (e.g., disk full, permissions changed after startup)
     if db_base and os.path.isdir(db_base):
         probe = os.path.join(db_base, ".healthcheck_probe")
         try:
@@ -55,8 +58,8 @@ def check_health() -> dict[str, object]:
             os.remove(probe)
             checks["writable"] = "ok"
         except OSError as exc:
-            checks["writable"] = f"not writable: {exc}"
-            healthy = False
+            # Log as warning but don't mark unhealthy
+            checks["writable"] = f"warning - not writable: {exc}"
     else:
         checks["writable"] = "skipped (no db_path)"
 

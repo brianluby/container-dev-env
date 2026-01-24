@@ -31,15 +31,7 @@ def prune_expired(storage: MemoryStorage, retention_days: int) -> int:
     cutoff_iso = cutoff.isoformat()
 
     # Get all expired entry IDs
-    cursor = storage._conn.execute(
-        """
-        SELECT id FROM memory_entries
-        WHERE created_at < ?
-        ORDER BY created_at ASC
-        """,
-        (cutoff_iso,),
-    )
-    expired_ids = [row[0] for row in cursor.fetchall()]
+    expired_ids = storage.get_expired_entry_ids(cutoff_iso)
 
     if not expired_ids:
         return 0
@@ -74,18 +66,11 @@ def prune_oversized(storage: MemoryStorage, max_size_mb: int) -> int:
     deleted_count = 0
     while current_size > max_size_bytes:
         # Get the oldest entry
-        cursor = storage._conn.execute(
-            """
-            SELECT id FROM memory_entries
-            ORDER BY created_at ASC
-            LIMIT 1
-            """
-        )
-        row = cursor.fetchone()
-        if row is None:
+        oldest_id = storage.get_oldest_entry_id()
+        if oldest_id is None:
             break  # No more entries to delete
 
-        storage.delete_entry(row[0])
+        storage.delete_entry(oldest_id)
         deleted_count += 1
         current_size = storage.get_db_size()
 

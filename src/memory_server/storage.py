@@ -318,6 +318,45 @@ class MemoryStorage:
         }
 
     # ------------------------------------------------------------------
+    # Retention Operations
+    # ------------------------------------------------------------------
+
+    def get_expired_entry_ids(self, cutoff_iso: str) -> list[str]:
+        """Get entry IDs older than the specified cutoff timestamp.
+
+        Args:
+            cutoff_iso: ISO 8601 timestamp string (older entries will be returned).
+
+        Returns:
+            List of entry IDs ordered by created_at ascending (oldest first).
+        """
+        cursor = self._conn.execute(
+            """
+            SELECT id FROM memory_entries
+            WHERE created_at < ?
+            ORDER BY created_at ASC
+            """,
+            (cutoff_iso,),
+        )
+        return [row[0] for row in cursor.fetchall()]
+
+    def get_oldest_entry_id(self) -> str | None:
+        """Get the ID of the oldest entry in the database.
+
+        Returns:
+            Entry ID of the oldest entry, or None if no entries exist.
+        """
+        cursor = self._conn.execute(
+            """
+            SELECT id FROM memory_entries
+            ORDER BY created_at ASC
+            LIMIT 1
+            """
+        )
+        row = cursor.fetchone()
+        return row[0] if row else None
+
+    # ------------------------------------------------------------------
     # Embedding Operations
     # ------------------------------------------------------------------
 
@@ -414,6 +453,12 @@ def _serialize_vector(vector: list[float]) -> bytes:
     """Serialize a float vector to bytes for sqlite-vec storage.
 
     sqlite-vec expects vectors as compact binary (little-endian float32).
+
+    Cross-architecture compatibility: The '<' format specifier enforces
+    little-endian byte order, which is the native format for both arm64
+    and amd64 platforms. This ensures vectors written on one architecture
+    can be read correctly on another. SQLite databases are portable across
+    these architectures as long as byte order is explicit.
 
     Args:
         vector: List of floats to serialize.
