@@ -1,0 +1,54 @@
+# Voice Input Settings
+# Managed by Chezmoi — edit source template, not this file directly.
+# Schema: specs/015-voice-input/contracts/config-schema.yaml
+
+# Voice-to-text tool selection
+tool: {{ .voice_input_tool | default "superwhisper" }}
+
+# Whisper model size (larger = more accurate, slower)
+# Options: tiny, base, small, medium, large-v3, turbo
+whisper_model: {{ .voice_input_whisper_model | default "large-v3" }}
+
+# Push-to-talk activation key
+activation_shortcut: {{ .voice_input_activation_shortcut | default "RightCommand" }}
+
+# Activation mode: push_to_talk (hold to record) or toggle (press to start/stop)
+activation_mode: {{ .voice_input_activation_mode | default "push_to_talk" }}
+
+# Restrict all processing to local-only (no network calls)
+offline_only: {{ .voice_input_offline_only | default true }}
+
+# Transcription cleanup tier
+# Options: none, rules, local_llm, cloud
+cleanup_tier: {{ .voice_input_cleanup_tier | default "rules" }}
+
+{{- if eq (default "rules" .voice_input_cleanup_tier) "local_llm" }}
+# Ollama model for local LLM cleanup
+cleanup_local_llm_model: {{ .voice_input_cleanup_local_llm_model | default "phi3:mini" }}
+{{- end }}
+
+{{- if eq (default "rules" .voice_input_cleanup_tier) "cloud" }}
+# Cloud provider for cleanup (claude or openai)
+cleanup_cloud_provider: {{ .voice_input_cleanup_cloud_provider }}
+# Environment variable containing API key (never store key directly)
+cleanup_cloud_api_key_env: {{ .voice_input_cleanup_cloud_api_key_env }}
+{{- end }}
+
+# Paths to custom vocabulary files
+custom_vocab_paths:
+  - ~/.config/voice-input/vocabulary.yaml
+
+# Silence duration (ms) before auto-stopping dictation
+silence_timeout_ms: {{ .voice_input_silence_timeout_ms | default 1500 }}
+
+# Maximum recording time in seconds (safety limit)
+max_recording_duration_s: {{ .voice_input_max_recording_duration_s | default 300 }}
+
+# Primary spoken language (ISO 639-1 code)
+language: {{ .voice_input_language | default "en" }}
+
+# How transcribed text is delivered (only clipboard supported)
+output_method: clipboard
+
+# Show recording indicator (handled by voice tool natively)
+visual_feedback: {{ .voice_input_visual_feedback | default true }}

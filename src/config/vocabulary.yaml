@@ -1,0 +1,341 @@
+# Custom Vocabulary for Voice Input
+# Schema: specs/015-voice-input/contracts/vocabulary-schema.yaml
+# Add project-specific terms to improve transcription accuracy.
+
+version: "1"
+
+terms:
+  # ─── Technologies ──────────────────────────────────────────────────────────
+  - term: PostgreSQL
+    spoken_forms: ["postgres", "postgresql", "post gres"]
+    display_form: PostgreSQL
+    category: technology
+    project: global
+
+  - term: TypeScript
+    spoken_forms: ["typescript", "type script"]
+    display_form: TypeScript
+    category: technology
+    project: global
+
+  - term: JavaScript
+    spoken_forms: ["javascript", "java script"]
+    display_form: JavaScript
+    category: technology
+    project: global
+
+  - term: Node.js
+    spoken_forms: ["node", "node js", "nodejs"]
+    display_form: Node.js
+    category: technology
+    project: global
+
+  - term: GraphQL
+    spoken_forms: ["graphql", "graph ql", "graph q l"]
+    display_form: GraphQL
+    category: technology
+    project: global
+
+  - term: MongoDB
+    spoken_forms: ["mongodb", "mongo db", "mongo"]
+    display_form: MongoDB
+    category: technology
+    project: global
+
+  - term: Redis
+    spoken_forms: ["redis", "red is"]
+    display_form: Redis
+    category: technology
+    project: global
+
+  - term: Docker
+    spoken_forms: ["docker"]
+    display_form: Docker
+    category: technology
+    project: global
+
+  - term: Kubernetes
+    spoken_forms: ["kubernetes", "k8s", "k eights"]
+    display_form: Kubernetes
+    category: technology
+    project: global
+
+  - term: FastAPI
+    spoken_forms: ["fast api", "fastapi"]
+    display_form: FastAPI
+    category: technology
+    project: global
+
+  - term: SQLAlchemy
+    spoken_forms: ["sql alchemy", "sqlalchemy"]
+    display_form: SQLAlchemy
+    category: technology
+    project: global
+
+  - term: Pydantic
+    spoken_forms: ["pydantic", "py dantic"]
+    display_form: Pydantic
+    category: technology
+    project: global
+
+  - term: Terraform
+    spoken_forms: ["terraform", "terra form"]
+    display_form: Terraform
+    category: technology
+    project: global
+
+  - term: Webpack
+    spoken_forms: ["webpack", "web pack"]
+    display_form: Webpack
+    category: technology
+    project: global
+
+  - term: Nginx
+    spoken_forms: ["nginx", "engine x"]
+    display_form: Nginx
+    category: technology
+    project: global
+
+  - term: SQLite
+    spoken_forms: ["sqlite", "sq lite", "s q lite"]
+    display_form: SQLite
+    category: technology
+    project: global
+
+  - term: PyTorch
+    spoken_forms: ["pytorch", "py torch"]
+    display_form: PyTorch
+    category: technology
+    project: global
+
+  - term: TensorFlow
+    spoken_forms: ["tensorflow", "tensor flow"]
+    display_form: TensorFlow
+    category: technology
+    project: global
+
+  - term: Elasticsearch
+    spoken_forms: ["elasticsearch", "elastic search", "elastic"]
+    display_form: Elasticsearch
+    category: technology
+    project: global
+
+  - term: RabbitMQ
+    spoken_forms: ["rabbitmq", "rabbit mq", "rabbit m q"]
+    display_form: RabbitMQ
+    category: technology
+    project: global
+
+  # ─── Common Function Names ─────────────────────────────────────────────────
+  - term: getUserById
+    spoken_forms: ["get user by id", "get user by ID"]
+    display_form: getUserById
+    category: function_name
+    project: global
+
+  - term: getElementById
+    spoken_forms: ["get element by id", "get element by ID"]
+    display_form: getElementById
+    category: function_name
+    project: global
+
+  - term: addEventListener
+    spoken_forms: ["add event listener"]
+    display_form: addEventListener
+    category: function_name
+    project: global
+
+  - term: setTimeout
+    spoken_forms: ["set timeout", "set time out"]
+    display_form: setTimeout
+    category: function_name
+    project: global
+
+  - term: parseInt
+    spoken_forms: ["parse int", "parse integer"]
+    display_form: parseInt
+    category: function_name
+    project: global
+
+  - term: toString
+    spoken_forms: ["to string"]
+    display_form: toString
+    category: function_name
+    project: global
+
+  - term: forEach
+    spoken_forms: ["for each"]
+    display_form: forEach
+    category: function_name
+    project: global
+
+  - term: indexOf
+    spoken_forms: ["index of"]
+    display_form: indexOf
+    category: function_name
+    project: global
+
+  - term: hasOwnProperty
+    spoken_forms: ["has own property"]
+    display_form: hasOwnProperty
+    category: function_name
+    project: global
+
+  - term: isNullOrEmpty
+    spoken_forms: ["is null or empty"]
+    display_form: isNullOrEmpty
+    category: function_name
+    project: global
+
+  # ─── Domain Terms ──────────────────────────────────────────────────────────
+  - term: OAuth
+    spoken_forms: ["oauth", "o auth", "oh auth"]
+    display_form: OAuth
+    category: domain_term
+    project: global
+
+  - term: JWT
+    spoken_forms: ["jwt", "j w t", "json web token"]
+    display_form: JWT
+    category: domain_term
+    project: global
+
+  - term: REST
+    spoken_forms: ["rest", "restful"]
+    display_form: REST
+    category: domain_term
+    project: global
+
+  - term: CRUD
+    spoken_forms: ["crud", "c r u d"]
+    display_form: CRUD
+    category: domain_term
+    project: global
+
+  - term: ORM
+    spoken_forms: ["orm", "o r m", "object relational mapping"]
+    display_form: ORM
+    category: domain_term
+    project: global
+
+  - term: CI/CD
+    spoken_forms: ["ci cd", "c i c d", "continuous integration"]
+    display_form: CI/CD
+    category: domain_term
+    project: global
+
+  - term: DNS
+    spoken_forms: ["dns", "d n s", "domain name system"]
+    display_form: DNS
+    category: domain_term
+    project: global
+
+  - term: TLS
+    spoken_forms: ["tls", "t l s", "transport layer security"]
+    display_form: TLS
+    category: domain_term
+    project: global
+
+  - term: SSH
+    spoken_forms: ["ssh", "s s h", "secure shell"]
+    display_form: SSH
+    category: domain_term
+    project: global
+
+  - term: UUID
+    spoken_forms: ["uuid", "u u i d", "unique id"]
+    display_form: UUID
+    category: domain_term
+    project: global
+
+  - term: regex
+    spoken_forms: ["regex", "regular expression", "reg ex"]
+    display_form: regex
+    category: domain_term
+    project: global
+
+  - term: middleware
+    spoken_forms: ["middleware", "middle ware"]
+    display_form: middleware
+    category: domain_term
+    project: global
+
+  - term: webhook
+    spoken_forms: ["webhook", "web hook"]
+    display_form: webhook
+    category: domain_term
+    project: global
+
+  - term: localhost
+    spoken_forms: ["localhost", "local host"]
+    display_form: localhost
+    category: domain_term
+    project: global
+
+  - term: endpoint
+    spoken_forms: ["endpoint", "end point"]
+    display_form: endpoint
+    category: domain_term
+    project: global
+
+  # ─── Variable/Pattern Names ────────────────────────────────────────────────
+  - term: camelCase
+    spoken_forms: ["camel case"]
+    display_form: camelCase
+    category: variable_name
+    project: global
+
+  - term: snake_case
+    spoken_forms: ["snake case"]
+    display_form: snake_case
+    category: variable_name
+    project: global
+
+  - term: PascalCase
+    spoken_forms: ["pascal case"]
+    display_form: PascalCase
+    category: variable_name
+    project: global
+
+  - term: kebab-case
+    spoken_forms: ["kebab case"]
+    display_form: kebab-case
+    category: variable_name
+    project: global
+
+  - term: SCREAMING_SNAKE_CASE
+    spoken_forms: ["screaming snake case", "all caps snake case"]
+    display_form: SCREAMING_SNAKE_CASE
+    category: variable_name
+    project: global
+
+  # ─── Container Dev Env Project Terms ───────────────────────────────────────
+  - term: container-dev-env
+    spoken_forms: ["container dev env", "container dev environment"]
+    display_form: container-dev-env
+    category: project_name
+    project: container-dev-env
+
+  - term: Chezmoi
+    spoken_forms: ["chezmoi", "chez moi", "shez mwa"]
+    display_form: Chezmoi
+    category: technology
+    project: container-dev-env
+
+  - term: Superwhisper
+    spoken_forms: ["superwhisper", "super whisper"]
+    display_form: Superwhisper
+    category: technology
+    project: container-dev-env
+
+  - term: VoiceInk
+    spoken_forms: ["voiceink", "voice ink"]
+    display_form: VoiceInk
+    category: technology
+    project: container-dev-env
+
+  - term: Ollama
+    spoken_forms: ["ollama", "oh llama"]
+    display_form: Ollama
+    category: technology
+    project: container-dev-env
