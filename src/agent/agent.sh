@@ -606,8 +606,12 @@ main() {
       echo "Error: --serve is only supported with the OpenCode backend" >&2
       exit ${EXIT_INVALID_ARGS}
     fi
+    if [[ -z "${OPENCODE_SERVER_PASSWORD:-}" ]]; then
+      echo "[ERROR] agent: Server mode requires OPENCODE_SERVER_PASSWORD to be configured" >&2
+      exit ${EXIT_ERROR}
+    fi
     echo "Starting headless server on port 4096..."
-    exec opencode serve
+    exec opencode serve --host 127.0.0.1
   fi
 
   # Handle --resume mode
@@ -649,11 +653,11 @@ main() {
   # Set up signal handlers for session persistence
   trap '_on_signal "${session_id}"' SIGTERM SIGINT
 
-  # Build and execute backend command
-  local cmd exit_code=0
-  cmd=$(build_backend_command "${backend}" "${AGENT_CFG_MODE}" "${TASK_DESCRIPTION}")
+  # Build and execute backend command (array-based, no eval — FR-001)
+  local exit_code=0
+  build_backend_command "${backend}" "${AGENT_CFG_MODE}" "${TASK_DESCRIPTION}"
   echo "Launching ${backend} (mode: ${AGENT_CFG_MODE})..."
-  eval "${cmd}" || exit_code=$?
+  "${AGENT_CMD[@]}" || exit_code=$?
 
   # Update session on completion
   if [[ ${exit_code} -eq 0 ]]; then

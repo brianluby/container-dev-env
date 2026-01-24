@@ -121,7 +121,8 @@ write_encrypted_content() {
     # This is critical because temp_file contains unencrypted secrets
     trap "rm -f '$temp_file'" EXIT INT TERM ERR
 
-    echo "$content" > "$temp_file"
+    # Use printf to avoid echo's interpretation of backslashes (FR-011)
+    printf '%s\n' "$content" > "$temp_file"
 
     # Remove existing and re-add with encryption
     local source_file="${SECRETS_CHEZMOI_SOURCE}/${SECRETS_ENCRYPTED_FILE}"
@@ -183,11 +184,15 @@ cmd_add() {
     local content
     content=$(get_decrypted_content)
 
-    # Check if key already exists
-    if echo "$content" | grep -q "^${key}="; then
-        # Update existing key
+    # Check if key already exists (use printf to avoid echo backslash issues — FR-011)
+    if printf '%s\n' "$content" | grep -q "^${key}="; then
+        # Update existing key — use awk to avoid sed delimiter conflicts (FR-011)
         log_info "Updating existing key: $key"
-        content=$(echo "$content" | sed "s|^${key}=.*|${key}=${value}|")
+        content=$(printf '%s\n' "$content" | awk -v key="${key}" -v val="${value}" '
+            BEGIN { FS=""; OFS="" }
+            index($0, key "=") == 1 { print key "=" val; next }
+            { print }
+        ')
     else
         # Add new key
         log_info "Adding new key: $key"
@@ -214,14 +219,14 @@ cmd_remove() {
     local content
     content=$(get_decrypted_content)
 
-    # Check if key exists
-    if ! echo "$content" | grep -q "^${key}="; then
+    # Check if key exists (use printf to avoid echo backslash issues — FR-011)
+    if ! printf '%s\n' "$content" | grep -q "^${key}="; then
         log_error "Key '$key' not found in secrets file"
         exit 4
     fi
 
-    # Remove the key
-    content=$(echo "$content" | grep -v "^${key}=")
+    # Remove the key (use printf to avoid echo backslash issues — FR-011)
+    content=$(printf '%s\n' "$content" | grep -v "^${key}=")
 
     # Write back
     write_encrypted_content "$content"
@@ -243,7 +248,7 @@ cmd_list() {
     fi
 
     # Extract and print key names only (never values)
-    echo "$content" | while IFS= read -r line || [[ -n "$line" ]]; do
+    printf '%s\n' "$content" | while IFS= read -r line || [[ -n "$line" ]]; do
         # Skip empty lines and comments
         [[ -z "$line" ]] && continue
         [[ "$line" =~ ^[[:space:]]*# ]] && continue
@@ -252,8 +257,8 @@ cmd_list() {
         # Extract and print key
         if [[ "$line" =~ = ]]; then
             local key="${line%%=*}"
-            key=$(echo "$key" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-            echo "$key"
+            key=$(printf '%s' "$key" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+            printf '%s\n' "$key"
         fi
     done
 }

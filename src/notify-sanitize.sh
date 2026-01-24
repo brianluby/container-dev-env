@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 # notify-sanitize.sh — Content sanitization functions for notify.sh
 # Sourced by notify.sh before sending notifications
 # See: specs/016-mobile-access/data-model.md ContentSanitizer

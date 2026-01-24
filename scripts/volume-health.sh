@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 # =============================================================================
 # Volume Health Diagnostic Script (T058)
 # Feature: 004-volume-architecture

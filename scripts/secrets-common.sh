@@ -44,6 +44,23 @@ else
 fi
 
 # =============================================================================
+# Standardized Diagnostic Output (FR-016)
+# =============================================================================
+
+# _log_msg <level> <component> <message>
+# Emits a standardized diagnostic message to stderr.
+# Format: [LEVEL] component: message
+# Usage:
+#   _log_msg ERROR secrets "File not readable"
+#   _log_msg WARN agent "Missing optional config"
+_log_msg() {
+    local level="$1"
+    local component="$2"
+    shift 2
+    printf '[%s] %s: %s\n' "${level}" "${component}" "$*" >&2
+}
+
+# =============================================================================
 # Logging Functions (T005)
 # =============================================================================
 

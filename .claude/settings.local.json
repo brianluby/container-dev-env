@@ -68,7 +68,16 @@
       "Bash(export ANTHROPIC_API_KEY=\"sk-ant-test123\")",
       "Bash(echo:*)",
       "Bash(for:*)",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(test:*)",
+      "Bash(tests/unit/.bats-battery/bats-core/bin/bats tests/unit/test_agent_injection.bats)",
+      "Bash(tests/unit/.bats-battery/bats-core/bin/bats tests/unit/test_json_escape.bats)",
+      "mcp__filesystem__write_file",
+      "Bash(tests/unit/.bats-battery/bats-core/bin/bats:*)",
+      "Bash(while read f)",
+      "Bash(do if ! head -15 \"$f\")",
+      "Bash(then echo \"$f\")",
+      "Bash(fi)"
     ]
   }
 }

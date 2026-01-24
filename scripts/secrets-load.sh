@@ -1,7 +1,9 @@
 #!/bin/bash
 # secrets-load.sh - Runtime secret loader for container entrypoint
 #
-# Loads decrypted secrets from ~/.secrets.env as environment variables.
+# Loads decrypted secrets from ~/.secrets.env as environment variables
+# using safe line-by-line parsing (no source/eval — FR-004/005/006).
+#
 # Designed to be sourced by the container entrypoint before executing
 # the main command.
 #
@@ -20,11 +22,11 @@
 #
 # Exit codes:
 #   0 - Secrets loaded successfully (or file doesn't exist)
-#   1 - Secrets file exists but is malformed
+#   1 - Secrets file exists but is malformed or has unsafe permissions
 #   2 - Secrets file exists but is unreadable
 
 # Determine if we're being sourced or executed
-_SECRETS_LOAD_SOURCED=false
+_SECRETS_LOAD_SOURCED="${_SECRETS_LOAD_SOURCED:-false}"
 if [[ "${BASH_SOURCE[0]}" != "${0}" ]]; then
     _SECRETS_LOAD_SOURCED=true
 fi
@@ -37,14 +39,20 @@ fi
 # Source shared utilities
 _SECRETS_LOAD_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [[ -f "${_SECRETS_LOAD_SCRIPT_DIR}/secrets-common.sh" ]]; then
+    # shellcheck source=scripts/secrets-common.sh
     source "${_SECRETS_LOAD_SCRIPT_DIR}/secrets-common.sh"
 else
     # Minimal fallback if common.sh not available (e.g., in container without full scripts/)
+    _log_msg() {
+        local level="$1"
+        local component="$2"
+        shift 2
+        printf '[%s] %s: %s\n' "${level}" "${component}" "$*" >&2
+    }
     log_info() { echo "[secrets-load] $*"; }
     log_warn() { echo "[secrets-load] WARNING: $*" >&2; }
     log_error() { echo "[secrets-load] ERROR: $*" >&2; }
     SECRETS_DEFAULT_FILE="${HOME}/.secrets.env"
-    SECRETS_NAME_PATTERN='^[A-Z][A-Z0-9_]*$'
 fi
 
 # =============================================================================
@@ -78,7 +86,7 @@ OPTIONS:
 
 EXIT CODES:
     0 - Secrets loaded successfully (or file doesn't exist)
-    1 - Secrets file exists but is malformed
+    1 - Secrets file exists but is malformed or has unsafe permissions
     2 - Secrets file exists but is unreadable
 
 EXAMPLES:
@@ -94,7 +102,7 @@ EOF
 }
 
 # =============================================================================
-# Argument Parsing (T021, T022, T023)
+# Argument Parsing
 # =============================================================================
 
 _secrets_load_parse_args() {
@@ -110,7 +118,7 @@ _secrets_load_parse_args() {
                 ;;
             --secrets-file)
                 if [[ -z "${2:-}" ]]; then
-                    log_error "--secrets-file requires a path argument"
+                    _log_msg ERROR secrets "--secrets-file requires a path argument"
                     return 1
                 fi
                 _SECRETS_FILE="$2"
@@ -121,8 +129,8 @@ _secrets_load_parse_args() {
                 shift
                 ;;
             *)
-                log_error "Unknown option: $1"
-                log_error "Use --help for usage information"
+                _log_msg ERROR secrets "Unknown option: $1"
+                _log_msg ERROR secrets "Use --help for usage information"
                 return 1
                 ;;
         esac
@@ -130,98 +138,147 @@ _secrets_load_parse_args() {
 }
 
 # =============================================================================
-# Core Functions (T017-T024)
+# Core: Safe Secrets Loader (FR-004/005/006/014/017)
 # =============================================================================
 
-# Validate a single line and return error info
-# Sets global _SECRETS_VALIDATE_ERROR on failure
-_secrets_validate_line() {
-    local line="$1"
-    local line_num="$2"
-    _SECRETS_VALIDATE_ERROR=""
+# Check file permissions are secure (not world-readable, not group-writable)
+# Returns: 0 if permissions are acceptable, 1 if not
+_secrets_check_permissions() {
+    local file="$1"
+    local perms
 
-    # Empty lines are valid
-    [[ -z "$line" ]] && return 0
+    # Get octal permissions (macOS vs Linux stat syntax)
+    if stat -f '%Lp' "$file" &>/dev/null; then
+        # macOS: stat -f '%Lp' gives octal like "600"
+        perms="$(stat -f '%Lp' "$file")"
+    else
+        # Linux: stat -c '%a' gives octal like "600"
+        perms="$(stat -c '%a' "$file")"
+    fi
 
-    # Comments are valid
-    [[ "$line" =~ ^[[:space:]]*# ]] && return 0
-
-    # Whitespace-only lines are valid
-    [[ "$line" =~ ^[[:space:]]*$ ]] && return 0
-
-    # Must contain equals sign
-    if [[ ! "$line" =~ = ]]; then
-        _SECRETS_VALIDATE_ERROR="Line ${line_num}: Missing '=' - not a valid KEY=value format"
+    # Check world-readable (other-read bit): last digit includes 4
+    local other_bits="${perms: -1}"
+    if (( other_bits & 4 )); then
+        _log_msg ERROR secrets "File is world-readable (mode ${perms}): $file"
         return 1
     fi
 
-    # Extract and validate key
-    local key="${line%%=*}"
-    key=$(echo "$key" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-
-    if [[ -z "$key" ]]; then
-        _SECRETS_VALIDATE_ERROR="Line ${line_num}: Empty key name"
-        return 1
+    # Check group-writable (group-write bit): middle digit includes 2
+    local group_bits
+    if [[ "${#perms}" -eq 3 ]]; then
+        group_bits="${perms:1:1}"
+    elif [[ "${#perms}" -ge 4 ]]; then
+        group_bits="${perms:2:1}"
+    else
+        group_bits="0"
     fi
-
-    if [[ ! "$key" =~ $SECRETS_NAME_PATTERN ]]; then
-        _SECRETS_VALIDATE_ERROR="Line ${line_num}: Invalid key '${key}' - must match ${SECRETS_NAME_PATTERN}"
+    if (( group_bits & 2 )); then
+        _log_msg ERROR secrets "File is group-writable (mode ${perms}): $file"
         return 1
     fi
 
     return 0
 }
 
-# Validate the secrets file (T018, T019, T024)
-_secrets_validate_file() {
+# Safe line-by-line secrets loader (FR-004/005/006)
+# Parses KEY=VALUE pairs without using source/eval.
+# Validates keys, rejects command substitution patterns, checks permissions.
+#
+# Usage: _secrets_load_safe "/path/to/secrets.env"
+# Returns: 0 on success, 1 on permission/fatal error
+_secrets_load_safe() {
     local file="$1"
-    local line_num=0
-    local var_count=0
-    local errors=0
+    local loaded=0
+    local warnings=0
 
+    # Key validation regex: uppercase letters, digits, or underscores
+    local key_pattern='^[A-Z_][A-Z0-9_]*$'
+
+    # Step 1: Check file permissions (before any parsing)
+    if ! _secrets_check_permissions "$file"; then
+        return 1
+    fi
+
+    # Step 2: Parse line by line using safe read (no source/eval)
     while IFS= read -r line || [[ -n "$line" ]]; do
-        ((line_num++))
 
-        if ! _secrets_validate_line "$line" "$line_num"; then
-            log_error "$_SECRETS_VALIDATE_ERROR"
-            ((errors++))
-        elif [[ "$line" =~ = ]] && [[ ! "$line" =~ ^[[:space:]]*# ]]; then
-            ((var_count++))
+        # Skip blank lines
+        [[ -z "$line" ]] && continue
+
+        # Skip whitespace-only lines
+        [[ "$line" =~ ^[[:space:]]*$ ]] && continue
+
+        # Skip comment lines
+        [[ "$line" =~ ^[[:space:]]*# ]] && continue
+
+        # Split on first = only using parameter expansion
+        local key="${line%%=*}"
+        local value="${line#*=}"
+
+        # If there was no = in the line, key == line
+        if [[ "$key" == "$line" ]]; then
+            _log_msg WARN secrets "Line has no '=' delimiter, skipping"
+            warnings=$((warnings + 1))
+            continue
         fi
+
+        # Handle empty key
+        if [[ -z "$key" || "$key" =~ ^[[:space:]]*$ ]]; then
+            _log_msg WARN secrets "Empty key name, skipping"
+            warnings=$((warnings + 1))
+            continue
+        fi
+
+        # Trim whitespace from key
+        key="${key#"${key%%[![:space:]]*}"}"
+        key="${key%"${key##*[![:space:]]}"}"
+
+        # Validate key against pattern
+        if [[ ! "$key" =~ $key_pattern ]]; then
+            _log_msg WARN secrets "Invalid key '${key}' (must match ${key_pattern}), skipping"
+            warnings=$((warnings + 1))
+            continue
+        fi
+
+        # Step 3: Check value for dangerous patterns
+        # Reject $( ... ) command substitution
+        if [[ "$value" == *'$('* ]]; then
+            _log_msg WARN secrets "Value for '${key}' contains command substitution \$(), skipping"
+            warnings=$((warnings + 1))
+            continue
+        fi
+
+        # Reject ${ ... } variable expansion
+        if [[ "$value" == *'${'* ]]; then
+            _log_msg WARN secrets "Value for '${key}' contains variable expansion \${}, skipping"
+            warnings=$((warnings + 1))
+            continue
+        fi
+
+        # Reject backtick command substitution
+        if [[ "$value" == *'`'* ]]; then
+            _log_msg WARN secrets "Value for '${key}' contains backtick substitution, skipping"
+            warnings=$((warnings + 1))
+            continue
+        fi
+
+        # Step 4: Export the validated key=value pair safely (no eval)
+        export "${key}=${value}"
+        loaded=$((loaded + 1))
+
     done < "$file"
 
-    if [[ $errors -gt 0 ]]; then
-        log_error "Found $errors validation error(s) in $file"
-        log_error "Fix the file and restart the container"
-        return 1
-    fi
-
-    echo "$var_count"
-    return 0
-}
-
-# Load secrets as environment variables (T020)
-_secrets_load() {
-    local file="$1"
-    local var_count
-
-    # Validate first
-    var_count=$(_secrets_validate_file "$file") || return 1
-
-    # Load the variables using set -a (export all)
-    set -a
-    # shellcheck disable=SC1090
-    source "$file"
-    set +a
-
-    if [[ "$_SECRETS_QUIET" == "false" ]]; then
-        log_info "Loaded $var_count environment variable(s)"
+    if [[ "$_SECRETS_QUIET" == "false" && "$loaded" -gt 0 ]]; then
+        _log_msg INFO secrets "Loaded ${loaded} environment variable(s)"
     fi
 
     return 0
 }
 
-# Main logic
+# =============================================================================
+# Main Logic
+# =============================================================================
+
 _secrets_load_main() {
     # Parse arguments if any
     if [[ $# -gt 0 ]]; then
@@ -232,34 +289,36 @@ _secrets_load_main() {
         }
     fi
 
-    # Check if secrets file exists (T018)
+    # Check if secrets file exists
     if [[ ! -f "$_SECRETS_FILE" ]]; then
         if [[ "$_SECRETS_QUIET" == "false" ]]; then
-            log_info "No secrets file found at $_SECRETS_FILE (skipping)"
+            _log_msg INFO secrets "No secrets file found at $_SECRETS_FILE (skipping)"
         fi
         return 0
     fi
 
     # Check if file is readable
     if [[ ! -r "$_SECRETS_FILE" ]]; then
-        log_error "Secrets file not readable: $_SECRETS_FILE"
+        _log_msg ERROR secrets "Secrets file not readable: $_SECRETS_FILE"
         return 2
     fi
 
     if [[ "$_SECRETS_QUIET" == "false" ]]; then
-        log_info "Loading secrets from $_SECRETS_FILE"
+        _log_msg INFO secrets "Loading secrets from $_SECRETS_FILE"
     fi
 
-    # Check-only mode (T021)
+    # Check-only mode
     if [[ "$_SECRETS_CHECK_ONLY" == "true" ]]; then
-        local var_count
-        var_count=$(_secrets_validate_file "$_SECRETS_FILE") || return 1
-        log_info "Secrets file is valid ($var_count variable(s) defined)"
-        return 0
+        if _secrets_load_safe "$_SECRETS_FILE"; then
+            _log_msg INFO secrets "Secrets file is valid"
+            return 0
+        else
+            return 1
+        fi
     fi
 
-    # Load the secrets
-    _secrets_load "$_SECRETS_FILE" || return 1
+    # Load the secrets using safe parser
+    _secrets_load_safe "$_SECRETS_FILE" || return 1
 
     return 0
 }
@@ -268,17 +327,9 @@ _secrets_load_main() {
 # Execution
 # =============================================================================
 
-# Always run main when sourced or executed
-# This allows: source secrets-load.sh --quiet
-_secrets_load_main "$@"
-_SECRETS_LOAD_RC=$?
-
-# If executed (not sourced), exit with the return code
+# Only run main automatically if NOT being sourced for testing
+# When _SECRETS_LOAD_SOURCED is set before sourcing (test mode), skip auto-exec
 if [[ "$_SECRETS_LOAD_SOURCED" == "false" ]]; then
-    exit $_SECRETS_LOAD_RC
+    _secrets_load_main "$@"
+    exit $?
 fi
-
-# If sourced and there was an error, we can't exit (would exit the parent shell)
-# Instead, the sourcing script should check the return value
-# Return the code for the sourcing script to handle
-return $_SECRETS_LOAD_RC 2>/dev/null || true

@@ -120,8 +120,10 @@ get_required_api_key_for_backend() {
 }
 
 # build_backend_command <backend> <mode> <task_description>
-# Constructs the command array for launching the selected backend
-# Outputs the command string to stdout
+# Populates the global AGENT_CMD array for launching the selected backend.
+# The task description is always a single array element — never interpreted.
+# Usage: build_backend_command "opencode" "auto" "$task"
+#        "${AGENT_CMD[@]}"
 build_backend_command() {
   local backend="$1"
   local mode="$2"
@@ -129,16 +131,15 @@ build_backend_command() {
 
   case "${backend}" in
     opencode)
-      local cmd="opencode run"
       # Mode is handled by config file, not CLI flags for opencode
-      echo "${cmd} \"${task}\""
+      AGENT_CMD=(opencode run "${task}")
       ;;
     claude)
-      local cmd="claude -p"
       if [[ "${mode}" == "auto" ]]; then
-        cmd="claude --dangerously-skip-permissions -p"
+        AGENT_CMD=(claude --dangerously-skip-permissions -p "${task}")
+      else
+        AGENT_CMD=(claude -p "${task}")
       fi
-      echo "${cmd} \"${task}\""
       ;;
   esac
 }

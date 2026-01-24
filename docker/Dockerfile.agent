@@ -20,16 +20,23 @@ USER root
 
 # Install OpenCode from pinned version (direct binary download)
 # Architecture auto-detected via uname -m
+# Checksum verification per Feature 017 (Codebase Hardening)
+# TODO: Replace placeholder checksums with actual SHA256 hashes once obtained
+#       from https://github.com/anomalyco/opencode/releases/download/v0.5.2/
+ARG OPENCODE_SHA256_AMD64=0000000000000000000000000000000000000000000000000000000000000000
+ARG OPENCODE_SHA256_ARM64=0000000000000000000000000000000000000000000000000000000000000000
 RUN set -eux; \
     ARCH="$(uname -m)"; \
     case "${ARCH}" in \
-      x86_64)  ARCH_LABEL="amd64" ;; \
-      aarch64) ARCH_LABEL="arm64" ;; \
-      arm64)   ARCH_LABEL="arm64" ;; \
+      x86_64)  ARCH_LABEL="amd64"; CHECKSUM="${OPENCODE_SHA256_AMD64}" ;; \
+      aarch64) ARCH_LABEL="arm64"; CHECKSUM="${OPENCODE_SHA256_ARM64}" ;; \
+      arm64)   ARCH_LABEL="arm64"; CHECKSUM="${OPENCODE_SHA256_ARM64}" ;; \
       *)       echo "Unsupported architecture: ${ARCH}" >&2; exit 1 ;; \
     esac; \
     curl -fsSL "https://github.com/anomalyco/opencode/releases/download/v${OPENCODE_VERSION}/opencode-linux-${ARCH_LABEL}" \
-      -o /usr/local/bin/opencode; \
+      -o /tmp/opencode; \
+    echo "${CHECKSUM}  /tmp/opencode" | sha256sum -c -; \
+    mv /tmp/opencode /usr/local/bin/opencode; \
     chmod +x /usr/local/bin/opencode
 
 # Install Claude Code (optional, from pinned version)

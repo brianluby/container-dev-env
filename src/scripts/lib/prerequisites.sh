@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 # prerequisites.sh — Platform and tool prerequisite checks
 # Source this file after common.sh
 

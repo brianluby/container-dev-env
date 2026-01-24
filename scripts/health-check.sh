@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 # Container Dev Env - Health Check Script
 # Validates that core tools are available and functional
 # Used by HEALTHCHECK instruction for orchestration tools

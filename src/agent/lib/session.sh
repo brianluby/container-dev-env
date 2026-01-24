@@ -42,28 +42,41 @@ create_session() {
 
   mkdir -p "$(dirname "${session_path}")"
 
-  cat > "${session_path}" <<EOF
-{
-  "id": "${session_id}",
-  "backend": "${backend}",
-  "started_at": "${started_at}",
-  "ended_at": null,
-  "status": "active",
-  "task_description": "${task_description}",
-  "approval_mode": "${approval_mode}",
-  "workspace": "$(pwd)",
-  "checkpoints": [],
-  "token_usage": {
-    "input_tokens": 0,
-    "output_tokens": 0,
-    "total_tokens": 0,
-    "estimated_cost_usd": 0.0,
-    "model": "",
-    "provider": ""
-  },
-  "action_log_path": "${AGENT_STATE_DIR:-${HOME}/.local/share/agent}/logs/${session_id}.jsonl"
-}
-EOF
+  local workspace
+  workspace="$(pwd)"
+  local action_log_path="${AGENT_STATE_DIR:-${HOME}/.local/share/agent}/logs/${session_id}.jsonl"
+
+  # Use jq for safe JSON construction — all user-controlled strings passed via --arg (FR-002)
+  local tmp="${session_path}.tmp"
+  jq -n \
+    --arg id "${session_id}" \
+    --arg backend "${backend}" \
+    --arg started_at "${started_at}" \
+    --arg task_description "${task_description}" \
+    --arg approval_mode "${approval_mode}" \
+    --arg workspace "${workspace}" \
+    --arg action_log_path "${action_log_path}" \
+    '{
+      id: $id,
+      backend: $backend,
+      started_at: $started_at,
+      ended_at: null,
+      status: "active",
+      task_description: $task_description,
+      approval_mode: $approval_mode,
+      workspace: $workspace,
+      checkpoints: [],
+      token_usage: {
+        input_tokens: 0,
+        output_tokens: 0,
+        total_tokens: 0,
+        estimated_cost_usd: 0.0,
+        model: "",
+        provider: ""
+      },
+      action_log_path: $action_log_path
+    }' > "${tmp}"
+  mv "${tmp}" "${session_path}"
 
   echo "${session_id}"
 }

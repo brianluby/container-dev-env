@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 # =============================================================================
 # Container Entrypoint Script - Volume Architecture
 # Feature: 004-volume-architecture
