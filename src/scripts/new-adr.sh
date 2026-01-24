@@ -86,10 +86,21 @@ FILEPATH="${DOCS_DIR}/${FILENAME}"
 # Get current date
 TODAY="$(date +%Y-%m-%d)"
 
+# Check if file already exists
+if [[ -f "${FILEPATH}" ]]; then
+    echo "Error: File already exists: ${FILEPATH}" >&2
+    exit 1
+fi
+
+# Escape special characters in TITLE for use in sed replacement
+# Must escape backslashes first, then ampersands
+escaped_title="${TITLE//\\/\\\\}"
+escaped_title="${escaped_title//&/\\&}"
+
 # Copy template and substitute placeholders
 sed \
     -e "s/ADR-NNN/ADR-${padded_num}/g" \
-    -e "s/\[Short Noun Phrase Title\]/${TITLE}/g" \
+    -e "s|\[Short Noun Phrase Title\]|${escaped_title}|g" \
     -e "s/YYYY-MM-DD/${TODAY}/g" \
     -e "s/\[Proposed | Accepted | Deprecated | Superseded by ADR-XXX\]/Proposed/g" \
     "${TEMPLATE}" > "${FILEPATH}"

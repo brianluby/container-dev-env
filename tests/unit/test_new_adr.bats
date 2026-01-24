@@ -48,6 +48,45 @@ teardown() {
     [ -f "${TEST_DOCS_DIR}/001-use-node-js-for-backend.md" ]
 }
 
+@test "handles title with forward slashes" {
+    run bash "${SCRIPT}" --docs-dir "${TEST_DOCS_DIR}" "Use HTTP/2 for API"
+    [ "$status" -eq 0 ]
+    [ -f "${TEST_DOCS_DIR}/001-use-http-2-for-api.md" ]
+    # Verify title appears correctly in file content
+    grep -q "Use HTTP/2 for API" "${TEST_DOCS_DIR}/001-use-http-2-for-api.md"
+}
+
+@test "handles title with ampersands" {
+    run bash "${SCRIPT}" --docs-dir "${TEST_DOCS_DIR}" "Use A & B Together"
+    [ "$status" -eq 0 ]
+    [ -f "${TEST_DOCS_DIR}/001-use-a-b-together.md" ]
+    # Verify title appears correctly in file content
+    grep -q "Use A & B Together" "${TEST_DOCS_DIR}/001-use-a-b-together.md"
+}
+
+@test "handles title with backslashes" {
+    run bash "${SCRIPT}" --docs-dir "${TEST_DOCS_DIR}" "Handle Path\\Separators"
+    [ "$status" -eq 0 ]
+    [ -f "${TEST_DOCS_DIR}/001-handle-path-separators.md" ]
+    # Verify title appears correctly in file content
+    grep -q "Handle Path" "${TEST_DOCS_DIR}/001-handle-path-separators.md"
+}
+
+@test "allows multiple ADRs with same title by auto-incrementing" {
+    # Running the script twice with the same title should create two files
+    # with different numbers (this is expected behavior, not an error)
+    run bash "${SCRIPT}" --docs-dir "${TEST_DOCS_DIR}" "Same Title"
+    [ "$status" -eq 0 ]
+    [ -f "${TEST_DOCS_DIR}/001-same-title.md" ]
+
+    run bash "${SCRIPT}" --docs-dir "${TEST_DOCS_DIR}" "Same Title"
+    [ "$status" -eq 0 ]
+    [ -f "${TEST_DOCS_DIR}/002-same-title.md" ]
+
+    # The file existence check prevents overwrites in race conditions
+    # but is difficult to test reliably in a unit test
+}
+
 @test "copies template content into new ADR" {
     run bash "${SCRIPT}" --docs-dir "${TEST_DOCS_DIR}" "Sample Decision"
     [ "$status" -eq 0 ]
