@@ -8,16 +8,14 @@
 # - tmpfs: Temporary files (ephemeral, auto-clean)
 # =============================================================================
 
-version: "3.8"
-
 services:
   # ---------------------------------------------------------------------------
   # Development Container Service
   # ---------------------------------------------------------------------------
   dev:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: docker/Dockerfile
       target: development
 
     image: devenv:latest
@@ -50,7 +48,7 @@ services:
       # Protection: Survives all Docker operations (host filesystem)
       # -----------------------------------------------------------------------
       - type: bind
-        source: ${WORKSPACE_PATH:-.}
+        source: ${WORKSPACE_PATH:-..}
         target: /workspace
         consistency: cached
 

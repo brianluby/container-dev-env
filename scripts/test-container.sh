@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 # Container Dev Env - Acceptance Test Runner
 # Validates container meets all specification requirements
 # Spec: specs/001-container-base-image/contracts/test-contract.md
@@ -202,7 +203,7 @@ fi
 log_section "Health Check Tests"
 
 # HEALTH-001: Health check script passes
-if docker run --rm $IMAGE /home/dev/scripts/health-check.sh; then
+if docker run --rm $IMAGE /usr/local/bin/health-check.sh; then
     log_pass "HEALTH-001: Health check passes"
 else
     log_fail "HEALTH-001: Health check fails"
