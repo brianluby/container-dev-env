@@ -13,6 +13,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-20
 - File-based (`~/.local/share/opencode/sessions/` for history, `~/.config/opencode/config.yaml` for settings) (005-terminal-ai-agent)
 - Bash 5.x (scripts), Dockerfile (container layer), Go templates (Chezmoi configs) + Continue v1.2.14, Cline v3.51.0, @modelcontextprotocol/server-filesystem 2026.1.14, mcp-server-git 2026.1.14 (Python) (009-ai-ide-extensions)
 - File-based (YAML, JSON, dotenv) persisted via Docker volumes (009-ai-ide-extensions)
+- Python 3.11+ (MCP server, embedding inference, CLI) + FastEmbed (embeddings), sqlite-vec (vector search), mcp SDK 1.x (server framework), pydantic (models) (013-persistent-memory)
+- SQLite with sqlite-vec extension (tactical), Markdown files (strategic) (013-persistent-memory)
 - Bash 5.x (config generation, validation scripts), Node.js 22.x LTS (MCP server runtime) + @modelcontextprotocol/server-filesystem 2026.1.14, @modelcontextprotocol/server-memory, @modelcontextprotocol/server-sequential-thinking, @upstash/context7-mcp 2.1.0, @modelcontextprotocol/server-github, @playwright/mcp (012-mcp-integration)
 - File-based JSON knowledge graph in Docker volume (`~/.local/share/mcp-memory/memory.json`) (012-mcp-integration)
 
@@ -34,6 +36,7 @@ tests/
 Dockerfile (multi-stage), Bash for shell configuration: Follow standard conventions
 
 ## Recent Changes
+- 013-persistent-memory: Added Python 3.11+ (MCP server, embedding inference, CLI) + FastEmbed (embeddings), sqlite-vec (vector search), mcp SDK 1.x (server framework), pydantic (models)
 - 012-mcp-integration: Added Bash 5.x (config generation, validation scripts), Node.js 22.x LTS (MCP server runtime) + @modelcontextprotocol/server-filesystem 2026.1.14, @modelcontextprotocol/server-memory, @modelcontextprotocol/server-sequential-thinking, @upstash/context7-mcp 2.1.0, @modelcontextprotocol/server-github, @playwright/mcp
 - 010-project-context-files: Added Bash 5.x (bootstrap script), Markdown (content files) + None (static files + POSIX-compatible shell script)
 - 009-ai-ide-extensions: Added Bash 5.x (scripts), Dockerfile (container layer), Go templates (Chezmoi configs) + Continue v1.2.14, Cline v3.51.0, @modelcontextprotocol/server-filesystem 2026.1.14, mcp-server-git 2026.1.14 (Python)
