@@ -1,0 +1,103 @@
+# notify.yaml JSON Schema (expressed as annotated YAML)
+# Validates the notify.yaml configuration file
+#
+# Feature: 016-mobile-access
+# Date: 2026-01-23
+
+# Top-level structure
+type: object
+required:
+  - services
+properties:
+
+  services:
+    type: object
+    required:
+      - ntfy
+    properties:
+      ntfy:
+        type: object
+        required:
+          - enabled
+        properties:
+          enabled:
+            type: boolean
+            description: "Enable ntfy.sh notifications"
+        # Secrets sourced from environment:
+        #   NTFY_SERVER (default: https://ntfy.sh)
+        #   NTFY_TOPIC (required when enabled)
+        #   NTFY_TOKEN (required when enabled)
+
+      slack:
+        type: object
+        required:
+          - enabled
+        properties:
+          enabled:
+            type: boolean
+            description: "Enable Slack webhook notifications"
+        # Secrets sourced from environment:
+        #   SLACK_WEBHOOK (required when enabled)
+
+  priorities:
+    type: object
+    description: "Event type to priority level mapping"
+    properties:
+      progress:
+        type: integer
+        minimum: 1
+        maximum: 5
+        default: 2
+      completed:
+        type: integer
+        minimum: 1
+        maximum: 5
+        default: 3
+      failed:
+        type: integer
+        minimum: 1
+        maximum: 5
+        default: 4
+      approval_needed:
+        type: integer
+        minimum: 1
+        maximum: 5
+        default: 5
+
+  quiet_hours:
+    type: object
+    properties:
+      enabled:
+        type: boolean
+        default: false
+      start:
+        type: string
+        pattern: "^[0-2][0-9]:[0-5][0-9]$"
+        description: "Start time in HH:MM (24h format)"
+        default: "22:00"
+      end:
+        type: string
+        pattern: "^[0-2][0-9]:[0-5][0-9]$"
+        description: "End time in HH:MM (24h format)"
+        default: "08:00"
+      min_priority:
+        type: integer
+        minimum: 1
+        maximum: 5
+        default: 5
+        description: "Notifications >= this priority bypass quiet hours"
+
+  retry:
+    type: object
+    properties:
+      max_attempts:
+        type: integer
+        minimum: 1
+        maximum: 10
+        default: 3
+      base_delay:
+        type: integer
+        minimum: 1
+        maximum: 60
+        default: 2
+        description: "Base delay in seconds for exponential backoff"

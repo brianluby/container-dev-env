@@ -1,0 +1,33 @@
+# Notification services configuration
+# Copy to ~/.config/notify/notify.yaml and customize
+# Or set NOTIFY_CONFIG to override path
+
+services:
+  ntfy:
+    enabled: true
+    # server_url from env: NTFY_SERVER (default: https://ntfy.sh)
+    # topic from env: NTFY_TOPIC
+    # access_token from env: NTFY_TOKEN
+
+  slack:
+    enabled: false
+    # webhook_url from env: SLACK_WEBHOOK
+
+# Priority mapping (event_type -> priority level 1-5)
+priorities:
+  progress: 2
+  completed: 3
+  failed: 4
+  approval_needed: 5
+
+# Quiet hours configuration
+quiet_hours:
+  enabled: false
+  start: "22:00"
+  end: "08:00"
+  min_priority: 5
+
+# Retry configuration
+retry:
+  max_attempts: 3
+  base_delay: 2
