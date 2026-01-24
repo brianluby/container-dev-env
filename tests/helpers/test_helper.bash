@@ -65,7 +65,7 @@ mock_curl() {
           i=$((i + 1))
           headers+=("${args[$i]}")
           ;;
-        -d|--data)
+        -d|--data|--data-binary)
           i=$((i + 1))
           body="${args[$i]}"
           ;;

@@ -31,9 +31,21 @@ parse_config() {
     return 1
   fi
 
-  # Validate basic YAML structure (must have services section)
+  # Validate basic YAML structure
+  # Note: This is a lightweight check; full YAML validation requires yq/python-yaml
   if ! grep -q "^services:" "${config_file}" 2>/dev/null; then
     log_error "Malformed config: missing 'services' section in ${config_file}"
+    return 1
+  fi
+
+  # Validate required sections exist
+  local missing_sections=()
+  grep -q "^priorities:" "${config_file}" 2>/dev/null || missing_sections+=("priorities")
+  grep -q "^quiet_hours:" "${config_file}" 2>/dev/null || missing_sections+=("quiet_hours")
+  grep -q "^retry:" "${config_file}" 2>/dev/null || missing_sections+=("retry")
+
+  if [[ ${#missing_sections[@]} -gt 0 ]]; then
+    log_error "Malformed config: missing required sections (${missing_sections[*]}) in ${config_file}"
     return 1
   fi
 
@@ -159,19 +171,19 @@ USAGE
 # ─── Environment Variable Validation ────────────────────────────────────────
 
 # Validate required environment variables based on enabled services
-# Missing env vars disable the service with a warning (don't block agent)
+# Missing env vars for enabled services are a configuration error (exit 1)
 validate_env() {
   if [[ "${NTFY_ENABLED}" == "true" ]]; then
     if [[ -z "${NTFY_TOPIC:-}" || -z "${NTFY_TOKEN:-}" ]]; then
-      log_warn "ntfy service enabled but NTFY_TOPIC or NTFY_TOKEN not set; skipping ntfy"
-      NTFY_ENABLED="false"
+      log_error "Configuration Error: ntfy service enabled but NTFY_TOPIC or NTFY_TOKEN not set"
+      return 1
     fi
   fi
 
   if [[ "${SLACK_ENABLED}" == "true" ]]; then
     if [[ -z "${SLACK_WEBHOOK:-}" ]]; then
-      log_warn "slack service enabled but SLACK_WEBHOOK not set; skipping slack"
-      SLACK_ENABLED="false"
+      log_error "Configuration Error: slack service enabled but SLACK_WEBHOOK not set"
+      return 1
     fi
   fi
 
@@ -182,6 +194,12 @@ validate_env() {
   if [[ "${NTFY_ENABLED}" == "true" && "${NTFY_SERVER}" != https://* ]]; then
     log_warn "NTFY_SERVER is not https://; disabling ntfy for security"
     NTFY_ENABLED="false"
+  fi
+
+  # HTTPS enforcement for SLACK_WEBHOOK (per FR-007 security requirement)
+  if [[ "${SLACK_ENABLED}" == "true" && "${SLACK_WEBHOOK}" != https://* ]]; then
+    log_warn "SLACK_WEBHOOK is not https://; disabling slack for security"
+    SLACK_ENABLED="false"
   fi
 
   export NTFY_SERVER NTFY_ENABLED SLACK_ENABLED
@@ -233,13 +251,23 @@ send_ntfy() {
     return 1
   fi
 
-  local http_code
+  local http_code curl_exit
+  set +e  # Temporarily disable errexit to capture curl failures
   http_code="$(curl -s -o /dev/null -w '%{http_code}' \
     -H "Authorization: Bearer ${NTFY_TOKEN}" \
+    -H "Content-Type: text/plain" \
     -H "X-Priority: ${NOTIFY_PRIORITY}" \
     -H "X-Title: ${NOTIFY_TITLE}" \
-    -d "${NOTIFY_MESSAGE}" \
-    "${url}")"
+    --data-binary "${NOTIFY_MESSAGE}" \
+    "${url}" 2>&1)"
+  curl_exit=$?
+  set -e  # Re-enable errexit
+
+  # Check curl exit status first (network/connection errors)
+  if [[ ${curl_exit} -ne 0 ]]; then
+    log_error "ntfy: curl failed with exit code ${curl_exit}"
+    return 1
+  fi
 
   if [[ "${http_code}" -ge 200 && "${http_code}" -lt 300 ]]; then
     log_info "ntfy: delivered (HTTP ${http_code})"
@@ -270,14 +298,40 @@ send_slack() {
   emoji="$(get_priority_emoji "${NOTIFY_PRIORITY}")"
 
   local payload
-  # Use printf for JSON construction (jq optional)
-  payload="$(printf '{"text":"%s *%s*\\n%s"}' "${emoji}" "${NOTIFY_TITLE}" "${NOTIFY_MESSAGE}")"
+  # Prefer jq for safe JSON construction; fallback to manual escaping
+  if command -v jq &>/dev/null; then
+    payload="$(jq -n \
+      --arg emoji "${emoji}" \
+      --arg title "${NOTIFY_TITLE}" \
+      --arg message "${NOTIFY_MESSAGE}" \
+      '{text: ($emoji + " *" + $title + "*\n" + $message)}')"
+  else
+    # Manual JSON escaping: escape backslashes, quotes, and newlines
+    local escaped_title="${NOTIFY_TITLE//\\/\\\\}"
+    escaped_title="${escaped_title//\"/\\\"}"
+    escaped_title="${escaped_title//$'\n'/\\n}"
 
-  local http_code
+    local escaped_message="${NOTIFY_MESSAGE//\\/\\\\}"
+    escaped_message="${escaped_message//\"/\\\"}"
+    escaped_message="${escaped_message//$'\n'/\\n}"
+
+    payload="$(printf '{"text":"%s *%s*\\n%s"}' "${emoji}" "${escaped_title}" "${escaped_message}")"
+  fi
+
+  local http_code curl_exit
+  set +e  # Temporarily disable errexit to capture curl failures
   http_code="$(curl -s -o /dev/null -w '%{http_code}' \
     -H "Content-Type: application/json" \
     -d "${payload}" \
-    "${SLACK_WEBHOOK}")"
+    "${SLACK_WEBHOOK}" 2>&1)"
+  curl_exit=$?
+  set -e  # Re-enable errexit
+
+  # Check curl exit status first (network/connection errors)
+  if [[ ${curl_exit} -ne 0 ]]; then
+    log_error "slack: curl failed with exit code ${curl_exit}"
+    return 1
+  fi
 
   if [[ "${http_code}" -ge 200 && "${http_code}" -lt 300 ]]; then
     log_info "slack: delivered (HTTP ${http_code})"
@@ -292,52 +346,80 @@ send_slack() {
 
 # Wrapper that retries a send function with exponential backoff
 # Usage: send_with_retry <send_function_name>
-# Retries on: 429, 5xx, connection timeout
-# No retry on: 400, 401
+# Retries on: 429, 5xx, connection timeout (curl failures)
+# No retry on: 2xx, 3xx, 4xx (except 429)
 send_with_retry() {
   local send_fn="${1}"
-  local max_attempts="${RETRY_MAX_ATTEMPTS:-3}"
+  local max_retries="${RETRY_MAX_ATTEMPTS:-3}"  # Config now means retries, not total attempts
   local base_delay="${RETRY_BASE_DELAY:-2}"
   local attempt=0
 
-  while [[ "${attempt}" -lt "${max_attempts}" ]]; do
+  # Initial attempt + up to max_retries
+  while [[ "${attempt}" -le "${max_retries}" ]]; do
     attempt=$((attempt + 1))
 
-    # Try the send function — capture its output for HTTP code analysis
-    local result
-    if result="$("${send_fn}" 2>&1)"; then
-      # Success
+    # Try the send function — capture its output and exit code
+    local result exit_code
+    set +e
+    result="$("${send_fn}" 2>&1)"
+    exit_code=$?
+    set -e
+
+    # Success (2xx response)
+    if [[ ${exit_code} -eq 0 ]]; then
       return 0
     fi
 
-    # Check if the error mentions non-retryable codes
-    if [[ "${result}" =~ "400" || "${result}" =~ "401" ]]; then
-      log_warn "${send_fn}: non-retryable error (attempt ${attempt}), giving up"
-      return 0 # exit 0 per spec — don't block agent
+    # Analyze the error to determine if retryable
+    local is_retryable=false
+
+    # Check for retryable HTTP codes: 429 (rate limit) or 5xx (server errors)
+    if [[ "${result}" =~ "HTTP 429" || "${result}" =~ "HTTP 5"[0-9][0-9] ]]; then
+      is_retryable=true
     fi
 
-    # Retryable error
-    if [[ "${attempt}" -lt "${max_attempts}" ]]; then
-      local delay=$((base_delay ** attempt))
-      log_warn "${send_fn}: retry attempt ${attempt}/${max_attempts}, waiting ${delay}s"
-      sleep "${delay}"
+    # Check for curl failures (connection errors, timeouts)
+    if [[ "${result}" =~ "curl failed" ]]; then
+      is_retryable=true
     fi
+
+    # Non-retryable errors: 4xx (except 429), malformed requests
+    if [[ "${result}" =~ "HTTP 4"[0-9][0-9] && ! "${result}" =~ "HTTP 429" ]]; then
+      log_warn "${send_fn}: non-retryable HTTP 4xx error (attempt ${attempt}), giving up"
+      return 0 # Don't block agent per spec
+    fi
+
+    # If not retryable or exhausted retries, give up
+    if [[ "${is_retryable}" == "false" ]]; then
+      log_warn "${send_fn}: non-retryable error (attempt ${attempt}), giving up"
+      return 0 # Don't block agent per spec
+    fi
+
+    if [[ "${attempt}" -gt "${max_retries}" ]]; then
+      log_error "${send_fn}: exhausted ${max_retries} retries after ${attempt} attempts, discarding notification"
+      return 0 # Don't block agent per spec
+    fi
+
+    # Calculate exponential backoff delay
+    local delay=$((base_delay ** attempt))
+    log_warn "${send_fn}: retryable error (attempt ${attempt}), waiting ${delay}s before retry"
+    sleep "${delay}"
   done
 
-  log_error "${send_fn}: exhausted ${max_attempts} retries, discarding notification"
-  return 0 # exit 0 per spec — don't block agent
+  return 0 # Safety fallback — don't block agent
 }
 
 # ─── Multi-Service Dispatch ──────────────────────────────────────────────────
 
 # Dispatch notification to all enabled services independently
+# Note: send_with_retry always returns 0 per spec (don't block agent)
 dispatch_services() {
   if [[ "${NTFY_ENABLED}" == "true" ]]; then
-    send_with_retry send_ntfy || log_warn "ntfy delivery failed, continuing"
+    send_with_retry send_ntfy
   fi
 
   if [[ "${SLACK_ENABLED}" == "true" ]]; then
-    send_with_retry send_slack || log_warn "slack delivery failed, continuing"
+    send_with_retry send_slack
   fi
 }
 
