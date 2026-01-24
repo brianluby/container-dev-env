@@ -86,7 +86,7 @@ Emitted when text is delivered to output.
   "event": "session.complete",
   "session_id": "uuid",
   "final_text": "Create a function that validates emails.",
-  "output_method": "clipboard | direct_input | both",
+  "output_method": "clipboard",
   "total_time_ms": 2800
 }
 ```

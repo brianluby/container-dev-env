@@ -57,11 +57,20 @@ run_check() {
 
   CHECKS_TOTAL=$((CHECKS_TOTAL + 1))
 
-  if "$@" 2>/dev/null; then
+  local stderr_file
+  stderr_file="$(mktemp)"
+
+  if "$@" 2>"${stderr_file}"; then
     CHECKS_PASSED=$((CHECKS_PASSED + 1))
     RESULTS+=("${name}=true")
     eval "${result_var}=true"
+    rm -f "${stderr_file}"
   else
+    if [[ -s "${stderr_file}" ]]; then
+      echo "Check '${name}' failed with error:" >&2
+      cat "${stderr_file}" >&2
+    fi
+    rm -f "${stderr_file}"
     RESULTS+=("${name}=false")
     eval "${result_var}=false"
   fi
@@ -170,7 +179,7 @@ print_summary() {
     echo "Status: FAIL"
     echo ""
     echo "Run the setup script to fix issues:"
-    echo "  ./setup-voice-input.sh --tool $TOOL_NAME"
+    echo "  ${SCRIPT_DIR}/setup-voice-input.sh --tool $TOOL_NAME"
   fi
 }
 

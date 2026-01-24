@@ -200,6 +200,11 @@ deploy_cleanup_prompt() {
   local seed_file="${SCRIPT_DIR}/../config/ai-cleanup-prompt.txt"
   local target_file="${VOICE_INPUT_CLEANUP_PROMPT}"
 
+  if [[ -f "$target_file" ]]; then
+    log_info "Cleanup prompt already exists, skipping: $target_file"
+    return 0
+  fi
+
   if [[ -f "$seed_file" ]]; then
     cp "$seed_file" "$target_file"
     log_success "Created cleanup prompt: $target_file"
@@ -263,7 +268,7 @@ print_superwhisper_guidance() {
   echo "   • Ensure 'Process locally' is enabled"
   echo "   • Disable any cloud transcription options"
   echo ""
-  echo "Verify setup: ./verify-voice-input.sh"
+  echo "Verify setup: ${SCRIPT_DIR}/verify-voice-input.sh"
 }
 
 print_voiceink_guidance() {
@@ -288,7 +293,7 @@ print_voiceink_guidance() {
   echo "4. Privacy:"
   echo "   • Ensure all processing is set to 'On-device'"
   echo ""
-  echo "Verify setup: ./verify-voice-input.sh"
+  echo "Verify setup: ${SCRIPT_DIR}/verify-voice-input.sh"
 }
 
 print_tool_guidance() {
@@ -322,9 +327,17 @@ main() {
 
   # Check prerequisites (skip if VOICE_INPUT_SKIP_PREREQS is set, for testing)
   if [[ -z "${VOICE_INPUT_SKIP_PREREQS:-}" ]]; then
-    check_macos || exit "$EXIT_PLATFORM_NOT_SUPPORTED"
-    check_apple_silicon || log_warn "Apple Silicon recommended for optimal performance"
-    check_tool_installed "$TOOL" || exit "$EXIT_MISSING_PREREQUISITE"
+    local api_key_env=""
+    if [[ "$CLEANUP_TIER" == "cloud" ]]; then
+      # For cloud tier, we need to know which API key env var to check
+      # This is a simplified check; full validation happens later
+      api_key_env="${CLEANUP_CLOUD_API_KEY_ENV:-ANTHROPIC_API_KEY}"
+    fi
+
+    if ! run_all_prerequisites "$TOOL" "$CLEANUP_TIER" "$api_key_env"; then
+      log_error "Prerequisites not met. Please resolve the issues above and try again."
+      exit "$EXIT_MISSING_PREREQUISITE"
+    fi
   fi
 
   # Create config directory

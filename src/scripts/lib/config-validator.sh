@@ -18,7 +18,7 @@ validate_settings() {
 
   # Required fields
   local required_fields=("tool" "whisper_model" "activation_shortcut" "activation_mode"
-    "offline_only" "cleanup_tier" "silence_timeout_ms" "language")
+    "offline_only" "cleanup_tier" "custom_vocab_paths" "silence_timeout_ms" "language")
 
   for field in "${required_fields[@]}"; do
     local value

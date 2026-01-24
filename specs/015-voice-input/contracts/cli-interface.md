@@ -89,7 +89,7 @@ silence_timeout_ms: integer     # 500-5000, default 1500
 max_recording_duration_s: integer  # 30-600, default 300
 whisper_model: enum             # tiny|base|small|medium|large-v3|turbo
 cleanup_tier: enum              # none|rules|local_llm|cloud
-output_method: enum             # clipboard|direct_input|both
+output_method: enum             # clipboard (only option in v1)
 language: string                # ISO 639-1, default "en"
 visual_feedback: boolean        # default true
 custom_vocab_paths: list[string]  # Paths to vocabulary files
@@ -108,24 +108,16 @@ terms:
     enabled: boolean            # Optional, default true
 ```
 
-### cleanup.yaml
+### Cleanup Settings (in settings.yaml)
+
+Cleanup configuration is part of settings.yaml, not a separate file:
 
 ```yaml
-# Schema
-cleanup_tier: enum              # none|rules|local_llm|cloud
-
-local_llm:
-  provider: enum                # ollama|mlx
-  model: string                 # Model name (e.g., "phi3:mini")
-  endpoint: string              # URL, default "http://localhost:11434"
-  timeout_ms: integer           # default 5000
-
-cloud:
-  provider: enum                # claude|openai
-  model: string                 # Model name (e.g., "claude-haiku")
-  api_key_env: string           # Env var name containing API key
-  confirm_before_send: boolean  # Show confirmation prompt, default true
-  max_text_length: integer      # Max chars to send, default 2000
+# Additional cleanup-related fields in settings.yaml
+cleanup_tier: enum                    # none|rules|local_llm|cloud
+cleanup_local_llm_model: string       # For tier=local_llm, model name (e.g., "phi3:mini")
+cleanup_cloud_provider: enum          # For tier=cloud, provider (claude|openai)
+cleanup_cloud_api_key_env: string     # For tier=cloud, env var name with API key
 ```
 
 ## Integration Points

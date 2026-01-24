@@ -48,30 +48,27 @@ output_method: clipboard             # Copy result to clipboard
 
 ### 2. AI Cleanup Configuration
 
+AI cleanup settings are configured in the same `~/.config/voice-input/settings.yaml` file:
+
 ```yaml
-# ~/.config/voice-input/cleanup.yaml
+# ~/.config/voice-input/settings.yaml
 cleanup_tier: rules          # Default: local rules only (no network)
-# cleanup_tier: local_llm   # Optional: use local Ollama model
+# cleanup_tier: local_llm    # Optional: use local Ollama model
 # cleanup_tier: cloud        # Optional: use Claude API (opt-in)
 
-# Tier 2 settings (if using local_llm)
-local_llm:
-  provider: ollama
-  model: phi3:mini           # or qwen2.5:3b
-  endpoint: http://localhost:11434
+# Tier 2 settings (only used when cleanup_tier: local_llm)
+cleanup_local_llm_model: phi3:mini  # or qwen2.5:3b, llama3.2:3b
 
-# Tier 3 settings (if using cloud, opt-in only)
-cloud:
-  provider: claude
-  model: claude-haiku
-  api_key_env: ANTHROPIC_API_KEY  # Never store key in config
-  confirm_before_send: true       # Show what will be sent
+# Tier 3 settings (only used when cleanup_tier: cloud)
+cleanup_cloud_provider: claude      # or openai
+cleanup_cloud_api_key_env: ANTHROPIC_API_KEY  # Never store key directly
 ```
 
 ### 3. Custom Vocabulary
 
 ```yaml
 # ~/.config/voice-input/vocabulary.yaml
+version: "1"
 terms:
   - term: React
     spoken_forms: ["react", "react js"]

@@ -20,6 +20,16 @@ TESTS_FAILED=0
 
 # ─── Test Helpers ─────────────────────────────────────────────────────────────
 
+# Portable in-place sed replacement
+# Usage: sed_inplace 's/pattern/replacement/' file
+sed_inplace() {
+  local expr="$1"
+  local file="$2"
+  local tmpfile
+  tmpfile=$(mktemp)
+  sed "$expr" "$file" > "$tmpfile" && mv "$tmpfile" "$file"
+}
+
 cleanup() {
   rm -rf "$TEST_HOME"
 }
@@ -120,7 +130,7 @@ fi
 # Test: Invalid tool enum fails
 run_test
 create_valid_settings "${TEST_HOME}/bad_tool.yaml"
-sed -i '' 's/^tool: superwhisper/tool: invalid/' "${TEST_HOME}/bad_tool.yaml"
+sed_inplace 's/^tool: superwhisper/tool: invalid/' "${TEST_HOME}/bad_tool.yaml"
 if validate_settings "${TEST_HOME}/bad_tool.yaml" 2>/dev/null; then
   fail "Invalid tool enum should fail validation"
 else
@@ -130,7 +140,7 @@ fi
 # Test: Invalid model enum fails
 run_test
 create_valid_settings "${TEST_HOME}/bad_model.yaml"
-sed -i '' 's/^whisper_model: large-v3/whisper_model: huge/' "${TEST_HOME}/bad_model.yaml"
+sed_inplace 's/^whisper_model: large-v3/whisper_model: huge/' "${TEST_HOME}/bad_model.yaml"
 if validate_settings "${TEST_HOME}/bad_model.yaml" 2>/dev/null; then
   fail "Invalid model enum should fail validation"
 else
@@ -140,7 +150,7 @@ fi
 # Test: Invalid activation_mode fails
 run_test
 create_valid_settings "${TEST_HOME}/bad_mode.yaml"
-sed -i '' 's/^activation_mode: push_to_talk/activation_mode: voice_activated/' "${TEST_HOME}/bad_mode.yaml"
+sed_inplace 's/^activation_mode: push_to_talk/activation_mode: voice_activated/' "${TEST_HOME}/bad_mode.yaml"
 if validate_settings "${TEST_HOME}/bad_mode.yaml" 2>/dev/null; then
   fail "Invalid activation_mode should fail validation"
 else
@@ -150,7 +160,7 @@ fi
 # Test: Invalid cleanup_tier fails
 run_test
 create_valid_settings "${TEST_HOME}/bad_tier.yaml"
-sed -i '' 's/^cleanup_tier: rules/cleanup_tier: premium/' "${TEST_HOME}/bad_tier.yaml"
+sed_inplace 's/^cleanup_tier: rules/cleanup_tier: premium/' "${TEST_HOME}/bad_tier.yaml"
 if validate_settings "${TEST_HOME}/bad_tier.yaml" 2>/dev/null; then
   fail "Invalid cleanup_tier should fail validation"
 else
@@ -160,7 +170,7 @@ fi
 # Test: silence_timeout_ms below minimum fails
 run_test
 create_valid_settings "${TEST_HOME}/low_timeout.yaml"
-sed -i '' 's/^silence_timeout_ms: 1500/silence_timeout_ms: 100/' "${TEST_HOME}/low_timeout.yaml"
+sed_inplace 's/^silence_timeout_ms: 1500/silence_timeout_ms: 100/' "${TEST_HOME}/low_timeout.yaml"
 if validate_settings "${TEST_HOME}/low_timeout.yaml" 2>/dev/null; then
   fail "silence_timeout_ms=100 should fail (min 500)"
 else
@@ -170,7 +180,7 @@ fi
 # Test: silence_timeout_ms above maximum fails
 run_test
 create_valid_settings "${TEST_HOME}/high_timeout.yaml"
-sed -i '' 's/^silence_timeout_ms: 1500/silence_timeout_ms: 9000/' "${TEST_HOME}/high_timeout.yaml"
+sed_inplace 's/^silence_timeout_ms: 1500/silence_timeout_ms: 9000/' "${TEST_HOME}/high_timeout.yaml"
 if validate_settings "${TEST_HOME}/high_timeout.yaml" 2>/dev/null; then
   fail "silence_timeout_ms=9000 should fail (max 5000)"
 else
@@ -180,7 +190,7 @@ fi
 # Test: Invalid language format fails
 run_test
 create_valid_settings "${TEST_HOME}/bad_lang.yaml"
-sed -i '' 's/^language: en/language: english/' "${TEST_HOME}/bad_lang.yaml"
+sed_inplace 's/^language: en/language: english/' "${TEST_HOME}/bad_lang.yaml"
 if validate_settings "${TEST_HOME}/bad_lang.yaml" 2>/dev/null; then
   fail "language='english' should fail (must be ISO 639-1)"
 else
@@ -195,7 +205,7 @@ echo "--- Cross-Field Validation ---"
 # Test: offline_only=true + cleanup_tier=cloud fails
 run_test
 create_valid_settings "${TEST_HOME}/offline_cloud.yaml"
-sed -i '' 's/^cleanup_tier: rules/cleanup_tier: cloud/' "${TEST_HOME}/offline_cloud.yaml"
+sed_inplace 's/^cleanup_tier: rules/cleanup_tier: cloud/' "${TEST_HOME}/offline_cloud.yaml"
 if validate_settings "${TEST_HOME}/offline_cloud.yaml" 2>/dev/null; then
   fail "offline_only=true + cleanup_tier=cloud should fail"
 else
@@ -293,7 +303,7 @@ fi
 run_test
 if [[ -f "$local_vocab" ]]; then
   valid_categories="function_name|variable_name|technology|project_name|domain_term|custom"
-  invalid_cats=$(grep "category:" "$local_vocab" | grep -v -E "($valid_categories)" | head -5 || true)
+  invalid_cats=$(grep "category:" "$local_vocab" | sed 's/.*category:[[:space:]]*//' | grep -vE "^(${valid_categories})$" | head -5 || true)
   if [[ -z "$invalid_cats" ]]; then
     pass "All vocabulary categories are valid enum values"
   else

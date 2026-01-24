@@ -15,6 +15,18 @@ source "${SCRIPT_DIR}/lib/common.sh"
 readonly MAX_TERMS=500
 readonly VALID_CATEGORIES=("function_name" "variable_name" "technology" "project_name" "domain_term" "custom")
 
+# ─── Helpers ──────────────────────────────────────────────────────────────────
+
+# Escape a YAML scalar value (quotes and special chars)
+# Usage: yaml_escape "value"
+yaml_escape() {
+  local value="$1"
+  # Escape backslashes first, then double quotes
+  value="${value//\\/\\\\}"
+  value="${value//\"/\\\"}"
+  echo "$value"
+}
+
 # ─── Usage ────────────────────────────────────────────────────────────────────
 
 usage() {
@@ -159,7 +171,7 @@ cmd_add_term() {
   # Check for duplicate
   local vocab_file
   vocab_file=$(get_vocab_file)
-  if grep -q "^  - term: ${term}$" "$vocab_file" 2>/dev/null; then
+  if grep -Fqx "  - term: ${term}" "$vocab_file" 2>/dev/null; then
     log_error "Term '$term' already exists. Remove it first to update."
     return "$EXIT_GENERAL_ERROR"
   fi
@@ -179,14 +191,21 @@ cmd_add_term() {
   done
   spoken_yaml+="]"
 
+  # Escape values for safe YAML embedding
+  local term_esc display_esc category_esc project_esc
+  term_esc=$(yaml_escape "$term")
+  display_esc=$(yaml_escape "$display_form")
+  category_esc=$(yaml_escape "$category")
+  project_esc=$(yaml_escape "$project")
+
   # Append entry to vocabulary file
   cat >> "$vocab_file" <<EOF
 
-  - term: ${term}
+  - term: "${term_esc}"
     spoken_forms: ${spoken_yaml}
-    display_form: ${display_form}
-    category: ${category}
-    project: ${project}
+    display_form: "${display_esc}"
+    category: "${category_esc}"
+    project: "${project_esc}"
     enabled: true
 EOF
 
@@ -208,7 +227,7 @@ cmd_remove_term() {
   local vocab_file
   vocab_file=$(get_vocab_file)
 
-  if ! grep -q "^  - term: ${term}$" "$vocab_file" 2>/dev/null; then
+  if ! grep -Fqx "  - term: ${term}" "$vocab_file" 2>/dev/null; then
     log_error "Term '$term' not found in vocabulary"
     return "$EXIT_GENERAL_ERROR"
   fi

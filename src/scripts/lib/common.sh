@@ -96,13 +96,24 @@ command_exists() {
 
 # Read a YAML value (simple key: value extraction, no nested support)
 # Usage: yaml_get "key" "file.yaml"
+# Returns empty string with exit 0 if key not found, exit 1 if file doesn't exist
 yaml_get() {
   local key="$1"
   local file="$2"
   if [[ ! -f "$file" ]]; then
     return 1
   fi
-  grep -E "^${key}:" "$file" | sed "s/^${key}:[[:space:]]*//" | sed 's/[[:space:]]*$//'
+  awk -F':' -v k="$key" '
+    $1 == k {
+      # Remove "key:" and leading whitespace from the value portion
+      val = $0
+      sub("^[^:]*:[[:space:]]*", "", val)
+      # Trim trailing whitespace
+      sub("[[:space:]]*$", "", val)
+      print val
+    }
+  ' "$file"
+  return 0
 }
 
 # ─── Exit Code Constants ─────────────────────────────────────────────────────
