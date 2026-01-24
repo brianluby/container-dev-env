@@ -13,6 +13,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-20
 - File-based (`~/.local/share/opencode/sessions/` for history, `~/.config/opencode/config.yaml` for settings) (005-terminal-ai-agent)
 - Bash 5.x (scripts), Dockerfile (container layer), Go templates (Chezmoi configs) + Continue v1.2.14, Cline v3.51.0, @modelcontextprotocol/server-filesystem 2026.1.14, mcp-server-git 2026.1.14 (Python) (009-ai-ide-extensions)
 - File-based (YAML, JSON, dotenv) persisted via Docker volumes (009-ai-ide-extensions)
+- Bash 5.x (config generation, validation scripts), Node.js 22.x LTS (MCP server runtime) + @modelcontextprotocol/server-filesystem 2026.1.14, @modelcontextprotocol/server-memory, @modelcontextprotocol/server-sequential-thinking, @upstash/context7-mcp 2.1.0, @modelcontextprotocol/server-github, @playwright/mcp (012-mcp-integration)
+- File-based JSON knowledge graph in Docker volume (`~/.local/share/mcp-memory/memory.json`) (012-mcp-integration)
 
 - Dockerfile (multi-stage), Bash for shell configuration + Debian Bookworm-slim base image, Python 3.14+, Node.js LTS (22.x) (001-container-base-image)
 
@@ -32,10 +34,9 @@ tests/
 Dockerfile (multi-stage), Bash for shell configuration: Follow standard conventions
 
 ## Recent Changes
+- 012-mcp-integration: Added Bash 5.x (config generation, validation scripts), Node.js 22.x LTS (MCP server runtime) + @modelcontextprotocol/server-filesystem 2026.1.14, @modelcontextprotocol/server-memory, @modelcontextprotocol/server-sequential-thinking, @upstash/context7-mcp 2.1.0, @modelcontextprotocol/server-github, @playwright/mcp
 - 010-project-context-files: Added Bash 5.x (bootstrap script), Markdown (content files) + None (static files + POSIX-compatible shell script)
 - 009-ai-ide-extensions: Added Bash 5.x (scripts), Dockerfile (container layer), Go templates (Chezmoi configs) + Continue v1.2.14, Cline v3.51.0, @modelcontextprotocol/server-filesystem 2026.1.14, mcp-server-git 2026.1.14 (Python)
-- 007-git-worktree-compat: Added Bash (POSIX-compatible, targeting bash 5.x in Debian Bookworm) + git CLI (already in base image per 001-container-base-image)
-- 006-agentic-assistant: Added Bash 5.x (wrapper scripts, entrypoint), Dockerfile (container layer) + OpenCode (MIT, CLI/TUI binary), Claude Code (proprietary, native binary, optional)
 
 
 <!-- MANUAL ADDITIONS START -->
