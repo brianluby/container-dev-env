@@ -81,3 +81,81 @@ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 # Default command - interactive bash shell
 CMD ["/bin/bash", "-l"]
+
+# -----------------------------------------------------------------------------
+# Stage 3: MCP (Model Context Protocol) server installation
+# Feature: 012-mcp-integration
+# -----------------------------------------------------------------------------
+FROM development AS mcp
+
+# Build argument for optional Playwright Chromium browser installation
+ARG INSTALL_PLAYWRIGHT_BROWSER=false
+
+# Switch to root for system-level installations
+USER root
+
+# T004: Install Node.js 22.x LTS via NodeSource apt repository
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+# T006: Install python3-yaml for YAML generation and pip for Python packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3-yaml \
+    python3-pip \
+    python3-venv \
+    && rm -rf /var/lib/apt/lists/*
+
+# T005: Configure NPM_CONFIG_PREFIX for non-root global installs
+ENV NPM_CONFIG_PREFIX=/home/dev/.npm-global
+ENV PATH="${NPM_CONFIG_PREFIX}/bin:${PATH}"
+
+# Create the npm-global directory with correct ownership
+RUN mkdir -p /home/dev/.npm-global \
+    && chown -R dev:dev /home/dev/.npm-global
+
+# Switch to non-root user for npm installations
+USER dev
+
+# T007: Install core MCP packages with pinned versions
+# All versions pinned per Constitution Principle V (Reproducibility)
+RUN npm install -g \
+    @modelcontextprotocol/server-filesystem@2026.1.14 \
+    @modelcontextprotocol/server-memory@2026.1.14 \
+    @modelcontextprotocol/server-sequential-thinking@2026.1.14 \
+    @upstash/context7-mcp@2.1.0
+
+# T008: Install optional MCP packages
+RUN npm install -g \
+    @modelcontextprotocol/server-github@2026.1.14 \
+    @playwright/mcp@0.0.28
+
+# Switch back to root for pip install and file operations
+USER root
+
+# T009: Install Python-based git MCP server
+RUN pip install --no-cache-dir --break-system-packages mcp-server-git
+
+# Optional: Install Playwright Chromium browser if requested
+RUN if [ "${INSTALL_PLAYWRIGHT_BROWSER}" = "true" ]; then \
+        npx --yes playwright install --with-deps chromium; \
+    fi
+
+# T020: Create memory volume mount directory
+RUN mkdir -p /home/dev/.local/share/mcp-memory \
+    && chown -R dev:dev /home/dev/.local/share/mcp-memory
+
+# T019: Copy MCP configuration files
+COPY --chown=dev:dev src/mcp/ /home/dev/.mcp/
+
+# Switch back to non-root user
+USER dev
+
+# Set working directory
+WORKDIR /workspace
+
+# Entrypoint handles UID mapping and volume validation
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+# Default command - interactive bash shell
+CMD ["/bin/bash", "-l"]
