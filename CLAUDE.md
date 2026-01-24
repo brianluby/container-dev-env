@@ -13,6 +13,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-20
 - File-based (`~/.local/share/opencode/sessions/` for history, `~/.config/opencode/config.yaml` for settings) (005-terminal-ai-agent)
 - Bash 5.x (scripts), Dockerfile (container layer), Go templates (Chezmoi configs) + Continue v1.2.14, Cline v3.51.0, @modelcontextprotocol/server-filesystem 2026.1.14, mcp-server-git 2026.1.14 (Python) (009-ai-ide-extensions)
 - File-based (YAML, JSON, dotenv) persisted via Docker volumes (009-ai-ide-extensions)
+- Bash 5.x (setup/configuration scripts), YAML/JSON (tool configuration) + Superwhisper (primary recommendation, $250 lifetime) or VoiceInk (budget alternative, $39) — local Whisper-based speech-to-text for macOS (015-voice-input)
+- File-based (custom vocabulary files at `~/.config/voice-input/`, tool-specific config) (015-voice-input)
 - Bash 5.x (scripts), YAML (configuration) + curl (HTTP client, in base image), jq (optional, for Slack JSON payloads), ntfy.sh API, Slack Webhooks API (016-mobile-access)
 - File-based — notify.yaml for service config and priority mapping; environment variables for secrets (access tokens, webhook URLs) (016-mobile-access)
 - Bash 5.x (helper scripts), Markdown (documentation format) + None (static Markdown files, no runtime dependencies) (014-project-knowledge)
@@ -41,6 +43,8 @@ tests/
 Dockerfile (multi-stage), Bash for shell configuration: Follow standard conventions
 
 ## Recent Changes
+- 015-voice-input: Added Bash 5.x (setup/configuration scripts), YAML/JSON (tool configuration) + Superwhisper (primary recommendation, $250 lifetime) or VoiceInk (budget alternative, $39) — local Whisper-based speech-to-text for macOS
+- 010-project-context-files: Added Bash 5.x (bootstrap script), Markdown (content files) + None (static files + POSIX-compatible shell script)
 - 016-mobile-access: Added Bash 5.x (scripts), YAML (configuration) + curl (HTTP client, in base image), jq (optional, for Slack JSON payloads), ntfy.sh API, Slack Webhooks API
 - 014-project-knowledge: Added Bash 5.x (optional helper script for ADR creation) + None (static Markdown files, no runtime dependencies)
 - 014-project-knowledge: Added Bash 5.x (helper scripts), Markdown (documentation format) + None (static Markdown files, no runtime dependencies)

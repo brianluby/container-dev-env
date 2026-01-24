@@ -1,0 +1,128 @@
+# Voice Input Configuration Schema
+# File: ~/.config/voice-input/settings.yaml
+# Managed by: Chezmoi template
+
+$schema: "http://json-schema.org/draft-07/schema#"
+title: VoiceInputSettings
+description: Configuration for the voice-to-text dictation system
+type: object
+required:
+  - tool
+  - whisper_model
+  - activation_shortcut
+  - activation_mode
+  - offline_only
+  - cleanup_tier
+  - custom_vocab_paths
+  - silence_timeout_ms
+  - language
+
+properties:
+  tool:
+    type: string
+    enum: [superwhisper, voiceink]
+    default: superwhisper
+    description: Selected voice-to-text tool (Superwhisper recommended)
+
+  whisper_model:
+    type: string
+    enum: [tiny, base, small, medium, large-v3, turbo]
+    default: large-v3
+    description: Whisper model size (larger = more accurate, slower). large-v3 recommended for 95%+ accuracy.
+
+  activation_shortcut:
+    type: string
+    default: RightCommand
+    description: Push-to-talk activation key identifier
+    examples:
+      - RightCommand
+      - RightOption
+      - Fn
+      - Ctrl+Shift+Space
+
+  activation_mode:
+    type: string
+    enum: [push_to_talk, toggle]
+    default: push_to_talk
+    description: |
+      push_to_talk: Hold key to record, release to process
+      toggle: Press to start, press again to stop
+
+  offline_only:
+    type: boolean
+    default: true
+    description: Restrict all processing to local-only (no network calls)
+
+  cleanup_tier:
+    type: string
+    enum: [none, rules, local_llm, cloud]
+    default: rules
+    description: |
+      none: Raw transcription only
+      rules: Local rule-based cleanup (default, no network)
+      local_llm: Local model cleanup via Ollama (no network)
+      cloud: Cloud API cleanup (opt-in, requires network)
+
+  cleanup_local_llm_model:
+    type: string
+    default: "phi3:mini"
+    description: Ollama model identifier for Tier 2 (local_llm) cleanup
+    examples:
+      - "phi3:mini"
+      - "qwen2.5:3b"
+      - "llama3.2:3b"
+
+  cleanup_cloud_provider:
+    type: string
+    enum: [claude, openai]
+    description: Cloud provider for Tier 3 cleanup (only used when cleanup_tier=cloud)
+
+  cleanup_cloud_api_key_env:
+    type: string
+    description: Environment variable name containing API key (never store key directly)
+    examples:
+      - ANTHROPIC_API_KEY
+      - OPENAI_API_KEY
+
+  custom_vocab_paths:
+    type: array
+    items:
+      type: string
+    default: ["~/.config/voice-input/vocabulary.yaml"]
+    description: Paths to custom vocabulary definition files
+
+  silence_timeout_ms:
+    type: integer
+    minimum: 500
+    maximum: 5000
+    default: 1500
+    description: Silence duration (ms) before auto-stopping dictation
+
+  max_recording_duration_s:
+    type: integer
+    minimum: 10
+    maximum: 600
+    default: 300
+    description: Maximum recording time in seconds (safety limit)
+
+  language:
+    type: string
+    default: en
+    pattern: "^[a-z]{2}$"
+    description: Primary spoken language (ISO 639-1 code)
+
+  output_method:
+    type: string
+    enum: [clipboard]
+    default: clipboard
+    description: How transcribed text is delivered. Only clipboard is supported in this version.
+
+  visual_feedback:
+    type: boolean
+    default: true
+    description: Show recording indicator (handled by voice tool natively)
+
+# Cross-field validation rules (enforced by setup script):
+# - If offline_only=true, cleanup_tier MUST be "none", "rules", or "local_llm"
+# - If cleanup_tier=cloud, cleanup_cloud_provider and cleanup_cloud_api_key_env MUST be set
+# - If cleanup_tier=local_llm, Ollama MUST be installed and running
