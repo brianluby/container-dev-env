@@ -9,6 +9,7 @@
 |-----------------------------------|-------------------------------------------|
 | User onboarding                   | `getting-started.md`                       |
 | Advanced workflows & customization| `advanced-guide.md`                        |
+| Feature quickstarts               | `quickstarts/README.md`                    |
 | Past architectural decisions      | `decisions/` directory (NNN-title.md)     |
 | System structure & components     | `architecture/overview.md`                |
 | API design principles             | `api/principles.md`                       |

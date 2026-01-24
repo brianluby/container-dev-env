@@ -46,13 +46,13 @@ See `src/agent/agent.sh` for the full usage block.
 
 ### Mode C: Containerized IDE
 
-Quickstart: `specs/008-containerized-ide/quickstart.md`
+Quickstart: `docs/quickstarts/008-containerized-ide.md`
 
 Use this when you want a browser-based IDE without local installation.
 
 ### Mode D: IDE + AI extensions
 
-Quickstart: `specs/009-ai-ide-extensions/quickstart.md`
+Quickstart: `docs/quickstarts/009-ai-ide-extensions.md`
 
 Use this when you want pre-installed IDE extensions, templated configs,
 and controlled telemetry defaults.
@@ -95,11 +95,11 @@ Workflow:
 3. Generate tool configs: `src/mcp/generate-configs.sh`
 4. Restart your AI tool so it reloads the generated config
 
-See `src/mcp/defaults/README.md` and `specs/012-mcp-integration/quickstart.md`.
+See `src/mcp/defaults/README.md` and `docs/quickstarts/012-mcp-integration.md`.
 
 ## Persistent memory
 
-Quickstart: `specs/013-persistent-memory/quickstart.md`
+Quickstart: `docs/quickstarts/013-persistent-memory.md`
 
 Two layers:
 
@@ -134,14 +134,14 @@ This repo is designed for spec-first development and feature-scoped branches.
 
 ## Optional workflows
 
-- Voice input quickstart: `specs/015-voice-input/quickstart.md`
-- Mobile notifications: `specs/016-mobile-access/quickstart.md`
+- Voice input quickstart: `docs/quickstarts/015-voice-input.md`
+- Mobile notifications: `docs/quickstarts/016-mobile-access.md`
 
 ## Suggested reading paths
 
 - Faster installs and persistence: `docs/volume-architecture.md`
 - Secrets done right: `docs/secrets-guide.md`
 - AI tool context composition: `docs/tool-compatibility.md`
-- MCP + memory: `specs/012-mcp-integration/quickstart.md` and
-  `specs/013-persistent-memory/quickstart.md`
+- MCP + memory: `docs/quickstarts/012-mcp-integration.md` and
+  `docs/quickstarts/013-persistent-memory.md`
 - Contributor workflow: `docs/spec-driven-development-pipeline.md`
