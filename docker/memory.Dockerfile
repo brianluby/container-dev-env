@@ -33,7 +33,7 @@ COPY src/ ./src/
 RUN pip install --no-cache-dir --no-deps .
 
 # Health check script
-COPY src/docker/healthcheck.py /usr/local/bin/healthcheck.py
+COPY docker/healthcheck.py /usr/local/bin/healthcheck.py
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD python /usr/local/bin/healthcheck.py || exit 1
 
@@ -46,5 +46,5 @@ ENV MEMORY_LOG_LEVEL="INFO"
 ENV MEMORY_SOURCE_TOOL="unknown"
 
 # Entry point
-COPY src/docker/memory-entrypoint.sh /usr/local/bin/memory-entrypoint.sh
+COPY docker/memory-entrypoint.sh /usr/local/bin/memory-entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/memory-entrypoint.sh"]

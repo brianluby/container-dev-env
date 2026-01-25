@@ -6,7 +6,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
-DOCKERFILE="${REPO_ROOT}/src/docker/Dockerfile.ide"
+DOCKERFILE="${REPO_ROOT}/docker/Dockerfile.ide"
 BUILD_CONTEXT="${REPO_ROOT}/src"
 
 echo "=== Test: Multi-arch build (linux/amd64, linux/arm64) ==="

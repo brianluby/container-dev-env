@@ -170,7 +170,7 @@ export OPENCODE_MODE="build"
 ### CONNECTION_TOKEN
 
 - Name/key: `CONNECTION_TOKEN`
-- Where: `.env` used by `src/docker/docker-compose.ide.yml`
+- Where: `.env` used by `docker/docker-compose.ide.yml`
 - Type: string
 - Default: unset (generate one)
 - Allowed: any sufficiently random value
@@ -179,7 +179,7 @@ export OPENCODE_MODE="build"
 
 ```bash
 ./src/scripts/generate-token.sh > .env
-docker compose -f src/docker/docker-compose.ide.yml up -d
+docker compose -f docker/docker-compose.ide.yml up -d
 ```
 
 ## Mobile notifications

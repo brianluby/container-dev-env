@@ -4,7 +4,7 @@
 # Task: T014 [US1]
 set -euo pipefail
 
-COMPOSE_FILE="${COMPOSE_FILE:-src/docker/docker-compose.ide.yml}"
+COMPOSE_FILE="${COMPOSE_FILE:-docker/docker-compose.ide.yml}"
 CONTAINER_NAME="${CONTAINER_NAME:-devenv-ide-1}"
 MAX_WAIT=30
 PORT=3000

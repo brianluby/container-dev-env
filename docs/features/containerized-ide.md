@@ -20,7 +20,7 @@ Applies to: `main`
 2. Start the IDE:
 
 ```bash
-docker compose -f src/docker/docker-compose.ide.yml up -d
+docker compose -f docker/docker-compose.ide.yml up -d
 ```
 
 3. Access the IDE in a browser:
@@ -35,7 +35,7 @@ docker compose -f src/docker/docker-compose.ide.yml up -d
 ## Verification
 
 ```bash
-docker compose -f src/docker/docker-compose.ide.yml ps
+docker compose -f docker/docker-compose.ide.yml ps
 ```
 
 If the container is healthy, the IDE should load and provide a terminal and file explorer.

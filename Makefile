@@ -1,5 +1,5 @@
 # Containerized IDE convenience targets
-COMPOSE_FILE := src/docker/docker-compose.ide.yml
+COMPOSE_FILE := docker/docker-compose.ide.yml
 
 .PHONY: ide-up ide-down ide-token ide-logs ide-shell ide-test
 

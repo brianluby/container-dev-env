@@ -14,7 +14,7 @@ Applies to: `main`
 1. Start the IDE (if not already):
 
 ```bash
-docker compose -f src/docker/docker-compose.ide.yml up -d
+docker compose -f docker/docker-compose.ide.yml up -d
 ```
 
 2. Ensure provider keys are available in the IDE container environment (via secrets injection).

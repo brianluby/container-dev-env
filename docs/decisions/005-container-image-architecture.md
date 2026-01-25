@@ -42,7 +42,7 @@ We will maintain the following container image hierarchy, each Dockerfile servin
 
 **Key dependencies**: Base image (Dockerfile root), OpenCode v0.5.2, Claude Code v1.0.23 (optional).
 
-### 3. `src/docker/Dockerfile.ai-extensions`
+### 3. `docker/Dockerfile.ai-extensions`
 
 **Purpose**: IDE extensions layer adding VS Code AI extensions (Continue, Cline) to the development container.
 
