@@ -14,7 +14,7 @@ FROM python:3.14-slim-bookworm AS python-base
 # =============================================================================
 # Base image: Debian Bookworm-slim for glibc compatibility
 # Pinned to specific date tag for reproducibility (constitution principle V)
-FROM debian:bookworm-20250113-slim
+FROM debian:bookworm-20260112-slim
 
 # Build arguments for user configuration
 ARG USERNAME=dev
@@ -85,9 +85,9 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
 
 # Install Chezmoi (pinned version for reproducibility - Constitution Principle V)
 # Checksum verification per Feature 017 (Codebase Hardening)
-ARG CHEZMOI_VERSION=v2.47.1
-ARG CHEZMOI_SHA256_AMD64=2e13820f7c93f522823070538425e72ad2b6186322c70e4188efb2da38166f7c
-ARG CHEZMOI_SHA256_ARM64=bf1d042f62f8d80b238f20d135b5e413981089f429668ff7039128ee32b957a6
+ARG CHEZMOI_VERSION=v2.69.3
+ARG CHEZMOI_SHA256_AMD64=9b9bf911efed8aba28bd6f5df1e780a6123dc3fb177004c1ca36ec2b9eca7628
+ARG CHEZMOI_SHA256_ARM64=0aef9ef75ee33cffb483a82c474b495d428e0f7941ab7898263c3519006e0662
 RUN set -eux; \
     ARCH=$(dpkg --print-architecture); \
     case "${ARCH}" in \
@@ -106,9 +106,9 @@ RUN set -eux; \
 
 # Install age for encrypted dotfile support (FR-010)
 # Checksum verification per Feature 017 (Codebase Hardening)
-ARG AGE_VERSION=v1.1.1
-ARG AGE_SHA256_AMD64=cf16cbb108fc56e2064b00ba2b65d9fb1b8d7002ca5e38260ee1cc34f6aaa8f9
-ARG AGE_SHA256_ARM64=f0dbf4364f5ba44e37ad85af9fdd3716bd410018ce344d317b174d206b03e6fc
+ARG AGE_VERSION=v1.3.1
+ARG AGE_SHA256_AMD64=bdc69c09cbdd6cf8b1f333d372a1f58247b3a33146406333e30c0f26e8f51377
+ARG AGE_SHA256_ARM64=c6878a324421b69e3e20b00ba17c04bc5c6dab0030cfe55bf8f68fa8d9e9093a
 RUN set -eux; \
     ARCH=$(dpkg --print-architecture); \
     case "${ARCH}" in \

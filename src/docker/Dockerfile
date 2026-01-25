@@ -14,7 +14,7 @@
 # Provides:
 #   /usr/local/bin/opencode — Verified, executable binary
 
-ARG OPENCODE_VERSION=v0.1.0
+ARG OPENCODE_VERSION=v1.1.35
 # NOTE: The following SHA256 values are placeholders only.
 # Obtain the real checksums from the corresponding OpenCode GitHub release, e.g.:
 #   curl -fsSL "https://github.com/opencode-ai/opencode/releases/download/${OPENCODE_VERSION}/opencode-linux-amd64" | sha256sum

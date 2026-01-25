@@ -4,7 +4,7 @@
 # =============================================================================
 
 # Use the project's base image as foundation
-FROM debian:bookworm-20250113-slim
+FROM debian:bookworm-20260112-slim
 
 # Build arguments
 ARG USERNAME=dev
@@ -78,13 +78,13 @@ ENV PATH=/home/${USERNAME}/.local/bin:/home/${USERNAME}/.npm-global/bin:$PATH
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}
 
-# Install MCP servers globally via npm
+# Install MCP servers globally via npm (pinned versions for reproducibility)
 # These are the core servers identified in the PRD
 RUN npm install -g \
-    @modelcontextprotocol/server-filesystem \
-    @modelcontextprotocol/server-memory \
-    @modelcontextprotocol/server-sequential-thinking \
-    @upstash/context7-mcp
+    @modelcontextprotocol/server-filesystem@2026.1.14 \
+    @modelcontextprotocol/server-memory@2025.11.25 \
+    @modelcontextprotocol/server-sequential-thinking@2025.12.18 \
+    @upstash/context7-mcp@2.1.0
 
 # =============================================================================
 # Phase 5: MCP Configuration
