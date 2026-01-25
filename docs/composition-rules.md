@@ -1,9 +1,15 @@
 # Context Composition Rules
 
+This page describes how AI tools compose multiple context files into an effective set of instructions.
+
 ## Overview
 
 When multiple context files exist in a project, AI tools compose them into a
 single effective context. This document defines the composition rules.
+
+## Prerequisites
+
+- None
 
 ## File Discovery Order
 
@@ -78,3 +84,25 @@ When working on `tests/`, effective context is:
 4. **Conflict intentionally** — Only override root rules when the module genuinely needs different behavior
 5. **Limit depth** — One level of nesting (root + subdirectory) is recommended; deeper nesting adds complexity
 6. **Size budget** — Each file under 10KB; total project context should stay manageable
+
+## Documentation page composition rules
+
+User-facing documentation pages under `docs/` follow the page contract in `docs/_page-template.md`:
+
+- Each page has a single `#` title.
+- Each page includes `## Prerequisites`, `## Related`, and `## Next steps`.
+- Setup/config pages should include a troubleshooting section when there are known failure modes.
+
+Exceptions:
+
+- `docs/_page-template.md` is a template.
+- Pointer-only legacy pages (deprecated stubs) are allowed to be short, but should still include Prerequisites/Related/Next steps.
+
+## Related
+
+- `docs/reference/tool-compatibility.md`
+- `docs/navigation.md`
+
+## Next steps
+
+- If you are writing docs pages: `docs/_page-template.md`

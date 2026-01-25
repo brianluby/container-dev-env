@@ -4,6 +4,10 @@
 **Date**: 2026-01-23
 **Deciders**: Project maintainers
 
+## Prerequisites
+
+- None
+
 ## Context
 
 The project needs a structured knowledge documentation system that AI coding agents can read and understand. The documentation must be portable across different AI tools (Claude Code, Cline, Continue), version-controllable, and human-readable. Multiple formats were considered including rich text, structured data formats (JSON/YAML), and various markup languages.
@@ -59,3 +63,12 @@ We will use plain Markdown for all project knowledge documentation. All document
 - [x] Create documentation directory structure (`docs/`)
 - [x] Establish templates for each documentation category
 - [ ] Document Mermaid diagram conventions for consistent usage
+
+## Related
+
+- `docs/navigation.md`
+- `docs/_page-template.md`
+
+## Next steps
+
+- If you are updating docs: `docs/contributing/index.md`

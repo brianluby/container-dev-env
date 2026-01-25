@@ -1,30 +1,34 @@
-# Project Knowledge Navigation Guide
+# Documentation Navigation
 
-> This guide helps AI coding agents find relevant project documentation.
-> Read the section matching your current task before generating code.
+This page is a human-maintained map of the documentation tree.
+Use it when you do not know where to start, or when you want to quickly locate the right doc by task/role.
 
-## Quick Reference
+## Prerequisites
 
-| If you need...                    | Read                                      |
-|-----------------------------------|-------------------------------------------|
-| User onboarding                   | `getting-started.md`                       |
-| Advanced workflows & customization| `advanced-guide.md`                        |
-| Feature quickstarts               | `quickstarts/README.md`                    |
-| Past architectural decisions      | `decisions/` directory (NNN-title.md)     |
-| System structure & components     | `architecture/overview.md`                |
-| API design principles             | `api/principles.md`                       |
-| Domain terminology                | `domain/glossary.md`                      |
-| Deployment & operations           | `operations/deployment.md`                |
-| Security patterns                 | `security/authentication.md`              |
+- None
 
-## How to Use This Guide
+## Quick reference
+
+| If you need... | Read |
+|---|---|
+| New user onboarding | `docs/getting-started/index.md` |
+| Troubleshoot setup issues | `docs/getting-started/troubleshooting.md` |
+| Enable a feature | `docs/features/index.md` |
+| Operational runbooks | `docs/operations/index.md` |
+| Contributing workflow + tests | `docs/contributing/index.md` |
+| System overview and diagrams | `docs/architecture/index.md` |
+| Configuration reference | `docs/reference/configuration.md` |
+| Domain terminology | `docs/glossary.md` |
+| Architecture decisions | `docs/decisions/` |
+
+## How to use this map
 
 1. Identify the category relevant to your current task
 2. Read the referenced document for context
 3. For architecture decisions, check `decisions/` for relevant ADRs before proposing new approaches
 4. Cross-references between documents use relative Markdown links
 
-## Document Conventions
+## Document conventions
 
 - Each document is self-contained and under 500 lines
 - Mermaid diagrams show system relationships (flowcharts and sequence diagrams)
@@ -33,7 +37,7 @@
 - Diagrams include prose descriptions for context
 - All documents are plain Markdown — no special tooling required
 
-## Decision Record Discovery
+## Decision record discovery
 
 When implementing a feature, check if relevant decisions exist:
 
@@ -42,22 +46,22 @@ When implementing a feature, check if relevant decisions exist:
 3. If your implementation conflicts with an accepted ADR, discuss with the team before proceeding
 4. If no relevant ADR exists for a significant choice, consider creating one
 
-## Category Descriptions
+## Docs tree (top level)
 
-### Architecture (`architecture/`)
-System structure, component relationships, and design patterns. Read before proposing structural changes or adding new components.
+- Getting started: `docs/getting-started/index.md`
+- Features: `docs/features/index.md`
+- Operations: `docs/operations/index.md`
+- Architecture: `docs/architecture/index.md`
+- Contributing: `docs/contributing/index.md`
+- Reference: `docs/reference/index.md`
+- Glossary: `docs/glossary.md`
+- Decisions (ADRs): `docs/decisions/`
 
-### Decisions (`decisions/`)
-Architecture Decision Records (ADRs) documenting past choices with context, alternatives, and consequences. Read before re-proposing previously rejected approaches.
+## Related
 
-### API (`api/`)
-Interface design principles, endpoint conventions, and error response formats. Read before creating or modifying API endpoints.
+- `README.md`
+- `docs/_page-template.md`
 
-### Domain (`domain/`)
-Project-specific terminology and business concepts. Read to use correct terminology in generated code and documentation.
+## Next steps
 
-### Operations (`operations/`)
-Deployment procedures, container build workflows, and operational runbooks. Read before modifying build or deployment processes.
-
-### Security (`security/`)
-Authentication patterns, secret handling practices, and threat considerations. Read before implementing security-sensitive features.
+- If you are new here: `docs/getting-started/index.md`

@@ -1,58 +1,58 @@
 # container-dev-env
-Containerized development environment
 
-## Features
+Reproducible, containerized development environments with optional AI coding assistants.
 
-- **Containerized Development**: Reproducible development environments using Docker
-- **Dotfile Management**: Personal configuration via Chezmoi
-- **Secret Injection**: Secure handling of API keys, tokens, and credentials
+Who this is for:
+
+- Developers who want a portable, pre-configured dev environment across machines
+- Contributors who want a spec-driven workflow (specs/plans/tasks)
+- Users who want optional AI tooling (OpenCode, Claude Code) inside the container
 
 ## Documentation
 
-- Getting started: [docs/getting-started.md](docs/getting-started.md)
-- Advanced guide: [docs/advanced-guide.md](docs/advanced-guide.md)
+Start here:
 
-## Secret Injection
+- Getting started: `docs/getting-started/index.md`
+- Features: `docs/features/index.md`
+- Operations: `docs/operations/index.md`
+- Contributing: `docs/contributing/index.md`
+- Architecture: `docs/architecture/index.md`
+- Reference: `docs/reference/index.md`
+- Glossary: `docs/glossary.md`
 
-Securely manage secrets (API keys, tokens, credentials) using age-encrypted dotfiles:
+If you are not sure where something lives, use `docs/navigation.md`.
+
+## Quick start
+
+These steps match `docs/getting-started/index.md`.
+
+1. (Recommended) export your host UID/GID:
 
 ```bash
-# First-time setup (5 minutes)
-./scripts/secrets-setup.sh
-
-# Edit secrets
-chezmoi edit ~/.secrets.env
-
-# Apply and restart container
-chezmoi apply
+export LOCAL_UID="$(id -u)"
+export LOCAL_GID="$(id -g)"
 ```
 
-Secrets are:
-- Encrypted at rest with your personal age key
-- Automatically loaded as environment variables at container startup
-- Invisible to `docker inspect` (loaded at runtime, not baked into images)
-- Available offline after initial setup
+2. Build and start the dev container:
 
-See [docs/secrets-guide.md](docs/secrets-guide.md) for complete documentation.
+```bash
+docker compose -f docker/docker-compose.yml up -d --build
+```
 
-## Quick Start
+3. Attach a shell:
 
-1. Build the container:
-   ```bash
-    docker compose -f docker/docker-compose.yml build
-    ```
+```bash
+docker compose -f docker/docker-compose.yml exec dev bash
+```
 
-2. Start the container:
-   ```bash
-    docker compose -f docker/docker-compose.yml up -d
-    ```
+4. Verify health (inside the container):
 
-3. Attach to the container:
-   ```bash
-    docker compose -f docker/docker-compose.yml exec dev bash
-    ```
+```bash
+/usr/local/bin/health-check.sh
+```
 
-4. Set up secrets (first time only):
-   ```bash
-   ./scripts/secrets-setup.sh
-   ```
+## Optional: secrets
+
+Secrets are managed with Chezmoi + age encryption and injected as environment variables at runtime.
+
+- Guide: `docs/features/secrets-management.md`
