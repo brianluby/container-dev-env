@@ -7,6 +7,10 @@
 > **Status:** Ready for Triage  
 > **Last Updated:** 2026-01-23
 
+## Prerequisites
+
+- None
+
 ---
 
 ## Executive Summary
@@ -363,6 +367,28 @@ paths:
 
 ---
 
+### DOC-018: Expand Configuration Reference Coverage
+
+| Attribute | Value |
+|-----------|-------|
+| **Location** | `docs/reference/configuration.md` |
+| **Risk** | Users miss less-common settings and fall back to reading source |
+
+**Remediation:** Inventory user-facing settings across Compose files and scripts and document them (especially agent/IDE settings).
+
+---
+
+### DOC-019: Deepen Feature Guide Verification Steps
+
+| Attribute | Value |
+|-----------|-------|
+| **Locations** | `docs/features/*.md` |
+| **Risk** | Guides are readable but not always fully copy/paste verifiable |
+
+**Remediation:** Add concrete verification commands/output expectations per feature.
+
+---
+
 ### MAINT-001: Docker Compose Version Field Legacy
 
 | Location | `docker/docker-compose.yml:11` |
@@ -449,3 +475,12 @@ flowchart TD
 3. `docs/codex-review-2026-01-23.md` — Code review (shell scripts, agent)
 4. `docs/gemini-review-2026-01-23.md` — Agent service deep-dive
 5. `docs/security-auditor_review_2026-01-23.md` — Security audit
+
+## Related
+
+- `docs/contributing/index.md`
+- `docs/architecture/index.md`
+
+## Next steps
+
+- Triage items into feature specs under `specs/`

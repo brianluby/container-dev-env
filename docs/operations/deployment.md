@@ -1,11 +1,18 @@
-# Deployment & Operations
+# Deployment
 
-> Container build workflows, deployment procedures, and operational runbooks.
-> AI agents: reference this before modifying build or deployment processes.
+This page is a reference for building and running the container images and Compose stacks.
+For step-by-step operational procedures, use the runbooks in `docs/operations/index.md`.
 
-## Container Build Workflow
+Applies to: `main`
 
-### Building the Base Image
+## Prerequisites
+
+- Docker + Compose v2
+- `docs/getting-started/index.md`
+
+## Container build workflow
+
+### Build the base image
 
 ```bash
 # Build for current architecture
@@ -15,7 +22,7 @@ docker build -t container-dev-env:latest .
 docker buildx build --platform linux/arm64,linux/amd64 -t container-dev-env:latest .
 ```
 
-### Build Verification
+### Build verification
 
 After building, verify the image meets requirements:
 
@@ -40,17 +47,13 @@ The Dockerfile uses multi-stage builds to minimize final image size:
 2. **Runtime stage**: Copy only necessary artifacts from builder
 3. **Final stage**: Add user configuration and entrypoint
 
-## Deployment Targets
+## Deployment targets
 
-### Local Development
+### Local development
 
 ```bash
-# Run with project mounted
-docker run -it -v "$(pwd):/workspace" container-dev-env:latest
-
-# Run with Docker Compose (includes volumes for persistence)
-docker compose up -d
-docker compose exec dev bash
+docker compose -f docker/docker-compose.yml up -d --build
+docker compose -f docker/docker-compose.yml exec dev bash
 ```
 
 ### CI/CD Pipeline
@@ -61,17 +64,13 @@ The container image is used in CI for consistent build environments:
 - Pin image versions in CI configuration (no `:latest` in production)
 - Cache Docker layers for faster CI builds
 
-## Volume Architecture
+## Volume architecture
 
 Persistent state is maintained via Docker volumes:
 
-| Volume | Mount Point | Purpose |
-|--------|-------------|---------|
-| `dev-home` | `/home/developer` | User home directory persistence |
-| `dev-cache` | `/home/developer/.cache` | Build caches (cargo, pip, npm) |
-| `agent-state` | `/home/developer/.local/share/agent` | AI agent session state |
+See `docker/docker-compose.yml` for the authoritative volume list.
 
-## Health Checks
+## Health checks
 
 Container health is verified via:
 
@@ -101,3 +100,12 @@ HEALTHCHECK --interval=30s --timeout=5s \
 - Enable BuildKit: `DOCKER_BUILDKIT=1`
 - Use `.dockerignore` to exclude unnecessary files
 - Order Dockerfile layers for optimal cache hits
+
+## Related
+
+- `docs/operations/index.md`
+- `docs/architecture/overview.md`
+
+## Next steps
+
+- If you need a rebuild procedure: `docs/operations/container-rebuild.md`

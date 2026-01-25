@@ -4,6 +4,10 @@
 **Date**: YYYY-MM-DD
 **Deciders**: [who was involved]
 
+## Prerequisites
+
+- None
+
 ## Context
 
 [Value-neutral description of the forces at play. What problem are we facing?
@@ -38,3 +42,11 @@ understand what was chosen.]
 
 ## Follow-up Actions
 - [ ] [any immediate tasks this decision creates, if applicable]
+
+## Related
+
+- `docs/architecture/index.md`
+
+## Next steps
+
+- Link this ADR from a category index or architecture page

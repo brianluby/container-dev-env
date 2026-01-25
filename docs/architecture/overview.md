@@ -3,6 +3,12 @@
 > High-level system structure, component relationships, and design patterns.
 > AI agents: reference this before proposing structural changes.
 
+Applies to: `main`
+
+## Prerequisites
+
+- Familiarity with Docker + Compose
+
 ## System Description
 
 Container Dev Env is a containerized development environment system that produces reproducible, multi-language workspaces with integrated AI coding assistants. It packages language runtimes (Python, Node.js, Go, Rust), development tools, and AI agents (OpenCode, Claude Code) into Docker images that developers can use on any machine with zero manual setup.
@@ -86,6 +92,26 @@ flowchart TD
     AILayer -->|navigates| ProjKnowledge
 ```
 
+## Key data flows
+
+### Secrets injection (high level)
+
+```mermaid
+flowchart LR
+    Chezmoi[Chezmoi source + age-encrypted secrets] -->|decrypt/apply| SecretsFile[~/.secrets.env]
+    SecretsFile -->|load at startup| Env[Process environment]
+    Env --> Tools[Tools and scripts]
+```
+
+### MCP config generation (high level)
+
+```mermaid
+flowchart LR
+    Source[/workspace/.mcp/config.json/] --> Validate[validate-mcp.sh]
+    Source --> Generate[generate-configs.sh]
+    Generate --> ToolConfigs[Tool-native configs]
+```
+
 ## Documentation Discovery Flow
 
 The following sequence diagram shows how an AI agent discovers and uses project knowledge documentation. The agent reads AGENTS.md, follows the reference to the navigation guide, and then navigates to the relevant category.
@@ -120,3 +146,18 @@ sequenceDiagram
 - Build time under 5 minutes on CI
 - All dependencies MIT-compatible licensed
 - No secrets baked into images
+
+## ADRs to read before major changes
+
+- `docs/decisions/001-use-markdown-for-documentation.md`
+- `docs/decisions/005-container-image-architecture.md`
+
+## Related
+
+- `docs/architecture/volume-architecture.md`
+- `docs/reference/configuration.md`
+
+## Next steps
+
+- If you are onboarding: `docs/getting-started/index.md`
+- If you are contributing: `docs/contributing/index.md`

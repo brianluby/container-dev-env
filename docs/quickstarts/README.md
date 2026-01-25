@@ -1,10 +1,19 @@
-# Quickstarts
+# Quickstarts (Deprecated)
 
-Feature quickstarts consolidated from `specs/`.
+Quickstarts were migrated into standalone feature guides.
 
-- Containerized IDE: `docs/quickstarts/008-containerized-ide.md`
-- AI IDE extensions: `docs/quickstarts/009-ai-ide-extensions.md`
-- MCP integration: `docs/quickstarts/012-mcp-integration.md`
-- Persistent memory: `docs/quickstarts/013-persistent-memory.md`
-- Voice input: `docs/quickstarts/015-voice-input.md`
-- Mobile notifications: `docs/quickstarts/016-mobile-access.md`
+## Prerequisites
+
+- `docs/getting-started/index.md`
+
+## Where to go instead
+
+- Feature catalog: `docs/features/index.md`
+
+## Related
+
+- `docs/navigation.md`
+
+## Next steps
+
+- Pick a feature guide: `docs/features/index.md`

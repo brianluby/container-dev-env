@@ -101,3 +101,10 @@ Before implementing features that touch architectural boundaries, read
 docs/navigation.md for a map of documented architecture decisions, domain
 terminology, and design patterns. Check docs/decisions/ for relevant
 Architecture Decision Records before proposing new architectural approaches.
+
+## Active Technologies
+- Markdown (repository docs), Bash 5.x for any helper scripts + N/A (static Markdown); Mermaid/ASCII for diagrams (no site generator) (018-docs-overhaul)
+- Git repository files (Markdown) (018-docs-overhaul)
+
+## Recent Changes
+- 018-docs-overhaul: Added Markdown (repository docs), Bash 5.x for any helper scripts + N/A (static Markdown); Mermaid/ASCII for diagrams (no site generator)

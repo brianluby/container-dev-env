@@ -3,6 +3,10 @@
 > Project-specific terminology and business concepts.
 > AI agents: use these terms consistently in generated code and responses.
 
+## Prerequisites
+
+- None
+
 ## Terms
 
 ### [Term Name]
@@ -18,3 +22,11 @@
 ---
 
 <!-- Repeat the above block for each term, maintaining alphabetical order -->
+
+## Related
+
+- `docs/glossary.md`
+
+## Next steps
+
+- `docs/glossary.md`

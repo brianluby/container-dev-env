@@ -4,6 +4,10 @@
 **Date**: 2026-01-24
 **Deciders**: Project maintainers
 
+## Prerequisites
+
+- Familiarity with Docker + Compose
+
 ## Context
 
 The repository contains multiple Dockerfiles serving different purposes (base development, agent layer, IDE extensions, etc.). Without clear documentation, contributors face confusion about which image to build, extend, or debug. The multi-stage, multi-file approach enables separation of concerns but requires explicit documentation of the layering strategy and intended use cases.
@@ -86,3 +90,12 @@ We will maintain the following container image hierarchy, each Dockerfile servin
 ## Follow-up Actions
 - [ ] Ensure CI builds validate all Dockerfiles independently
 - [ ] Add image size budgets per Dockerfile to prevent bloat
+
+## Related
+
+- `docs/architecture/overview.md`
+- `docs/operations/deployment.md`
+
+## Next steps
+
+- If you are building containers: `docs/getting-started/index.md`
