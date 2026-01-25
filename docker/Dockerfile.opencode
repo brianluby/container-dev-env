@@ -7,21 +7,16 @@
 #   Include this as a stage in the parent Dockerfile or use COPY --from to extract the binary.
 #
 # Required build args:
-#   OPENCODE_VERSION       — Release tag (e.g., v0.1.0)
-#   OPENCODE_SHA256_AMD64  — SHA256 checksum for linux/amd64 binary
-#   OPENCODE_SHA256_ARM64  — SHA256 checksum for linux/arm64 binary
+#   OPENCODE_VERSION       — Release tag (e.g., v1.1.35)
+#   OPENCODE_SHA256_AMD64  — SHA256 checksum for linux/amd64 tarball
+#   OPENCODE_SHA256_ARM64  — SHA256 checksum for linux/arm64 tarball
 #
 # Provides:
 #   /usr/local/bin/opencode — Verified, executable binary
 
 ARG OPENCODE_VERSION=v1.1.35
-# NOTE: The following SHA256 values are placeholders only.
-# Obtain the real checksums from the corresponding OpenCode GitHub release, e.g.:
-#   curl -fsSL "https://github.com/opencode-ai/opencode/releases/download/${OPENCODE_VERSION}/opencode-linux-amd64" | sha256sum
-#   curl -fsSL "https://github.com/opencode-ai/opencode/releases/download/${OPENCODE_VERSION}/opencode-linux-arm64" | sha256sum
-# Then set OPENCODE_SHA256_AMD64 / OPENCODE_SHA256_ARM64 via build args or update the defaults below.
-ARG OPENCODE_SHA256_AMD64=placeholder_amd64_sha256
-ARG OPENCODE_SHA256_ARM64=placeholder_arm64_sha256
+ARG OPENCODE_SHA256_AMD64=451f5a36e2875b5540adf55e8cc9e144902b44959a6f31899fc21876b38b31ae
+ARG OPENCODE_SHA256_ARM64=e7544ae14afb10e75d28a3623b1fd33d60e17f372106665566ca4e085c2b157b
 
 FROM debian:bookworm-slim AS opencode-install
 
@@ -34,14 +29,18 @@ RUN set -eux; \
     apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*; \
     case "${TARGETARCH}" in \
-      amd64) SHA="${OPENCODE_SHA256_AMD64}" ;; \
-      arm64) SHA="${OPENCODE_SHA256_ARM64}" ;; \
+      amd64) SHA="${OPENCODE_SHA256_AMD64}"; ARCH_LABEL="x64" ;; \
+      arm64) SHA="${OPENCODE_SHA256_ARM64}"; ARCH_LABEL="arm64" ;; \
       *) echo "Unsupported architecture: ${TARGETARCH}" && exit 1 ;; \
     esac; \
-    curl -fsSL "https://github.com/opencode-ai/opencode/releases/download/${OPENCODE_VERSION}/opencode-linux-${TARGETARCH}" \
-      -o /usr/local/bin/opencode; \
-    echo "${SHA}  /usr/local/bin/opencode" | sha256sum -c -; \
-    chmod +x /usr/local/bin/opencode
+    OPENCODE_VER=$(echo "${OPENCODE_VERSION}" | sed 's/^v//'); \
+    curl -fsSL "https://github.com/anomalyco/opencode/releases/download/v${OPENCODE_VER}/opencode-linux-${ARCH_LABEL}.tar.gz" \
+      -o /tmp/opencode.tar.gz; \
+    echo "${SHA}  /tmp/opencode.tar.gz" | sha256sum -c -; \
+    tar -xzf /tmp/opencode.tar.gz -C /tmp; \
+    mv /tmp/opencode /usr/local/bin/opencode; \
+    chmod +x /usr/local/bin/opencode; \
+    rm -f /tmp/opencode.tar.gz
 
 # Session directory with correct permissions
 RUN mkdir -p /root/.local/share/opencode/sessions && \

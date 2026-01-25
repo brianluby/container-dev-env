@@ -321,12 +321,17 @@ fix_cache_permissions() {
     log_section "Fixing Cache Volume Permissions"
 
     # Cache directories that need permission fixes
+    # Includes agent volumes from docker-compose.agent.yml
     local cache_dirs=(
         "/home/dev/.npm"
         "/home/dev/.cache/pip"
         "/home/dev/.cargo/registry"
         "/workspace/node_modules"
         "/workspace/target"
+        "/home/dev/.local/share/agent"
+        "/home/dev/.local/share/opencode"
+        "/home/dev/.config/opencode"
+        "/home/dev/.claude"
     )
 
     for dir in "${cache_dirs[@]}"; do
@@ -334,6 +339,7 @@ fix_cache_permissions() {
         if [[ ! -d "$dir" ]]; then
             log "  Creating: $dir"
             sudo mkdir -p "$dir"
+            sudo chown "$EXPECTED_UID:$EXPECTED_GID" "$dir"
         fi
 
         # Check ownership and fix if needed
@@ -344,7 +350,15 @@ fix_cache_permissions() {
             log "  Fixing ownership: $dir (root -> $EXPECTED_UID:$EXPECTED_GID)"
             sudo chown -R "$EXPECTED_UID:$EXPECTED_GID" "$dir"
         else
-            log "  $dir: owner UID $current_uid (ok)"
+            # Also fix any root-owned files/subdirs within the directory
+            local root_files
+            root_files=$(sudo find "$dir" -maxdepth 2 -user root 2>/dev/null | head -1 || true)
+            if [[ -n "$root_files" ]]; then
+                log "  Fixing root-owned content in: $dir"
+                sudo find "$dir" -user root -exec chown "$EXPECTED_UID:$EXPECTED_GID" {} + 2>/dev/null || true
+            else
+                log "  $dir: owner UID $current_uid (ok)"
+            fi
         fi
     done
 }

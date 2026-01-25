@@ -3,11 +3,11 @@
 # Multi-arch: arm64 + amd64 via docker buildx
 
 # Build args
-ARG BASE_IMAGE=devcontainer:base
-ARG OPENCODE_VERSION=0.5.2
+ARG BASE_IMAGE=devenv:latest
+ARG OPENCODE_VERSION=1.1.35
 ARG INSTALL_CLAUDE_CODE=false
 ARG CLAUDE_CODE_VERSION=1.0.23
-ARG AGENT_USER=developer
+ARG AGENT_USER=dev
 
 # --- Stage 1: Install agent binaries ---
 FROM ${BASE_IMAGE} AS agent-install
@@ -18,31 +18,31 @@ ARG CLAUDE_CODE_VERSION
 
 USER root
 
-# Install OpenCode from pinned version (direct binary download)
+# Install OpenCode from pinned version (anomalyco/opencode)
 # Architecture auto-detected via uname -m
 # Checksum verification per Feature 017 (Codebase Hardening)
-# TODO: Replace placeholder checksums with actual SHA256 hashes once obtained
-#       from https://github.com/anomalyco/opencode/releases/download/v0.5.2/
-ARG OPENCODE_SHA256_AMD64=0000000000000000000000000000000000000000000000000000000000000000
-ARG OPENCODE_SHA256_ARM64=0000000000000000000000000000000000000000000000000000000000000000
+ARG OPENCODE_SHA256_AMD64=451f5a36e2875b5540adf55e8cc9e144902b44959a6f31899fc21876b38b31ae
+ARG OPENCODE_SHA256_ARM64=e7544ae14afb10e75d28a3623b1fd33d60e17f372106665566ca4e085c2b157b
 RUN set -eux; \
     ARCH="$(uname -m)"; \
     case "${ARCH}" in \
-      x86_64)  ARCH_LABEL="amd64"; CHECKSUM="${OPENCODE_SHA256_AMD64}" ;; \
+      x86_64)  ARCH_LABEL="x64"; CHECKSUM="${OPENCODE_SHA256_AMD64}" ;; \
       aarch64) ARCH_LABEL="arm64"; CHECKSUM="${OPENCODE_SHA256_ARM64}" ;; \
       arm64)   ARCH_LABEL="arm64"; CHECKSUM="${OPENCODE_SHA256_ARM64}" ;; \
       *)       echo "Unsupported architecture: ${ARCH}" >&2; exit 1 ;; \
     esac; \
-    curl -fsSL "https://github.com/anomalyco/opencode/releases/download/v${OPENCODE_VERSION}/opencode-linux-${ARCH_LABEL}" \
-      -o /tmp/opencode; \
-    echo "${CHECKSUM}  /tmp/opencode" | sha256sum -c -; \
+    curl -fsSL "https://github.com/anomalyco/opencode/releases/download/v${OPENCODE_VERSION}/opencode-linux-${ARCH_LABEL}.tar.gz" \
+      -o /tmp/opencode.tar.gz; \
+    echo "${CHECKSUM}  /tmp/opencode.tar.gz" | sha256sum -c -; \
+    tar -xzf /tmp/opencode.tar.gz -C /tmp; \
     mv /tmp/opencode /usr/local/bin/opencode; \
-    chmod +x /usr/local/bin/opencode
+    chmod +x /usr/local/bin/opencode; \
+    rm -f /tmp/opencode.tar.gz
 
 # Install Claude Code (optional, from pinned version)
 RUN set -eux; \
     if [ "${INSTALL_CLAUDE_CODE}" = "true" ]; then \
-      curl -fsSL "https://claude.ai/install.sh" | CLAUDE_VERSION="${CLAUDE_CODE_VERSION}" bash; \
+      npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}; \
     fi
 
 # --- Stage 2: Final image ---
@@ -57,9 +57,10 @@ USER root
 
 # Copy agent binaries from install stage
 COPY --from=agent-install /usr/local/bin/opencode /usr/local/bin/opencode
-# Claude Code installs to ~/.local/bin by default; copy if installed
+
+# Copy Claude Code if installed
 RUN if [ "${INSTALL_CLAUDE_CODE}" = "true" ]; then \
-      cp /usr/local/bin/claude /usr/local/bin/claude 2>/dev/null || true; \
+      npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}; \
     fi
 
 # Copy agent wrapper script and libraries
