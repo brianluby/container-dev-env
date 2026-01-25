@@ -12,6 +12,7 @@ Checks:
   - Markdown links of the form [text](target) and images ![alt](target)
   - Relative links only (skips http/https/mailto/# anchors)
   - File existence only (does not validate section anchors)
+  - Links starting with '/' are resolved relative to repository root
 
 Options:
   --root PATH     Repository root to scan (default: git root)
@@ -58,6 +59,7 @@ import os
 import re
 import sys
 from pathlib import Path
+from typing import List, Tuple
 
 root = Path(sys.argv[1]).resolve()
 paths = [p.strip() for p in sys.argv[2].split(",") if p.strip()]
@@ -88,6 +90,12 @@ def is_relative_file_link(target: str) -> bool:
     return True
 
 def strip_fragment_and_query(target: str) -> str:
+    """Strip URL fragment (#section) and query string (?param=value) from target.
+
+    Note: This function only strips fragments for file existence checks.
+    Section anchor validation is NOT performed - we only verify the target
+    file exists, not that it contains the referenced section/heading.
+    """
     t = target.split("#", 1)[0]
     t = t.split("?", 1)[0]
     return t
@@ -98,7 +106,7 @@ def resolve_path(source_file: Path, target: str) -> Path:
         return (root / target.lstrip("/")).resolve()
     return (source_file.parent / target).resolve()
 
-md_files: list[Path] = []
+md_files: List[Path] = []
 for p in paths:
     candidate = (root / p).resolve() if not os.path.isabs(p) else Path(p).resolve()
     if not candidate.exists():
@@ -111,7 +119,7 @@ for p in paths:
     else:
         md_files.extend(sorted(candidate.rglob("*.md")))
 
-broken: list[tuple[Path, str, Path]] = []
+broken: List[Tuple[Path, str, Path]] = []
 for md in md_files:
     try:
         text = md.read_text(encoding="utf-8")

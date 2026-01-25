@@ -207,6 +207,7 @@ docker volume ls | grep devenv
 Inspect a specific volume:
 ```bash
 docker volume inspect devenv-home
+```
 
 ## Related
 
