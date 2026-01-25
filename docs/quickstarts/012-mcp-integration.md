@@ -1,15 +1,15 @@
 # Quickstart: MCP Integration (Deprecated)
 
-This page moved to `docs/features/mcp.md`.
+This page moved to [MCP Integration](../features/mcp.md).
 
 ## Prerequisites
 
-- `docs/getting-started/index.md`
+- [Getting Started](../getting-started/index.md)
 
 ## Related
 
-- `docs/features/mcp.md`
+- [MCP Integration](../features/mcp.md)
 
 ## Next steps
 
-- `docs/features/mcp.md`
+- [MCP Integration](../features/mcp.md)

@@ -1,6 +1,6 @@
 # Test Matrix (Deprecated)
 
-This page was consolidated into `docs/contributing/testing.md`.
+This page was consolidated into [Testing](contributing/testing.md).
 
 ## Prerequisites
 
@@ -8,8 +8,8 @@ This page was consolidated into `docs/contributing/testing.md`.
 
 ## Related
 
-- `docs/contributing/testing.md`
+- [Testing](contributing/testing.md)
 
 ## Next steps
 
-- `docs/contributing/testing.md`
+- [Testing](contributing/testing.md)

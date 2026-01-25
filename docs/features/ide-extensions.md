@@ -6,8 +6,8 @@ Applies to: `main`
 
 ## Prerequisites
 
-- Containerized IDE running: `docs/features/containerized-ide.md`
-- Secrets set up for any hosted providers you plan to use: `docs/features/secrets-management.md`
+- Containerized IDE running: [Containerized IDE](containerized-ide.md)
+- Secrets set up for any hosted providers you plan to use: [Secrets Management](secrets-management.md)
 
 ## Setup
 
@@ -42,9 +42,9 @@ generate-configs.sh
 
 ## Related
 
-- `docs/features/mcp.md`
-- `docs/reference/tool-compatibility.md`
+- [MCP Integration](mcp.md)
+- [Tool Compatibility](../reference/tool-compatibility.md)
 
 ## Next steps
 
-- Add mobile notifications: `docs/features/mobile-access.md`
+- Add mobile notifications: [Mobile Access](mobile-access.md)

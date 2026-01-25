@@ -10,15 +10,15 @@ This documentation set is designed for navigation-first browsing, with GitHub an
 
 Start with the indexes:
 
-- `README.md` for the top-level entry point
-- `docs/navigation.md` for a map of the tree
+- [README](../../README.md) for the top-level entry point
+- [Navigation](../navigation.md) for a map of the tree
 - Category indexes:
-  - `docs/getting-started/index.md`
-  - `docs/features/index.md`
-  - `docs/operations/index.md`
-  - `docs/contributing/index.md`
-  - `docs/architecture/index.md`
-  - `docs/reference/index.md`
+  - [Getting Started](../getting-started/index.md)
+  - [Features](../features/index.md)
+  - [Operations](../operations/index.md)
+  - [Contributing](../contributing/index.md)
+  - [Architecture](../architecture/index.md)
+  - [Reference](index.md)
 
 Then use search when you know what you want:
 
@@ -36,9 +36,9 @@ Useful keywords:
 
 ## Related
 
-- `docs/reference/configuration.md`
-- `docs/navigation.md`
+- [Configuration](configuration.md)
+- [Navigation](../navigation.md)
 
 ## Next steps
 
-- If you are stuck: `docs/getting-started/troubleshooting.md`
+- If you are stuck: [Troubleshooting](../getting-started/troubleshooting.md)

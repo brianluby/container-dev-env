@@ -4,19 +4,19 @@ This repo's documentation was reorganized into intent-based categories.
 
 ## Prerequisites
 
-- `docs/getting-started/index.md`
+- [Getting Started](getting-started/index.md)
 
 ## Where to go instead
 
-- Feature guides: `docs/features/index.md`
-- Contributor docs: `docs/contributing/index.md`
-- Operations runbooks: `docs/operations/index.md`
-- Architecture overview: `docs/architecture/index.md`
+- Feature guides: [Features](features/index.md)
+- Contributor docs: [Contributing](contributing/index.md)
+- Operations runbooks: [Operations](operations/index.md)
+- Architecture overview: [Architecture](architecture/index.md)
 
 ## Related
 
-- `docs/navigation.md`
+- [Navigation](navigation.md)
 
 ## Next steps
 
-- Pick the category that matches your task: `docs/navigation.md`
+- Pick the category that matches your task: [Navigation](navigation.md)

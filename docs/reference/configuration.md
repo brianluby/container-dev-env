@@ -7,8 +7,8 @@ Applies to: `main`
 
 ## Prerequisites
 
-- `docs/getting-started/index.md`
-- If you use secrets: `docs/features/secrets-management.md`
+- [Getting Started](../getting-started/index.md)
+- If you use secrets: [Secrets Management](../features/secrets-management.md)
 
 ## Docker Compose (dev container)
 
@@ -202,10 +202,10 @@ NTFY_TOKEN=EXAMPLE_NTFY_TOKEN_VALUE
 
 ## Related
 
-- `docs/features/index.md`
-- `docs/reference/search.md`
+- [Features](../features/index.md)
+- [Search](search.md)
 
 ## Next steps
 
-- If you want to enable a feature: `docs/features/index.md`
-- If you want runbooks: `docs/operations/index.md`
+- If you want to enable a feature: [Features](../features/index.md)
+- If you want runbooks: [Operations](../operations/index.md)

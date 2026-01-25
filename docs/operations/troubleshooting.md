@@ -6,13 +6,13 @@ Applies to: `main`
 
 ## Prerequisites
 
-- `docs/getting-started/index.md`
+- [Getting Started](../getting-started/index.md)
 
 ## Common problems
 
 ### Volumes consume too much disk
 
-- Run the cleanup runbook: `docs/operations/volume-cleanup.md`
+- Run the cleanup runbook: [Volume Cleanup](volume-cleanup.md)
 
 ### Secrets not loading
 
@@ -20,26 +20,26 @@ Applies to: `main`
 - Re-apply: `chezmoi apply`
 - Restart container: `docker compose -f docker/docker-compose.yml restart`
 
-See: `docs/features/secrets-management.md`
+See: [Secrets Management](../features/secrets-management.md)
 
 ### Agent tools fail (missing keys, missing binaries)
 
 - Confirm keys are present in the environment
 - Confirm the backend binary exists (`which opencode`, `which claude`)
 
-See: `docs/features/ai-assistants.md`
+See: [AI Assistants](../features/ai-assistants.md)
 
 ### Known failing tests
 
 Some tests may be failing for reasons not caused by your change. These are tracked as known issues:
 
-- `docs/reference/known-issues.md`
+- [Known Issues](../reference/known-issues.md)
 
 ## Related
 
-- `docs/operations/index.md`
-- `docs/getting-started/troubleshooting.md`
+- [Operations](index.md)
+- [Getting Started Troubleshooting](../getting-started/troubleshooting.md)
 
 ## Next steps
 
-- If you are contributing: `docs/contributing/testing.md`
+- If you are contributing: [Testing](../contributing/testing.md)

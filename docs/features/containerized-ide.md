@@ -7,7 +7,7 @@ Applies to: `main`
 ## Prerequisites
 
 - Docker + Compose v2
-- `docs/getting-started/index.md` (recommended baseline)
+- [Getting Started](../getting-started/index.md) (recommended baseline)
 
 ## Setup
 
@@ -47,9 +47,9 @@ If the container is healthy, the IDE should load and provide a terminal and file
 
 ## Related
 
-- `docs/features/ide-extensions.md`
-- `docs/reference/configuration.md`
+- [IDE Extensions](ide-extensions.md)
+- [Configuration Reference](../reference/configuration.md)
 
 ## Next steps
 
-- Add AI IDE extensions: `docs/features/ide-extensions.md`
+- Add AI IDE extensions: [IDE Extensions](ide-extensions.md)

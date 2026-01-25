@@ -7,10 +7,10 @@ Applies to: `main`
 
 ## Prerequisites
 
-- `docs/getting-started/index.md`
+- [Getting Started](../getting-started/index.md)
 - Internet access from the container (outbound HTTPS)
 - A mobile push app/service (example: ntfy)
-- Secrets management for notification tokens: `docs/features/secrets-management.md`
+- Secrets management for notification tokens: [Secrets Management](secrets-management.md)
 
 ## Setup
 
@@ -73,8 +73,8 @@ notify.sh "Hello from container" 3 "Test"
 
 ## Related
 
-- `docs/features/ai-assistants.md`
-- `docs/operations/secret-rotation.md`
+- [AI Assistants](ai-assistants.md)
+- [Secret Rotation](../operations/secret-rotation.md)
 
 ## Next steps
 

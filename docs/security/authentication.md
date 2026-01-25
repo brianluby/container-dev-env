@@ -1,6 +1,6 @@
 # Security Patterns (Deprecated)
 
-This page moved to `docs/reference/security/authentication.md`.
+This page moved to [Authentication](../reference/security/authentication.md).
 
 ## Prerequisites
 
@@ -8,8 +8,8 @@ This page moved to `docs/reference/security/authentication.md`.
 
 ## Related
 
-- `docs/reference/security/authentication.md`
+- [Authentication](../reference/security/authentication.md)
 
 ## Next steps
 
-- `docs/reference/security/authentication.md`
+- [Authentication](../reference/security/authentication.md)

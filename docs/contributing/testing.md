@@ -6,7 +6,7 @@ Applies to: `main`
 
 ## Prerequisites
 
-- `docs/getting-started/index.md`
+- [Getting Started](../getting-started/index.md)
 - You can run the repo inside the dev container (recommended)
 
 ## Test types
@@ -45,9 +45,9 @@ Guidelines:
 
 ## Related
 
-- `docs/test-matrix.md` (legacy reference)
-- `docs/reference/search.md`
+- [Test Matrix](../test-matrix.md) (legacy reference)
+- [Search](../reference/search.md)
 
 ## Next steps
 
-- Review repo layout: `docs/contributing/project-structure.md`
+- Review repo layout: [Project Structure](project-structure.md)

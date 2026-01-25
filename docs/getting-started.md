@@ -1,6 +1,6 @@
 # Getting Started (Deprecated)
 
-This page moved to `docs/getting-started/index.md`.
+This page moved to [Getting Started](getting-started/index.md).
 
 ## Prerequisites
 
@@ -8,8 +8,8 @@ This page moved to `docs/getting-started/index.md`.
 
 ## Related
 
-- `docs/getting-started/index.md`
+- [Getting Started](getting-started/index.md)
 
 ## Next steps
 
-- `docs/getting-started/index.md`
+- [Getting Started](getting-started/index.md)

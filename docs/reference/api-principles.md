@@ -71,13 +71,13 @@ For command-line tools in this project:
 - API keys passed via `Authorization: Bearer <token>` header
 - Never pass credentials in URL query parameters
 - Tokens should have minimal required scope
-- See `docs/reference/security/authentication.md` for detailed patterns
+- See [Authentication](security/authentication.md) for detailed patterns
 
 ## Related
 
-- `docs/contributing/index.md`
-- `docs/reference/security/authentication.md`
+- [Contributing](../contributing/index.md)
+- [Authentication](security/authentication.md)
 
 ## Next steps
 
-- If you are contributing: `docs/contributing/index.md`
+- If you are contributing: [Contributing](../contributing/index.md)

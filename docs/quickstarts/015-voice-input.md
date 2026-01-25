@@ -1,15 +1,15 @@
 # Quickstart: Voice Input (Deprecated)
 
-This page moved to `docs/features/voice-input.md`.
+This page moved to [Voice Input](../features/voice-input.md).
 
 ## Prerequisites
 
-- `docs/getting-started/index.md`
+- [Getting Started](../getting-started/index.md)
 
 ## Related
 
-- `docs/features/voice-input.md`
+- [Voice Input](../features/voice-input.md)
 
 ## Next steps
 
-- `docs/features/voice-input.md`
+- [Voice Input](../features/voice-input.md)

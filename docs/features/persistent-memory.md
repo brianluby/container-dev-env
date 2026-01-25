@@ -9,8 +9,8 @@ Applies to: `main`
 
 ## Prerequisites
 
-- `docs/getting-started/index.md`
-- MCP set up (recommended): `docs/features/mcp.md`
+- [Getting Started](../getting-started/index.md)
+- MCP set up (recommended): [MCP Integration](mcp.md)
 
 ## Setup
 
@@ -52,9 +52,9 @@ python -m memory_server --health-check
 
 ## Related
 
-- `docs/features/mcp.md`
-- `docs/reference/configuration.md`
+- [MCP Integration](mcp.md)
+- [Configuration Reference](../reference/configuration.md)
 
 ## Next steps
 
-- Try a feature workflow: `docs/features/ai-assistants.md`
+- Try a feature workflow: [AI Assistants](ai-assistants.md)

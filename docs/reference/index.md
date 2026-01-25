@@ -4,24 +4,24 @@ Configuration and reference pages for day-to-day use.
 
 ## Prerequisites
 
-- `docs/getting-started/index.md`
+- [Getting Started](../getting-started/index.md)
 
 ## Reference pages
 
-- Configuration: `docs/reference/configuration.md`
-- Versioning policy: `docs/reference/versioning.md`
-- Search guidance: `docs/reference/search.md`
-- Known issues: `docs/reference/known-issues.md`
-- Security guidance: `docs/reference/security-guidance.md`
-- Security patterns: `docs/reference/security/authentication.md`
-- Tool compatibility: `docs/reference/tool-compatibility.md`
-- API principles: `docs/reference/api-principles.md`
+- [Configuration](configuration.md)
+- [Versioning Policy](versioning.md)
+- [Search Guidance](search.md)
+- [Known Issues](known-issues.md)
+- [Security Guidance](security-guidance.md)
+- [Security Patterns](security/authentication.md)
+- [Tool Compatibility](tool-compatibility.md)
+- [API Principles](api-principles.md)
 
 ## Related
 
-- `docs/features/index.md`
-- `docs/operations/index.md`
+- [Features](../features/index.md)
+- [Operations](../operations/index.md)
 
 ## Next steps
 
-- Use search to find a specific topic: `docs/reference/search.md`
+- Use search to find a specific topic: [Search](search.md)

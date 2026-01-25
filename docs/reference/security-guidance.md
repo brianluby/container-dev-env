@@ -27,8 +27,8 @@ Use `AGENTS.local.md` (gitignored) for environment-specific details that should 
 
 ## Related
 
-- `docs/reference/security/authentication.md`
-- `docs/features/secrets-management.md`
+- [Authentication](security/authentication.md)
+- [Secrets Management](../features/secrets-management.md)
 
 ## Next steps
 

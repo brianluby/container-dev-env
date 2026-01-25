@@ -41,9 +41,9 @@ Recommended options:
 
 ## Related
 
-- `docs/features/containerized-ide.md`
-- `docs/features/ai-assistants.md`
+- [Containerized IDE](containerized-ide.md)
+- [AI Assistants](ai-assistants.md)
 
 ## Next steps
 
-- Add mobile notifications for long tasks: `docs/features/mobile-access.md`
+- Add mobile notifications for long tasks: [Mobile Access](mobile-access.md)

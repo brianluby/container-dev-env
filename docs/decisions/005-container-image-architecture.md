@@ -93,9 +93,9 @@ We will maintain the following container image hierarchy, each Dockerfile servin
 
 ## Related
 
-- `docs/architecture/overview.md`
-- `docs/operations/deployment.md`
+- [Architecture Overview](../architecture/overview.md)
+- [Deployment](../operations/deployment.md)
 
 ## Next steps
 
-- If you are building containers: `docs/getting-started/index.md`
+- If you are building containers: [Getting Started](../getting-started/index.md)

@@ -4,16 +4,16 @@ Quickstarts were migrated into standalone feature guides.
 
 ## Prerequisites
 
-- `docs/getting-started/index.md`
+- [Getting Started](../getting-started/index.md)
 
 ## Where to go instead
 
-- Feature catalog: `docs/features/index.md`
+- [Feature Catalog](../features/index.md)
 
 ## Related
 
-- `docs/navigation.md`
+- [Navigation](../navigation.md)
 
 ## Next steps
 
-- Pick a feature guide: `docs/features/index.md`
+- Pick a feature guide: [Features](../features/index.md)

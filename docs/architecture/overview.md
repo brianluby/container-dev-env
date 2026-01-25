@@ -149,15 +149,15 @@ sequenceDiagram
 
 ## ADRs to read before major changes
 
-- `docs/decisions/001-use-markdown-for-documentation.md`
-- `docs/decisions/005-container-image-architecture.md`
+- [ADR-001: Use Markdown for Documentation](../decisions/001-use-markdown-for-documentation.md)
+- [ADR-005: Container Image Architecture](../decisions/005-container-image-architecture.md)
 
 ## Related
 
-- `docs/architecture/volume-architecture.md`
-- `docs/reference/configuration.md`
+- [Volume Architecture](volume-architecture.md)
+- [Configuration Reference](../reference/configuration.md)
 
 ## Next steps
 
-- If you are onboarding: `docs/getting-started/index.md`
-- If you are contributing: `docs/contributing/index.md`
+- If you are onboarding: [Getting Started](../getting-started/index.md)
+- If you are contributing: [Contributing](../contributing/index.md)

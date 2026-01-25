@@ -12,19 +12,19 @@ Who this is for:
 
 Start here:
 
-- Getting started: `docs/getting-started/index.md`
-- Features: `docs/features/index.md`
-- Operations: `docs/operations/index.md`
-- Contributing: `docs/contributing/index.md`
-- Architecture: `docs/architecture/index.md`
-- Reference: `docs/reference/index.md`
-- Glossary: `docs/glossary.md`
+- [Getting Started](docs/getting-started/index.md)
+- [Features](docs/features/index.md)
+- [Operations](docs/operations/index.md)
+- [Contributing](docs/contributing/index.md)
+- [Architecture](docs/architecture/index.md)
+- [Reference](docs/reference/index.md)
+- [Glossary](docs/glossary.md)
 
-If you are not sure where something lives, use `docs/navigation.md`.
+If you are not sure where something lives, see the [Navigation](docs/navigation.md) page.
 
 ## Quick start
 
-These steps match `docs/getting-started/index.md`.
+These steps match the [Getting Started](docs/getting-started/index.md) guide.
 
 1. (Recommended) export your host UID/GID:
 
@@ -55,4 +55,4 @@ docker compose -f docker/docker-compose.yml exec dev bash
 
 Secrets are managed with Chezmoi + age encryption and injected as environment variables at runtime.
 
-- Guide: `docs/features/secrets-management.md`
+- Guide: [Secrets Management](docs/features/secrets-management.md)

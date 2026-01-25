@@ -100,9 +100,9 @@ Exceptions:
 
 ## Related
 
-- `docs/reference/tool-compatibility.md`
-- `docs/navigation.md`
+- [Tool Compatibility](reference/tool-compatibility.md)
+- [Navigation](navigation.md)
 
 ## Next steps
 
-- If you are writing docs pages: `docs/_page-template.md`
+- If you are writing docs pages: [Page Template](_page-template.md)

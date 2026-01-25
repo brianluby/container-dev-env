@@ -27,9 +27,9 @@ Applies to: `main`
 
 ## Related
 
-- `docs/composition-rules.md`
-- `docs/navigation.md`
+- [Composition Rules](../composition-rules.md)
+- [Navigation](../navigation.md)
 
 ## Next steps
 
-- If you are configuring AI tooling: `docs/features/ai-assistants.md`
+- If you are configuring AI tooling: [AI Assistants](../features/ai-assistants.md)

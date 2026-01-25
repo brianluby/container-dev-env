@@ -6,7 +6,7 @@ Applies to: `main`
 
 ## Prerequisites
 
-- `docs/getting-started/index.md`
+- [Getting Started](../getting-started/index.md)
 
 ## Known issues list
 
@@ -17,12 +17,12 @@ These failures were documented as pre-existing relative to feature work and may 
 - `tests/unit/test_checkpoint.bats`: rollback restores file state (stash pop conflicts)
 - `tests/unit/test_usage.bats`: associative array lookup breaks under `set -u` for certain model names
 
-Details (legacy source): `docs/pre-existing-failures.md`
+Details (legacy source): [Pre-Existing Failures](../pre-existing-failures.md)
 
 ## Related
 
-- `docs/getting-started/troubleshooting.md`
-- `docs/operations/troubleshooting.md`
+- [Getting Started Troubleshooting](../getting-started/troubleshooting.md)
+- [Operations Troubleshooting](../operations/troubleshooting.md)
 
 ## Next steps
 

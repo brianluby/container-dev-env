@@ -1,6 +1,6 @@
 # Spec-Driven Development Pipeline (Deprecated)
 
-This page moved to `docs/contributing/spec-driven-development.md`.
+This page moved to [Spec-Driven Development](contributing/spec-driven-development.md).
 
 ## Prerequisites
 
@@ -8,8 +8,8 @@ This page moved to `docs/contributing/spec-driven-development.md`.
 
 ## Related
 
-- `docs/contributing/spec-driven-development.md`
+- [Spec-Driven Development](contributing/spec-driven-development.md)
 
 ## Next steps
 
-- `docs/contributing/spec-driven-development.md`
+- [Spec-Driven Development](contributing/spec-driven-development.md)

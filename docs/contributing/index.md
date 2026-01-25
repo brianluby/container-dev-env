@@ -4,19 +4,19 @@ How to contribute changes to this repository: workflow, testing, and structure.
 
 ## Prerequisites
 
-- `docs/getting-started/index.md`
+- [Getting Started](../getting-started/index.md)
 
 ## Where to start
 
-- Contributor workflow: `docs/contributing/workflow.md`
-- Testing: `docs/contributing/testing.md`
-- Repository layout: `docs/contributing/project-structure.md`
+- [Contributor Workflow](workflow.md)
+- [Testing](testing.md)
+- [Repository Layout](project-structure.md)
 
 ## Related
 
-- `docs/architecture/overview.md`
-- `docs/reference/versioning.md`
+- [Architecture Overview](../architecture/overview.md)
+- [Versioning](../reference/versioning.md)
 
 ## Next steps
 
-- `docs/contributing/workflow.md`
+- [Contributor Workflow](workflow.md)

@@ -1,14 +1,14 @@
 # Deployment
 
 This page is a reference for building and running the container images and Compose stacks.
-For step-by-step operational procedures, use the runbooks in `docs/operations/index.md`.
+For step-by-step operational procedures, use the runbooks in [Operations](index.md).
 
 Applies to: `main`
 
 ## Prerequisites
 
 - Docker + Compose v2
-- `docs/getting-started/index.md`
+- [Getting Started](../getting-started/index.md)
 
 ## Container build workflow
 
@@ -103,9 +103,9 @@ HEALTHCHECK --interval=30s --timeout=5s \
 
 ## Related
 
-- `docs/operations/index.md`
-- `docs/architecture/overview.md`
+- [Operations](index.md)
+- [Architecture Overview](../architecture/overview.md)
 
 ## Next steps
 
-- If you need a rebuild procedure: `docs/operations/container-rebuild.md`
+- If you need a rebuild procedure: [Container Rebuild](container-rebuild.md)

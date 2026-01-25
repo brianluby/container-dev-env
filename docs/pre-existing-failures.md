@@ -1,6 +1,6 @@
 # Pre-Existing Test Failures (Deprecated)
 
-This page moved to `docs/reference/known-issues.md`.
+This page moved to [Known Issues](reference/known-issues.md).
 
 ## Prerequisites
 
@@ -8,8 +8,8 @@ This page moved to `docs/reference/known-issues.md`.
 
 ## Related
 
-- `docs/reference/known-issues.md`
+- [Known Issues](reference/known-issues.md)
 
 ## Next steps
 
-- `docs/reference/known-issues.md`
+- [Known Issues](reference/known-issues.md)

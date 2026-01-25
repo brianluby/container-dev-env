@@ -8,20 +8,20 @@ High-level system documentation: the container stack, key components, and the de
 
 ## What to read
 
-- System overview: `docs/architecture/overview.md`
-- Volume design and tradeoffs: `docs/architecture/volume-architecture.md`
-- Architecture decisions (ADRs): `docs/decisions/`
+- [System Overview](overview.md)
+- [Volume Architecture](volume-architecture.md) — volume design and tradeoffs
+- [Architecture Decisions (ADRs)](../decisions/)
 
 Key ADRs:
 
-- ADR-001: `docs/decisions/001-use-markdown-for-documentation.md`
-- ADR-005: `docs/decisions/005-container-image-architecture.md`
+- [ADR-001: Use Markdown for Documentation](../decisions/001-use-markdown-for-documentation.md)
+- [ADR-005: Container Image Architecture](../decisions/005-container-image-architecture.md)
 
 ## Related
 
-- `docs/reference/configuration.md`
-- `docs/operations/index.md`
+- [Configuration Reference](../reference/configuration.md)
+- [Operations](../operations/index.md)
 
 ## Next steps
 
-- `docs/architecture/overview.md`
+- [System Overview](overview.md)

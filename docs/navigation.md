@@ -11,15 +11,15 @@ Use it when you do not know where to start, or when you want to quickly locate t
 
 | If you need... | Read |
 |---|---|
-| New user onboarding | `docs/getting-started/index.md` |
-| Troubleshoot setup issues | `docs/getting-started/troubleshooting.md` |
-| Enable a feature | `docs/features/index.md` |
-| Operational runbooks | `docs/operations/index.md` |
-| Contributing workflow + tests | `docs/contributing/index.md` |
-| System overview and diagrams | `docs/architecture/index.md` |
-| Configuration reference | `docs/reference/configuration.md` |
-| Domain terminology | `docs/glossary.md` |
-| Architecture decisions | `docs/decisions/` |
+| New user onboarding | [Getting Started](getting-started/index.md) |
+| Troubleshoot setup issues | [Troubleshooting](getting-started/troubleshooting.md) |
+| Enable a feature | [Features](features/index.md) |
+| Operational runbooks | [Operations](operations/index.md) |
+| Contributing workflow + tests | [Contributing](contributing/index.md) |
+| System overview and diagrams | [Architecture](architecture/index.md) |
+| Configuration reference | [Configuration](reference/configuration.md) |
+| Domain terminology | [Glossary](glossary.md) |
+| Architecture decisions | [Decisions](decisions/) |
 
 ## How to use this map
 
@@ -48,20 +48,20 @@ When implementing a feature, check if relevant decisions exist:
 
 ## Docs tree (top level)
 
-- Getting started: `docs/getting-started/index.md`
-- Features: `docs/features/index.md`
-- Operations: `docs/operations/index.md`
-- Architecture: `docs/architecture/index.md`
-- Contributing: `docs/contributing/index.md`
-- Reference: `docs/reference/index.md`
-- Glossary: `docs/glossary.md`
-- Decisions (ADRs): `docs/decisions/`
+- [Getting Started](getting-started/index.md)
+- [Features](features/index.md)
+- [Operations](operations/index.md)
+- [Architecture](architecture/index.md)
+- [Contributing](contributing/index.md)
+- [Reference](reference/index.md)
+- [Glossary](glossary.md)
+- [Decisions (ADRs)](decisions/)
 
 ## Related
 
-- `README.md`
-- `docs/_page-template.md`
+- [README](../README.md)
+- [Page Template](_page-template.md)
 
 ## Next steps
 
-- If you are new here: `docs/getting-started/index.md`
+- If you are new here: [Getting Started](getting-started/index.md)

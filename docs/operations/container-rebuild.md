@@ -6,7 +6,7 @@ Applies to: `main`
 
 ## Prerequisites
 
-- `docs/getting-started/index.md`
+- [Getting Started](../getting-started/index.md)
 
 ## Symptoms
 
@@ -62,9 +62,9 @@ docker compose -f docker/docker-compose.yml build
 
 ## Related
 
-- `docs/operations/volume-cleanup.md`
-- `docs/getting-started/troubleshooting.md`
+- [Volume Cleanup](volume-cleanup.md)
+- [Getting Started Troubleshooting](../getting-started/troubleshooting.md)
 
 ## Next steps
 
-- If problems persist: `docs/operations/troubleshooting.md`
+- If problems persist: [Troubleshooting](troubleshooting.md)

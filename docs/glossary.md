@@ -97,9 +97,9 @@ Related terms: Navigation Map
 
 ## Related
 
-- `docs/navigation.md`
-- `docs/decisions/`
+- [Navigation](navigation.md)
+- [Decisions](decisions/)
 
 ## Next steps
 
-- If you are new here: `docs/getting-started/index.md`
+- If you are new here: [Getting Started](getting-started/index.md)

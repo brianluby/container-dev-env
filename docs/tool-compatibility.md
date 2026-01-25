@@ -1,6 +1,6 @@
 # AI Tool Compatibility (Deprecated)
 
-This page moved to `docs/reference/tool-compatibility.md`.
+This page moved to [Tool Compatibility](reference/tool-compatibility.md).
 
 ## Prerequisites
 
@@ -8,8 +8,8 @@ This page moved to `docs/reference/tool-compatibility.md`.
 
 ## Related
 
-- `docs/reference/tool-compatibility.md`
+- [Tool Compatibility](reference/tool-compatibility.md)
 
 ## Next steps
 
-- `docs/reference/tool-compatibility.md`
+- [Tool Compatibility](reference/tool-compatibility.md)

@@ -6,13 +6,13 @@ Applies to: `main`
 
 ## Prerequisites
 
-- `docs/getting-started/index.md`
+- [Getting Started](../getting-started/index.md)
 - Familiarity with dotfiles and shell configuration
 
 ## What Chezmoi manages here
 
 - Tool configuration templates under `src/chezmoi/`
-- Secrets encryption (age) integration: `docs/features/secrets-management.md`
+- Secrets encryption (age) integration: [Secrets Management](secrets-management.md)
 
 ## Basic workflow
 
@@ -40,9 +40,9 @@ chezmoi apply
 
 ## Related
 
-- `docs/features/secrets-management.md`
-- `docs/reference/configuration.md`
+- [Secrets Management](secrets-management.md)
+- [Configuration Reference](../reference/configuration.md)
 
 ## Next steps
 
-- Enable AI tooling: `docs/features/ai-assistants.md`
+- Enable AI tooling: [AI Assistants](ai-assistants.md)

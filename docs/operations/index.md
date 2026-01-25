@@ -4,23 +4,23 @@ Runbooks and operational reference for maintaining and troubleshooting the envir
 
 ## Prerequisites
 
-- `docs/getting-started/index.md`
+- [Getting Started](../getting-started/index.md)
 
 ## Runbooks
 
-- Volume cleanup: `docs/operations/volume-cleanup.md`
-- Secret rotation: `docs/operations/secret-rotation.md`
-- Container rebuild: `docs/operations/container-rebuild.md`
-- Deployment (reference): `docs/operations/deployment.md`
+- [Volume Cleanup](volume-cleanup.md)
+- [Secret Rotation](secret-rotation.md)
+- [Container Rebuild](container-rebuild.md)
+- [Deployment](deployment.md) (reference)
 
 ## Troubleshooting
 
-- `docs/operations/troubleshooting.md`
+- [Troubleshooting](troubleshooting.md)
 
 ## Related
 
-- `docs/reference/configuration.md`
-- `docs/architecture/overview.md`
+- [Configuration Reference](../reference/configuration.md)
+- [Architecture Overview](../architecture/overview.md)
 
 ## Next steps
 

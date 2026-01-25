@@ -6,8 +6,8 @@ Applies to: `main`
 
 ## Prerequisites
 
-- `docs/getting-started/index.md`
-- If you enable servers that require credentials, set them up first: `docs/features/secrets-management.md`
+- [Getting Started](../getting-started/index.md)
+- If you enable servers that require credentials, set them up first: [Secrets Management](secrets-management.md)
 
 ## How it works
 
@@ -80,9 +80,9 @@ Then open your AI tool and confirm MCP tools appear/are usable.
 
 ## Related
 
-- `docs/reference/configuration.md`
+- [Configuration Reference](../reference/configuration.md)
 - `src/mcp/defaults/README.md`
 
 ## Next steps
 
-- Add persistent memory: `docs/features/persistent-memory.md`
+- Add persistent memory: [Persistent Memory](persistent-memory.md)

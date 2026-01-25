@@ -6,7 +6,7 @@ Applies to: `main`
 
 ## Prerequisites
 
-- `docs/contributing/index.md`
+- [Contributing](index.md)
 
 ## Top-level layout
 
@@ -20,9 +20,9 @@ Applies to: `main`
 
 ## Related
 
-- `docs/contributing/testing.md`
-- `docs/architecture/overview.md`
+- [Testing](testing.md)
+- [Architecture Overview](../architecture/overview.md)
 
 ## Next steps
 
-- Start a change with the workflow: `docs/contributing/workflow.md`
+- Start a change with the workflow: [Contributor Workflow](workflow.md)

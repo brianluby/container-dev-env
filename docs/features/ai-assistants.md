@@ -7,8 +7,8 @@ Applies to: `main`
 
 ## Prerequisites
 
-- `docs/getting-started/index.md`
-- Secrets set up if you plan to use hosted models: `docs/features/secrets-management.md`
+- [Getting Started](../getting-started/index.md)
+- Secrets set up if you plan to use hosted models: [Secrets Management](secrets-management.md)
 
 ## What you get
 
@@ -45,7 +45,7 @@ Common settings:
 - `AGENT_MODE`: default approval mode (`manual`, `auto`, `hybrid`)
 - Provider keys: `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY`
 
-See the full reference: `docs/reference/configuration.md`
+See the full reference: [Configuration](../reference/configuration.md)
 
 ## Usage
 
@@ -95,11 +95,11 @@ agent --serve
 
 ## Related
 
-- `docs/features/secrets-management.md`
-- `docs/reference/configuration.md`
-- `docs/reference/tool-compatibility.md`
+- [Secrets Management](secrets-management.md)
+- [Configuration Reference](../reference/configuration.md)
+- [Tool Compatibility](../reference/tool-compatibility.md)
 
 ## Next steps
 
-- Add MCP tools: `docs/features/mcp.md`
-- Add persistent memory: `docs/features/persistent-memory.md`
+- Add MCP tools: [MCP Integration](mcp.md)
+- Add persistent memory: [Persistent Memory](persistent-memory.md)

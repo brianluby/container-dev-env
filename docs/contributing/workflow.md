@@ -6,12 +6,12 @@ Applies to: `main`
 
 ## Prerequisites
 
-- `docs/contributing/index.md`
+- [Contributing](index.md)
 - You can run Docker + Compose on your machine
 
 ## Spec-driven development
 
-The primary workflow is documented in `docs/spec-driven-development-pipeline.md`.
+The primary workflow is documented in [Spec-Driven Development](spec-driven-development.md).
 
 High-level loop:
 
@@ -31,16 +31,16 @@ High-level loop:
 ## Pull request checklist
 
 - Code changes follow repo standards (shell scripts are ShellCheck clean)
-- Tests pass locally (see `docs/contributing/testing.md`)
+- Tests pass locally (see [Testing](testing.md))
 - User-facing behavior/config changes include corresponding docs updates (FR-013)
-- New docs pages follow `docs/_page-template.md` (Prerequisites/Related/Next steps)
+- New docs pages follow the [Page Template](../_page-template.md) (Prerequisites/Related/Next steps)
 
 ## Related
 
-- `docs/spec-driven-development-pipeline.md`
-- `docs/contributing/testing.md`
-- `docs/contributing/project-structure.md`
+- [Spec-Driven Development](spec-driven-development.md)
+- [Testing](testing.md)
+- [Project Structure](project-structure.md)
 
 ## Next steps
 
-- Run the local checks: `docs/contributing/testing.md`
+- Run the local checks: [Testing](testing.md)

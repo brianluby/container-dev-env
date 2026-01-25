@@ -133,11 +133,11 @@ Windows:
 
 ## Related
 
-- `docs/features/index.md`
-- `docs/operations/index.md`
-- `docs/reference/configuration.md`
+- [Features](../features/index.md)
+- [Operations](../operations/index.md)
+- [Configuration Reference](../reference/configuration.md)
 
 ## Next steps
 
-- If setup failed: `docs/getting-started/troubleshooting.md`
-- Enable AI assistants: `docs/features/ai-assistants.md`
+- If setup failed: [Troubleshooting](troubleshooting.md)
+- Enable AI assistants: [AI Assistants](../features/ai-assistants.md)

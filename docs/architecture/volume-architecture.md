@@ -7,7 +7,7 @@ Applies to: `main`
 
 ## Prerequisites
 
-- `docs/getting-started/index.md`
+- [Getting Started](../getting-started/index.md)
 
 ## Overview
 
@@ -211,12 +211,12 @@ docker volume inspect devenv-home
 
 ## Related
 
-- `docs/getting-started/index.md`
-- `docs/operations/volume-cleanup.md`
+- [Getting Started](../getting-started/index.md)
+- [Volume Cleanup](../operations/volume-cleanup.md)
 
 ## Next steps
 
-- If disk space is low: `docs/operations/volume-cleanup.md`
+- If disk space is low: [Volume Cleanup](../operations/volume-cleanup.md)
 ```
 
 Check mount points inside container:

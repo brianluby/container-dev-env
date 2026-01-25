@@ -6,7 +6,7 @@ Applies to: `main`
 
 ## Prerequisites
 
-- You ran (or attempted) `docs/getting-started/index.md`
+- You ran (or attempted) the [Getting Started](index.md) guide
 - You can run `docker` and `docker compose` on the host
 
 ## Common problems
@@ -174,15 +174,15 @@ file scripts/*.sh | head -n 5
 
 Some failures are currently known and tracked outside this docs overhaul:
 
-- `docs/reference/known-issues.md`
+- [Known Issues](../reference/known-issues.md)
 
 ## Related
 
-- `docs/getting-started/index.md`
-- `docs/operations/troubleshooting.md`
-- `docs/reference/configuration.md`
+- [Getting Started](index.md)
+- [Operations Troubleshooting](../operations/troubleshooting.md)
+- [Configuration Reference](../reference/configuration.md)
 
 ## Next steps
 
-- If you are running maintenance tasks: `docs/operations/index.md`
-- If you are enabling features: `docs/features/index.md`
+- If you are running maintenance tasks: [Operations](../operations/index.md)
+- If you are enabling features: [Features](../features/index.md)

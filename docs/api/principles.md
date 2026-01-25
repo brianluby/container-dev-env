@@ -1,6 +1,6 @@
 # API Design Principles (Deprecated)
 
-This page moved to `docs/reference/api-principles.md`.
+This page moved to [API Principles](../reference/api-principles.md).
 
 ## Prerequisites
 
@@ -8,8 +8,8 @@ This page moved to `docs/reference/api-principles.md`.
 
 ## Related
 
-- `docs/reference/api-principles.md`
+- [API Principles](../reference/api-principles.md)
 
 ## Next steps
 
-- `docs/reference/api-principles.md`
+- [API Principles](../reference/api-principles.md)

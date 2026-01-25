@@ -21,8 +21,8 @@ Per-release snapshots are out of scope for this repository.
 
 ## Related
 
-- `docs/contributing/workflow.md`
+- [Contributor Workflow](../contributing/workflow.md)
 
 ## Next steps
 
-- `docs/reference/search.md`
+- [Search](search.md)

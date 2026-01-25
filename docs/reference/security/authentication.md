@@ -33,9 +33,9 @@ flowchart LR
 
 ## Related
 
-- `docs/features/secrets-management.md`
-- `docs/reference/security-guidance.md`
+- [Secrets Management](../../features/secrets-management.md)
+- [Security Guidance](../security-guidance.md)
 
 ## Next steps
 
-- If you are enabling AI tools: `docs/features/ai-assistants.md`
+- If you are enabling AI tools: [AI Assistants](../../features/ai-assistants.md)

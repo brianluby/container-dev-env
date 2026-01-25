@@ -1,6 +1,6 @@
 # Domain Glossary (Deprecated)
 
-This page moved to `docs/glossary.md`.
+This page moved to [Glossary](../glossary.md).
 
 ## Prerequisites
 
@@ -8,8 +8,8 @@ This page moved to `docs/glossary.md`.
 
 ## Related
 
-- `docs/glossary.md`
+- [Glossary](../glossary.md)
 
 ## Next steps
 
-- `docs/navigation.md`
+- [Navigation](../navigation.md)

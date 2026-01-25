@@ -66,9 +66,9 @@ We will use plain Markdown for all project knowledge documentation. All document
 
 ## Related
 
-- `docs/navigation.md`
-- `docs/_page-template.md`
+- [Navigation](../navigation.md)
+- [Page Template](../_page-template.md)
 
 ## Next steps
 
-- If you are updating docs: `docs/contributing/index.md`
+- If you are updating docs: [Contributing](../contributing/index.md)

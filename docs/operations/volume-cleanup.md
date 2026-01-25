@@ -6,7 +6,7 @@ Applies to: `main`
 
 ## Prerequisites
 
-- `docs/getting-started/index.md`
+- [Getting Started](../getting-started/index.md)
 - You understand that removing volumes can delete cached data
 
 ## Symptoms
@@ -76,9 +76,9 @@ Then reinstall dependencies as needed (cache volumes will be repopulated over ti
 
 ## Related
 
-- `docs/operations/container-rebuild.md`
-- `docs/architecture/volume-architecture.md`
+- [Container Rebuild](container-rebuild.md)
+- [Volume Architecture](../architecture/volume-architecture.md)
 
 ## Next steps
 
-- If the container is misbehaving after cleanup: `docs/operations/troubleshooting.md`
+- If the container is misbehaving after cleanup: [Troubleshooting](troubleshooting.md)

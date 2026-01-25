@@ -1,15 +1,15 @@
 # Quickstart: Persistent Memory (Deprecated)
 
-This page moved to `docs/features/persistent-memory.md`.
+This page moved to [Persistent Memory](../features/persistent-memory.md).
 
 ## Prerequisites
 
-- `docs/features/mcp.md`
+- [MCP Integration](../features/mcp.md)
 
 ## Related
 
-- `docs/features/persistent-memory.md`
+- [Persistent Memory](../features/persistent-memory.md)
 
 ## Next steps
 
-- `docs/features/persistent-memory.md`
+- [Persistent Memory](../features/persistent-memory.md)

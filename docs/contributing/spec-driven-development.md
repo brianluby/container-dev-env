@@ -6,7 +6,7 @@ Applies to: `main`
 
 ## Prerequisites
 
-- `docs/contributing/index.md`
+- [Contributing](index.md)
 
 ## Overview
 
@@ -151,9 +151,9 @@ The pipeline is not strictly linear. At each layer, issues can trigger rework:
 
 ## Related
 
-- `docs/contributing/workflow.md`
+- [Contributor Workflow](workflow.md)
 - `specs/`
 
 ## Next steps
 
-- Run the local checks: `docs/contributing/testing.md`
+- Run the local checks: [Testing](testing.md)
