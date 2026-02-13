@@ -252,8 +252,8 @@ else
     log_fail "INST-005/006: age-keygen not available"
 fi
 
-# FUNC-004: chezmoi doctor passes
-if docker run --rm $IMAGE chezmoi doctor 2>&1 | grep -q "ok"; then
+# FUNC-004: chezmoi doctor exits successfully
+if docker run --rm $IMAGE chezmoi doctor > /dev/null 2>&1; then
     log_pass "FUNC-004: chezmoi doctor passes"
 else
     log_fail "FUNC-004: chezmoi doctor reports issues"
@@ -322,7 +322,8 @@ fi
 log_section "Chezmoi Encryption Tests"
 
 # ENC-001: age-keygen generates key pair
-if docker run --rm $IMAGE bash -c 'age-keygen 2>&1' | grep -q "public key"; then
+AGE_KEYGEN_OUTPUT="$(docker run --rm $IMAGE bash -c 'age-keygen 2>&1' || true)"
+if printf '%s' "$AGE_KEYGEN_OUTPUT" | grep -q "public key"; then
     log_pass "ENC-001: age-keygen generates key pair"
 else
     log_fail "ENC-001: age-keygen not working"
