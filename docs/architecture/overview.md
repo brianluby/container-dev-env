@@ -147,6 +147,22 @@ sequenceDiagram
 - All dependencies MIT-compatible licensed
 - No secrets baked into images
 
+## Digest pinning scope
+
+Canonical term: `tag@digest` (for example, `debian:bookworm-slim@sha256:...`).
+
+In-scope Dockerfiles for digest pinning hardening:
+
+- `Dockerfile`
+- `docker/Dockerfile`
+- `docker/Dockerfile.ide`
+- `docker/memory.Dockerfile`
+
+Out-of-scope for this feature:
+
+- Dockerfiles under `spikes/`
+- Dockerfiles not explicitly listed in the in-scope inventory
+
 ## ADRs to read before major changes
 
 - [ADR-001: Use Markdown for Documentation](../decisions/001-use-markdown-for-documentation.md)

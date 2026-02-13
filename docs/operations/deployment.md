@@ -47,6 +47,71 @@ The Dockerfile uses multi-stage builds to minimize final image size:
 2. **Runtime stage**: Copy only necessary artifacts from builder
 3. **Final stage**: Add user configuration and entrypoint
 
+## Digest Implementation Notes
+
+### In-scope Dockerfiles
+
+- `Dockerfile`
+- `docker/Dockerfile`
+- `docker/Dockerfile.ide`
+- `docker/memory.Dockerfile`
+
+### Out-of-scope Dockerfiles
+
+- Any Dockerfiles under `spikes/`
+- Any Dockerfiles not explicitly listed in the in-scope inventory above
+
+### Validation gates
+
+- All external `FROM` references in in-scope Dockerfiles must use `tag@digest`
+- `scripts/validate-base-image-digests.sh` must pass locally
+- CI `container-build.yml` must pass with digest validation enabled
+- Digest coverage must include both `linux/amd64` and `linux/arm64`
+
+### Evidence requirements
+
+- Record old and new digest values per updated Dockerfile
+- Record local validator output
+- Record CI run URL proving digest validation passed
+- Record reproducibility evidence from two successive validation runs
+
+### Hard failure policy for unsupported architectures
+
+If any selected digest does not cover both `linux/amd64` and `linux/arm64`, treat the change as failed. Do not merge partial architecture coverage.
+
+### Two-run reproducibility evidence
+
+Run digest validation twice with no source changes and record that outputs match.
+
+```bash
+./scripts/validate-base-image-digests.sh --json > /tmp/digest-run-1.json
+./scripts/validate-base-image-digests.sh --json > /tmp/digest-run-2.json
+diff -u /tmp/digest-run-1.json /tmp/digest-run-2.json
+```
+
+### Digest refresh procedure
+
+1. Identify upstream tags currently referenced in in-scope Dockerfiles.
+2. Resolve new candidate digest values.
+3. Confirm `linux/amd64` and `linux/arm64` coverage for each digest.
+4. Update in-scope Dockerfiles to new `tag@digest` references.
+5. Run local validation and repeat-run reproducibility checks.
+6. Push branch and verify CI digest validation passes.
+7. Capture evidence in PR (old/new digest map + validation outputs).
+
+### Timed refresh validation (under 30 minutes)
+
+Measure one end-to-end refresh cycle and verify completion in less than 30 minutes.
+
+```bash
+start_ts=$(date +%s)
+# perform refresh procedure steps
+end_ts=$(date +%s)
+elapsed=$((end_ts - start_ts))
+echo "Refresh cycle duration: ${elapsed} seconds"
+test "${elapsed}" -lt 1800
+```
+
 ## Deployment targets
 
 ### Local development

@@ -7,14 +7,14 @@
 # =============================================================================
 # Python 3.14 is not available in Debian Bookworm repos
 # Using official Python image as source for binaries
-FROM python:3.14-slim-bookworm AS python-base
+FROM python:3.14-slim-bookworm@sha256:f0540d0436a220db0a576ccfe75631ab072391e43a24b88972ef9833f699095f AS python-base
 
 # =============================================================================
 # Stage 2: Final Image
 # =============================================================================
 # Base image: Debian Bookworm-slim for glibc compatibility
 # Pinned to specific date tag for reproducibility (constitution principle V)
-FROM debian:bookworm-20260112-slim
+FROM debian:bookworm-20260112-slim@sha256:56ff6d36d4eb3db13a741b342ec466f121480b5edded42e4b7ee850ce7a418ee
 
 # Build arguments for user configuration
 ARG USERNAME=dev

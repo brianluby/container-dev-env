@@ -9,7 +9,7 @@
 # -----------------------------------------------------------------------------
 # Stage 1: Base image with system dependencies
 # -----------------------------------------------------------------------------
-FROM debian:bookworm-slim AS base
+FROM debian:bookworm-slim@sha256:98f4b71de414932439ac6ac690d7060df1f27161073c5036a7553723881bffbe AS base
 
 # Avoid prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive

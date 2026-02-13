@@ -35,6 +35,18 @@ Some tests may be failing for reasons not caused by your change. These are track
 
 - [Known Issues](../reference/known-issues.md)
 
+### Digest refresh fails (missing platform coverage)
+
+- Run `./scripts/validate-base-image-digests.sh --json` and inspect reported failures.
+- If a digest is missing `linux/amd64` or `linux/arm64`, select a different upstream digest.
+- Do not merge partial architecture coverage.
+
+### Roll back a digest refresh safely
+
+- Revert Dockerfile changes for the affected `tag@digest` references.
+- Re-run local validator and confirm CI passes on the reverted state.
+- In PR notes, explain rollback reason and the blocked digest.
+
 ## Related
 
 - [Operations](index.md)
