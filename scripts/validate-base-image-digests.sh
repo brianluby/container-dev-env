@@ -48,8 +48,8 @@ check_platform_coverage() {
     "https://registry-1.docker.io/v2/${repo}/manifests/${digest}")"
 
   local has_amd64 has_arm64
-  has_amd64="$(printf '%s' "${manifest}" | jq '[.manifests[]?.platform?.architecture == "amd64"] | any')"
-  has_arm64="$(printf '%s' "${manifest}" | jq '[.manifests[]?.platform?.architecture == "arm64"] | any')"
+  has_amd64="$(printf '%s' "${manifest}" | jq '[.manifests[]? | select(.platform?.os == "linux") | .platform?.architecture == "amd64"] | any')"
+  has_arm64="$(printf '%s' "${manifest}" | jq '[.manifests[]? | select(.platform?.os == "linux") | .platform?.architecture == "arm64"] | any')"
 
   if [[ "${has_amd64}" != "true" || "${has_arm64}" != "true" ]]; then
     return 1
