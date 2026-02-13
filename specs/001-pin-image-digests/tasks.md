@@ -1,6 +1,6 @@
 # Tasks: Pin Base Images to Immutable Digests
 
-**Input**: Design documents from `/Users/bluby/personal_repos/container-dev-env_specs/001-pin-image-digests/specs/001-pin-image-digests/`
+**Input**: Design documents from `specs/001-pin-image-digests/`
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/digest-pinning.openapi.yaml`, `quickstart.md`
 
 **Tests**: Test-first tasks are included to satisfy constitution requirements.
