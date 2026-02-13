@@ -19,10 +19,18 @@ checked_refs=()
 
 extract_from_refs() {
   local file_path="$1"
-  awk '/^FROM /{print $2}' "${file_path}" | while read -r ref; do
-    if [[ "${ref}" == *" AS "* ]]; then
-      ref="${ref%% AS*}"
-    fi
+  awk '
+    /^FROM[[:space:]]/ {
+      line = $0
+      # Remove leading "FROM" and following whitespace.
+      sub(/^FROM[[:space:]]+/, "", line)
+      # Remove optional leading "--platform=..." (and surrounding whitespace).
+      sub(/^[[:space:]]*--platform=[^[:space:]]+[[:space:]]+/, "", line)
+      # Remove optional trailing "AS <alias>" (with flexible whitespace).
+      sub(/[[:space:]]+AS[[:space:]]+.*/, "", line)
+      print line
+    }
+  ' "${file_path}" | while read -r ref; do
     if [[ "${ref}" == "base" || "${ref}" == "development" || "${ref}" == "mcp" || "${ref}" == "python-base" ]]; then
       continue
     fi
