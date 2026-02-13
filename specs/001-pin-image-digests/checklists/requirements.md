@@ -2,7 +2,7 @@
 
 **Purpose**: Validate specification completeness and quality before proceeding to planning  
 **Created**: 2026-02-12  
-**Feature**: [/Users/bluby/personal_repos/container-dev-env_specs/001-pin-image-digests/specs/001-pin-image-digests/spec.md](/Users/bluby/personal_repos/container-dev-env_specs/001-pin-image-digests/specs/001-pin-image-digests/spec.md)
+**Feature**: [specs/001-pin-image-digests/spec.md](/specs/001-pin-image-digests/spec.md)
 
 ## Content Quality
 
