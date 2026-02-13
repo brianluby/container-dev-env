@@ -1,7 +1,7 @@
 # Memory system container layer
 # Python 3.12 required: onnxruntime/fastembed lack 3.14 wheels
 # Multi-arch: arm64 + amd64 (pre-built wheels available)
-FROM python:3.12-slim-bookworm
+FROM python:3.12-slim-bookworm@sha256:73dbd1a2ad74137451593a8ac30f7bdd0f5010fc05fb34644190cffa7696bbf3
 
 # Security: run as non-root user
 # UID/GID 1000 matches typical host user for volume mounts

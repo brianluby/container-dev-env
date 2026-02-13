@@ -1,6 +1,6 @@
 # Containerized IDE: OpenVSCode-Server
 # Pinned version per Constitution Principle V (Reproducibility)
-FROM gitpod/openvscode-server:1.96.4
+FROM gitpod/openvscode-server:1.96.4@sha256:d5602a88b8f2b54ab33a62a3d4a3e00503390e889aebcfae2d8bdf37e68aee7f
 
 # Preserve default user (UID 1000) from base image
 USER openvscode-server

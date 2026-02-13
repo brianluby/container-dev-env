@@ -34,6 +34,21 @@ shellcheck scripts/*.sh docker/*.sh src/**/*.sh 2>/dev/null || true
 
 If the repo provides a wrapper script for CI parity, prefer it.
 
+## Digest pinning verifier
+
+Use the digest validator before opening a PR that updates in-scope Dockerfiles:
+
+```bash
+./scripts/validate-base-image-digests.sh
+./scripts/validate-base-image-digests.sh --json
+```
+
+Expected output:
+
+- Text mode prints PASS with checked reference count
+- JSON mode returns `{"status":"pass",...}`
+- Any missing digest pin or missing amd64/arm64 coverage returns non-zero exit status
+
 ## Writing tests (BATS)
 
 Guidelines:

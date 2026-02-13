@@ -1,0 +1,118 @@
+openapi: 3.0.3
+info:
+  title: Digest Pinning Compliance Contract
+  version: 1.0.0
+  description: |
+    Planning contract for validating immutable digest pinning across the
+    in-scope Dockerfiles.
+servers:
+  - url: https://compliance.local
+paths:
+  /scope:
+    get:
+      summary: Get in-scope Dockerfiles for this feature
+      operationId: getScope
+      responses:
+        '200':
+          description: Scope returned
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [dockerfiles]
+                properties:
+                  dockerfiles:
+                    type: array
+                    items:
+                      type: string
+  /coverage/validate:
+    post:
+      summary: Validate platform coverage for pinned digests
+      operationId: validateCoverage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CoverageValidationRequest'
+      responses:
+        '200':
+          description: Coverage validation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoverageValidationResult'
+  /verification/run:
+    post:
+      summary: Execute required verification gates
+      operationId: runVerification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [requireLocal, requireCi]
+              properties:
+                requireLocal:
+                  type: boolean
+                requireCi:
+                  type: boolean
+      responses:
+        '200':
+          description: Verification gate results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificationResult'
+components:
+  schemas:
+    BaseReference:
+      type: object
+      required:
+        - dockerfilePath
+        - imageRepository
+        - imageTag
+        - imageDigest
+      properties:
+        dockerfilePath:
+          type: string
+        imageRepository:
+          type: string
+        imageTag:
+          type: string
+        imageDigest:
+          type: string
+          pattern: '^sha256:[a-f0-9]{64}$'
+    CoverageValidationRequest:
+      type: object
+      required: [references]
+      properties:
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/BaseReference'
+    CoverageValidationResult:
+      type: object
+      required: [status, missingPlatforms]
+      properties:
+        status:
+          type: string
+          enum: [pass, fail]
+        missingPlatforms:
+          type: array
+          items:
+            type: string
+    VerificationResult:
+      type: object
+      required: [localStatus, ciStatus, overallStatus]
+      properties:
+        localStatus:
+          type: string
+          enum: [pass, fail, skipped]
+        ciStatus:
+          type: string
+          enum: [pass, fail, skipped]
+        overallStatus:
+          type: string
+          enum: [pass, fail]

@@ -105,6 +105,8 @@ Architecture Decision Records before proposing new architectural approaches.
 ## Active Technologies
 - Markdown (repository docs), Bash 5.x for any helper scripts + N/A (static Markdown); Mermaid/ASCII for diagrams (no site generator) (018-docs-overhaul)
 - Git repository files (Markdown) (018-docs-overhaul)
+- Dockerfile syntax, Bash 5.x, Markdown + Docker Buildx, Docker Compose v2, GitHub Actions workflows (001-pin-image-digests)
+- Git repository files (Dockerfiles, docs, workflow files) (001-pin-image-digests)
 
 ## Recent Changes
 - 018-docs-overhaul: Added Markdown (repository docs), Bash 5.x for any helper scripts + N/A (static Markdown); Mermaid/ASCII for diagrams (no site generator)

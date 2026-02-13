@@ -35,6 +35,14 @@ High-level loop:
 - User-facing behavior/config changes include corresponding docs updates (FR-013)
 - New docs pages follow the [Page Template](../_page-template.md) (Prerequisites/Related/Next steps)
 
+### Digest coverage reviewer checklist
+
+- In-scope Dockerfiles use `tag@digest` for external `FROM` references
+- `./scripts/validate-base-image-digests.sh` output is attached or referenced
+- CI `container-build.yml` run includes successful digest validation
+- Evidence includes old/new digest values and two-run reproducibility output
+- No out-of-scope Dockerfiles were changed unless explicitly justified
+
 ## Related
 
 - [Spec-Driven Development](spec-driven-development.md)
