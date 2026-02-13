@@ -1,7 +1,7 @@
 # Implementation Plan: Pin Base Images to Immutable Digests
 
-**Branch**: `001-pin-image-digests` | **Date**: 2026-02-12 | **Spec**: `/Users/bluby/personal_repos/container-dev-env_specs/001-pin-image-digests/specs/001-pin-image-digests/spec.md`
-**Input**: Feature specification from `/specs/001-pin-image-digests/spec.md`
+**Branch**: `001-pin-image-digests` | **Date**: 2026-02-12 | **Spec**: `specs/001-pin-image-digests/spec.md`
+**Input**: Feature specification from `specs/001-pin-image-digests/spec.md`
 
 ## Summary
 
