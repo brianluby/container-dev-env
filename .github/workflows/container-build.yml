@@ -94,7 +94,7 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build image for testing
-        uses: docker/build-push-action@14487ce63c7a62a3fd1178127c8c1c605a8e0400 # v6.16.0
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
         with:
           context: .
           platforms: ${{ matrix.platform }}
@@ -124,7 +124,7 @@ jobs:
       - name: Build and push by digest
         if: github.event_name != 'pull_request'
         id: build
-        uses: docker/build-push-action@14487ce63c7a62a3fd1178127c8c1c605a8e0400 # v6.16.0
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
         with:
           context: .
           platforms: ${{ matrix.platform }}
