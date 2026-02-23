@@ -59,6 +59,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write
 
     steps:
       - name: Checkout repository
@@ -68,6 +69,12 @@ jobs:
         uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
         with:
           driver: docker-container
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@fb28c2b6339dcd94da6e4cbcbc5e888961f6f8c3 # v3.9.0
+
+      - name: Install syft
+        uses: anchore/sbom-action/download-syft@e11c554f704a0b820cbf8c51673f6945e0731532 # v0.20.0
 
       - name: Validate in-scope base image digests
         run: |
@@ -121,6 +128,26 @@ jobs:
           fi
           echo "Image size is within 2GB limit"
 
+      - name: Generate SBOM
+        run: |
+          syft docker:devcontainer:test --output spdx-json=sbom-${{ matrix.arch }}.spdx.json --scope all-layers
+
+      - name: Validate SBOM coverage
+        run: |
+          DPKG_COUNT=$(jq '[.packages[] | select(.externalRefs[]?.referenceType == "purl" and (.externalRefs[]?.referenceLocator | test("pkg:deb/")))] | length' sbom-${{ matrix.arch }}.spdx.json)
+          echo "SBOM contains ${DPKG_COUNT} dpkg packages"
+          if [ "${DPKG_COUNT}" -lt 80 ]; then
+            echo "ERROR: SBOM coverage too low (expected > 80 dpkg packages)"
+            exit 1
+          fi
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: sbom-${{ matrix.arch }}
+          path: sbom-${{ matrix.arch }}.spdx.json
+          retention-days: ${{ github.event_name == 'pull_request' && 7 || 90 }}
+
       - name: Build and push by digest
         if: github.event_name != 'pull_request'
         id: build
@@ -141,6 +168,11 @@ jobs:
           digest="${{ steps.build.outputs.digest }}"
           touch "/tmp/digests/${digest#sha256:}"
 
+      - name: Sign per-architecture digest
+        if: github.event_name != 'pull_request'
+        run: |
+          cosign sign --yes ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}
+
       - name: Upload digest
         if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
@@ -159,6 +191,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write
 
     steps:
       - name: Download digests
@@ -170,6 +203,9 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@fb28c2b6339dcd94da6e4cbcbc5e888961f6f8c3 # v3.9.0
 
       - name: Log in to Container Registry
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
@@ -197,3 +233,32 @@ jobs:
       - name: Inspect image
         run: |
           docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}
+
+      - name: Install syft
+        uses: anchore/sbom-action/download-syft@e11c554f704a0b820cbf8c51673f6945e0731532 # v0.20.0
+
+      - name: Capture manifest digest
+        id: manifest
+        run: |
+          DIGEST=$(docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }} --format '{{.Manifest.Digest}}')
+          echo "digest=${DIGEST}" >> "${GITHUB_OUTPUT}"
+          echo "Manifest digest: ${DIGEST}"
+
+      - name: Sign multi-architecture manifest
+        run: |
+          cosign sign --yes ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.manifest.outputs.digest }}
+
+      - name: Generate SBOM for manifest
+        run: |
+          syft registry:${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.manifest.outputs.digest }} --output spdx-json=sbom-manifest.spdx.json --scope all-layers
+
+      - name: Attest SBOM
+        run: |
+          cosign attest --yes --type spdxjson --predicate sbom-manifest.spdx.json ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.manifest.outputs.digest }}
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: sbom-manifest
+          path: sbom-manifest.spdx.json
+          retention-days: 90

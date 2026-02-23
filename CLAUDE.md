@@ -26,6 +26,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-20
 - File-based JSON knowledge graph in Docker volume (`~/.local/share/mcp-memory/memory.json`) (012-mcp-integration)
 - Bash 5.x (all scripts), Dockerfile syntax + jq (JSON construction), BATS (testing), ShellCheck (linting), age (encryption) (017-codebase-hardening)
 - File-based (JSON sessions, JSONL logs, KEY=VALUE secrets files) (017-codebase-hardening)
+- Bash 5.x (Dockerfile RUN commands, scripts), GitHub Actions YAML (CI workflows) + cosign v2.5.0 (image signing), Anchore Syft (SBOM generation), Docker Buildx (multi-arch builds, already in use) (002-supply-chain-hardening)
+- OCI registry (GHCR — ghcr.io) for images, signatures, and SBOM attestations (002-supply-chain-hardening)
 
 - Dockerfile (multi-stage), Bash for shell configuration + Debian Bookworm-slim base image, Python 3.14+, Node.js LTS (22.x) (001-container-base-image)
 
@@ -45,9 +47,9 @@ tests/
 Dockerfile (multi-stage), Bash for shell configuration: Follow standard conventions
 
 ## Recent Changes
+- 002-supply-chain-hardening: Added Bash 5.x (Dockerfile RUN commands, scripts), GitHub Actions YAML (CI workflows) + cosign v2.5.0 (image signing), Anchore Syft (SBOM generation), Docker Buildx (multi-arch builds, already in use)
 - 017-codebase-hardening: Added Bash 5.x (all scripts), Dockerfile syntax + jq (JSON construction), BATS (testing), ShellCheck (linting), age (encryption)
 - 015-voice-input: Added Bash 5.x (setup/configuration scripts), YAML/JSON (tool configuration) + Superwhisper (primary recommendation, $250 lifetime) or VoiceInk (budget alternative, $39) — local Whisper-based speech-to-text for macOS
-- 010-project-context-files: Added Bash 5.x (bootstrap script), Markdown (content files) + None (static files + POSIX-compatible shell script)
 
 
 <!-- MANUAL ADDITIONS START -->
