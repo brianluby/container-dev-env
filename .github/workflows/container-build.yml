@@ -141,6 +141,18 @@ jobs:
             exit 1
           fi
 
+          # Validate key standalone components appear in SBOM (FR-006)
+          MISSING=""
+          for component in node uv chezmoi; do
+            if ! jq -e --arg name "${component}" '.packages[] | select(.name == $name)' sbom-${{ matrix.arch }}.spdx.json >/dev/null 2>&1; then
+              MISSING="${MISSING} ${component}"
+            fi
+          done
+          if [ -n "${MISSING}" ]; then
+            echo "WARNING: SBOM missing standalone components:${MISSING}"
+            echo "Note: syft may catalogue these under different names — verify manually"
+          fi
+
       - name: Upload SBOM artifact
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:

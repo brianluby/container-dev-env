@@ -27,7 +27,13 @@ grep -E 'curl.*\|.*bash|wget.*\|.*sh' Dockerfile && echo "FAIL: script-piped ins
 
 ```bash
 # Install syft (one-time)
-curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+# macOS:
+brew install syft
+# Linux (pinned binary — replace version as needed):
+# SYFT_VERSION=1.20.0
+# curl -sSfL -o syft_${SYFT_VERSION}_linux_amd64.tar.gz \
+#   https://github.com/anchore/syft/releases/download/v${SYFT_VERSION}/syft_${SYFT_VERSION}_linux_amd64.tar.gz
+# tar -xzf syft_${SYFT_VERSION}_linux_amd64.tar.gz -C /usr/local/bin syft
 
 # Generate SBOM for the local image
 syft docker:devcontainer:test --output spdx-json=sbom-local.spdx.json --scope all-layers
@@ -47,7 +53,10 @@ sha256sum -c checksums.sha256
 
 ```bash
 # Requires BATS: brew install bats-core (macOS) or apt-get install bats
+# Static analysis tests (no Docker required)
 bats tests/unit/test_supply_chain.bats
+# Integration tests (requires Docker + syft/cosign)
+bats tests/integration/test_supply_chain.bats
 ```
 
 ## CI Pipeline Flow

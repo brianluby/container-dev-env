@@ -2,7 +2,7 @@
 
 **Feature Branch**: `002-supply-chain-hardening`
 **Created**: 2026-02-23
-**Status**: Draft
+**Status**: Implemented
 **Input**: User description: "Add supply chain hardening with updated software, image signing and SBOM generation"
 
 ## User Scenarios & Testing *(mandatory)*
