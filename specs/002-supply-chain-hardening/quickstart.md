@@ -32,9 +32,25 @@ brew install syft
 # Linux (pinned binary — replace version as needed):
 # SYFT_VERSION=1.20.0
 # curl -sSfL -o syft_${SYFT_VERSION}_linux_amd64.tar.gz \
-#   https://github.com/anchore/syft/releases/download/v${SYFT_VERSION}/syft_${SYFT_VERSION}_linux_amd64.tar.gz
-# tar -xzf syft_${SYFT_VERSION}_linux_amd64.tar.gz -C /usr/local/bin syft
+# Install syft (one-time), using a verifiable method.
+#
+# Option A: Package manager (preferred where available)
+#   macOS (Homebrew):   brew install syft
+#   Debian/Ubuntu:      sudo apt-get install syft        # if available in your repo
+#
+# Option B: Pinned GitHub release + checksum (example for Linux amd64)
+SYFT_VERSION="v1.6.0"
+SYFT_OS="linux"
+SYFT_ARCH="amd64"
+SYFT_BASE_URL="https://github.com/anchore/syft/releases/download/${SYFT_VERSION}"
 
+curl -sSfL "${SYFT_BASE_URL}/syft_${SYFT_OS}_${SYFT_ARCH}.tar.gz" -o /tmp/syft.tar.gz
+curl -sSfL "${SYFT_BASE_URL}/syft_${SYFT_OS}_${SYFT_ARCH}.tar.gz.sha256" -o /tmp/syft.tar.gz.sha256
+
+# Verify checksum before installing
+(cd /tmp && sha256sum -c syft.tar.gz.sha256)
+
+sudo tar -C /usr/local/bin -xzf /tmp/syft.tar.gz syft
 # Generate SBOM for the local image
 syft docker:devcontainer:test --output spdx-json=sbom-local.spdx.json --scope all-layers
 
