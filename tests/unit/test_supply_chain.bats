@@ -28,14 +28,14 @@ setup() {
 @test "no_script_piped_installs" {
   # Match any line that pipes a curl or wget download into a shell interpreter.
   # Using extended-regex alternation to cover all common variants.
-  run grep -cE 'curl\s.*\|\s*(ba)?sh|wget\s.*\|\s*(ba)?sh' "${DOCKERFILE}"
+  run grep -cE 'curl[[:space:]].*\|[[:space:]]*(ba)?sh|wget[[:space:]].*\|[[:space:]]*(ba)?sh' "${DOCKERFILE}"
 
   # grep -c returns the count of matching lines.  We expect zero.
   # If grep finds no matches it exits with status 1 and prints "0".
   if [ "${status}" -eq 0 ]; then
     # status 0 means grep found at least one match
     echo "FAIL: Found ${output} piped-install line(s) in Dockerfile:"
-    grep -nE 'curl\s.*\|\s*(ba)?sh|wget\s.*\|\s*(ba)?sh' "${DOCKERFILE}"
+    grep -nE 'curl[[:space:]].*\|[[:space:]]*(ba)?sh|wget[[:space:]].*\|[[:space:]]*(ba)?sh' "${DOCKERFILE}"
     return 1
   fi
 
