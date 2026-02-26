@@ -28,7 +28,7 @@
 
   # Count dpkg packages in the SBOM
   local dpkg_count
-  dpkg_count=$(echo "${sbom_output}" | jq '[.packages[] | select(.externalRefs[]?.referenceType == "purl" and (.externalRefs[]?.referenceLocator | test("pkg:deb/")))] | length' 2>/dev/null || echo "0")
+  dpkg_count=$(echo "${sbom_output}" | jq '[.packages[] | select(any(.externalRefs[]?; .referenceType == "purl" and ((.referenceLocator // "") | test("pkg:deb/"))))] | length' 2>/dev/null || echo "0")
 
   if [ "${dpkg_count}" -lt 80 ]; then
     echo "FAIL: SBOM contains only ${dpkg_count} dpkg packages (expected > 80)"

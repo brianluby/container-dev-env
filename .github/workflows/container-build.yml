@@ -134,7 +134,7 @@ jobs:
 
       - name: Validate SBOM coverage
         run: |
-          DPKG_COUNT=$(jq '[.packages[] | select(.externalRefs[]?.referenceType == "purl" and (.externalRefs[]?.referenceLocator | test("pkg:deb/")))] | length' sbom-${{ matrix.arch }}.spdx.json)
+          DPKG_COUNT=$(jq '[.packages[] | select(any(.externalRefs[]?; .referenceType == "purl" and ((.referenceLocator // "") | test("pkg:deb/"))))] | length' sbom-${{ matrix.arch }}.spdx.json)
           echo "SBOM contains ${DPKG_COUNT} dpkg packages"
           if [ "${DPKG_COUNT}" -lt 80 ]; then
             echo "ERROR: SBOM coverage too low (expected > 80 dpkg packages)"

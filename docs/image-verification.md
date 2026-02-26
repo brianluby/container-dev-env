@@ -70,7 +70,7 @@ jq -r '.packages[].name' sbom.spdx.json | sort
 ### Count dpkg (Debian) packages
 
 ```bash
-jq '[.packages[] | select(any(.externalRefs[]?; .referenceType == "purl" and ((.referenceLocator // "") | contains("pkg:deb/"))))] | length' sbom.spdx.json
+jq '[.packages[] | select(any(.externalRefs[]?; .referenceType == "purl" and ((.referenceLocator // "") | test("pkg:deb/"))))] | length' sbom.spdx.json
 ```
 
 ### Check for specific components
