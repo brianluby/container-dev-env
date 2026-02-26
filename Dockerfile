@@ -51,6 +51,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo \
     # Locale support
     locales \
+    # Archive extraction (tar.xz for Node.js)
+    xz-utils \
     && rm -rf /var/lib/apt/lists/*
 
 # =============================================================================
@@ -67,15 +69,55 @@ COPY --from=python-base /usr/local /usr/local
 # Ensure Python shared libraries are found
 ENV LD_LIBRARY_PATH=/usr/local/lib
 
-# Install uv package manager for fast Python dependency management
-RUN pip install --no-cache-dir uv
+# =============================================================================
+# uv package manager — Binary tarball with SHA256 verification
+# Feature: 002-supply-chain-hardening (FR-002, FR-003)
+# =============================================================================
+ARG UV_VERSION=0.10.4
+ARG UV_SHA256_AMD64=6b52a47358deea1c5e173278bf46b2b489747a59ae31f2a4362ed5c6c1c269f7
+ARG UV_SHA256_ARM64=c84a6e6405715caa6e2f5ef8e5f29a5d0bc558a954e9f1b5c082b9d4708c222e
+RUN set -eux; \
+    ARCH=$(dpkg --print-architecture); \
+    case "${ARCH}" in \
+      amd64) UV_ARCH="x86_64"; CHECKSUM="${UV_SHA256_AMD64}" ;; \
+      arm64) UV_ARCH="aarch64"; CHECKSUM="${UV_SHA256_ARM64}" ;; \
+      *)     echo "Unsupported architecture: ${ARCH}" >&2; exit 1 ;; \
+    esac; \
+    TARBALL="uv-${UV_ARCH}-unknown-linux-gnu.tar.gz"; \
+    curl -fsSL "https://github.com/astral-sh/uv/releases/download/${UV_VERSION}/${TARBALL}" \
+      -o "/tmp/${TARBALL}"; \
+    echo "${CHECKSUM}  /tmp/${TARBALL}" | sha256sum -c -; \
+    tar -xzf "/tmp/${TARBALL}" -C /usr/local/bin --strip-components=1 \
+      "uv-${UV_ARCH}-unknown-linux-gnu/uv" \
+      "uv-${UV_ARCH}-unknown-linux-gnu/uvx"; \
+    chmod +x /usr/local/bin/uv /usr/local/bin/uvx; \
+    rm -f "/tmp/${TARBALL}"; \
+    uv --version
 
 # =============================================================================
-# Phase 5/US3: Install Node.js LTS (22.x) via NodeSource
+# Node.js LTS (22.x) — Official tarball with SHA256 verification
+# Feature: 002-supply-chain-hardening (FR-001, FR-003)
 # =============================================================================
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
-    apt-get install -y --no-install-recommends nodejs && \
-    rm -rf /var/lib/apt/lists/*
+ARG NODEJS_VERSION=v22.22.0
+ARG NODEJS_SHA256_AMD64=9aa8e9d2298ab68c600bd6fb86a6c13bce11a4eca1ba9b39d79fa021755d7c37
+ARG NODEJS_SHA256_ARM64=1bf1eb9ee63ffc4e5d324c0b9b62cf4a289f44332dfef9607cea1a0d9596ba6f
+RUN set -eux; \
+    ARCH=$(dpkg --print-architecture); \
+    case "${ARCH}" in \
+      amd64) NODE_ARCH="x64";  CHECKSUM="${NODEJS_SHA256_AMD64}" ;; \
+      arm64) NODE_ARCH="arm64"; CHECKSUM="${NODEJS_SHA256_ARM64}" ;; \
+      *)     echo "Unsupported architecture: ${ARCH}" >&2; exit 1 ;; \
+    esac; \
+    TARBALL="node-${NODEJS_VERSION}-linux-${NODE_ARCH}.tar.xz"; \
+    curl -fsSL "https://nodejs.org/dist/${NODEJS_VERSION}/${TARBALL}" \
+      -o "/tmp/${TARBALL}"; \
+    echo "${CHECKSUM}  /tmp/${TARBALL}" | sha256sum -c -; \
+    tar -xJf "/tmp/${TARBALL}" -C /usr/local --strip-components=1 \
+      --exclude='*/CHANGELOG.md' \
+      --exclude='*/LICENSE' \
+      --exclude='*/README.md'; \
+    rm -f "/tmp/${TARBALL}"; \
+    node --version; npm --version
 
 # =============================================================================
 # Chezmoi Installation for Dotfile Management
@@ -85,9 +127,9 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
 
 # Install Chezmoi (pinned version for reproducibility - Constitution Principle V)
 # Checksum verification per Feature 017 (Codebase Hardening)
-ARG CHEZMOI_VERSION=v2.69.3
-ARG CHEZMOI_SHA256_AMD64=9b9bf911efed8aba28bd6f5df1e780a6123dc3fb177004c1ca36ec2b9eca7628
-ARG CHEZMOI_SHA256_ARM64=0aef9ef75ee33cffb483a82c474b495d428e0f7941ab7898263c3519006e0662
+ARG CHEZMOI_VERSION=v2.69.4
+ARG CHEZMOI_SHA256_AMD64=5054cf09cb2993725f525c8bb6ec3ff8625489ecfc061e019c17e737e7c7057b
+ARG CHEZMOI_SHA256_ARM64=560fb76182a3da7db7d445953cfa82fefbdc59284c8c673bb22363db9122ee4e
 RUN set -eux; \
     ARCH=$(dpkg --print-architecture); \
     case "${ARCH}" in \

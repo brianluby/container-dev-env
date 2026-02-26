@@ -1,35 +1,29 @@
 # SHA256 Checksums for Pinned Binary Downloads
 # Format: <sha256hash>  <filename>
-# Generated for container-dev-env codebase hardening (Feature 017)
+# Generated for container-dev-env supply-chain hardening (Feature 002)
 #
 # Verification: sha256sum -c checksums.sha256
 
-# Chezmoi v2.47.1 (tarballs containing binary)
-# Source: https://github.com/twpayne/chezmoi/releases/download/v2.47.1/
-2e13820f7c93f522823070538425e72ad2b6186322c70e4188efb2da38166f7c  chezmoi_2.47.1_linux_amd64.tar.gz
-bf1d042f62f8d80b238f20d135b5e413981089f429668ff7039128ee32b957a6  chezmoi_2.47.1_linux_arm64.tar.gz
+# Chezmoi v2.69.4 (tarballs containing binary)
+# Source: https://github.com/twpayne/chezmoi/releases/download/v2.69.4/
+5054cf09cb2993725f525c8bb6ec3ff8625489ecfc061e019c17e737e7c7057b  chezmoi_2.69.4_linux_amd64.tar.gz
+560fb76182a3da7db7d445953cfa82fefbdc59284c8c673bb22363db9122ee4e  chezmoi_2.69.4_linux_arm64.tar.gz
 
-# age v1.1.1 (tarballs containing age and age-keygen binaries)
-# Source: https://github.com/FiloSottile/age/releases/download/v1.1.1/
-cf16cbb108fc56e2064b00ba2b65d9fb1b8d7002ca5e38260ee1cc34f6aaa8f9  age-v1.1.1-linux-amd64.tar.gz
-f0dbf4364f5ba44e37ad85af9fdd3716bd410018ce344d317b174d206b03e6fc  age-v1.1.1-linux-arm64.tar.gz
+# age v1.3.1 (tarballs containing age and age-keygen binaries)
+# Source: https://github.com/FiloSottile/age/releases/download/v1.3.1/
+bdc69c09cbdd6cf8b1f333d372a1f58247b3a33146406333e30c0f26e8f51377  age-v1.3.1-linux-amd64.tar.gz
+c6878a324421b69e3e20b00ba17c04bc5c6dab0030cfe55bf8f68fa8d9e9093a  age-v1.3.1-linux-arm64.tar.gz
 
-# OpenCode v0.5.2 (direct binary downloads)
-# Source: https://github.com/anomalyco/opencode/releases/download/v0.5.2/
-# TODO: Download binaries and compute actual SHA256 checksums.
-#       Release page assets could not be fetched programmatically.
-#       Run: curl -fsSL <url> | sha256sum to obtain real hashes.
-0000000000000000000000000000000000000000000000000000000000000000  opencode-linux-amd64
-0000000000000000000000000000000000000000000000000000000000000000  opencode-linux-arm64
+# Node.js v22.22.0 (official binary tarballs, tar.xz format)
+# Source: https://nodejs.org/dist/v22.22.0/SHASUMS256.txt
+9aa8e9d2298ab68c600bd6fb86a6c13bce11a4eca1ba9b39d79fa021755d7c37  node-v22.22.0-linux-x64.tar.xz
+1bf1eb9ee63ffc4e5d324c0b9b62cf4a289f44332dfef9607cea1a0d9596ba6f  node-v22.22.0-linux-arm64.tar.xz
 
-# Continue v1.2.14 (VS Code extension VSIX)
-# TODO: Determine download URL from Open VSX or VS Code Marketplace.
-#       Open VSX: https://open-vsx.org/api/Continue/continue/1.2.14/file/Continue.continue-1.2.14.vsix
-#       Download and run: sha256sum Continue.continue-1.2.14.vsix
-0000000000000000000000000000000000000000000000000000000000000000  Continue.continue-1.2.14.vsix
+# uv 0.10.4 (pre-built binary tarballs)
+# Source: https://github.com/astral-sh/uv/releases/download/0.10.4/
+6b52a47358deea1c5e173278bf46b2b489747a59ae31f2a4362ed5c6c1c269f7  uv-x86_64-unknown-linux-gnu.tar.gz
+c84a6e6405715caa6e2f5ef8e5f29a5d0bc558a954e9f1b5c082b9d4708c222e  uv-aarch64-unknown-linux-gnu.tar.gz
 
-# Cline v3.51.0 (VS Code extension VSIX)
-# TODO: Determine download URL from Open VSX or VS Code Marketplace.
-#       Open VSX: https://open-vsx.org/api/saoudrizwan/claude-dev/3.51.0/file/saoudrizwan.claude-dev-3.51.0.vsix
-#       Download and run: sha256sum saoudrizwan.claude-dev-3.51.0.vsix
-0000000000000000000000000000000000000000000000000000000000000000  saoudrizwan.claude-dev-3.51.0.vsix
+# TODO: add checksums when these tools have pinned releases
+# OpenCode, Continue, Cline checksums pending — not yet installed via
+# checksum-verified tarball downloads in the Dockerfile.
