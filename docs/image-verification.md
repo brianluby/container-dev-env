@@ -10,8 +10,11 @@ Install [cosign](https://docs.sigstore.dev/cosign/system_config/installation/) (
 # macOS
 brew install cosign
 
-# Linux (go install)
-go install github.com/sigstore/cosign/v2/cmd/cosign@latest
+# Linux (pinned binary)
+COSIGN_VERSION=v2.4.0
+curl -L "https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64" -o cosign
+chmod +x cosign
+sudo mv cosign /usr/local/bin/cosign
 ```
 
 ## Signature Verification
