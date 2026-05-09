@@ -14,7 +14,7 @@ FROM python:3.14-slim-bookworm@sha256:f0540d0436a220db0a576ccfe75631ab072391e43a
 # =============================================================================
 # Base image: Debian Bookworm-slim for glibc compatibility
 # Pinned to specific date tag for reproducibility (constitution principle V)
-FROM debian:bookworm-20260202-slim@sha256:98f4b71de414932439ac6ac690d7060df1f27161073c5036a7553723881bffbe
+FROM debian:bookworm-20260505-slim@sha256:67b30a61dc87758f0caf819646104f29ecbda97d920aaf5edc834128ac8493d3
 
 # Build arguments for user configuration
 ARG USERNAME=dev
